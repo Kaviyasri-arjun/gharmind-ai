@@ -13,7 +13,7 @@ type Pg=typeof PG[number];
 const PL:Record<Pg,string>={home:"Home",dashboard:"Dashboard",family:"Family",predictions:"Predictions",memory:"Memory"};
 
 export default function App(){
-const[pg,sP]=useState<Pg>("home");const[mn,sMn]=useState(false);const[co,sCo]=useState(false);
+const[pg,sP]=useState<Pg>("home");const[mn,sMn]=useState(false);const[co,sCo]=useState(false);const[hsOpen,setHsOpen]=useState(false);
 const[subTab,setSubTab]=useState<string>("");
 const[ld,sLd]=useState(true);const[mems,sMs]=useState<any[]>([]);const[tw,sTw]=useState<any>(null);const[pr,sPr]=useState<any[]>([]);const[rt,sRt]=useState<any[]>([]);
 const[msgs,sMsg]=useState<{r:string;t:string}[]>([]);const[ci,sCi]=useState("");const[cl,sCl]=useState(false);const[sp,sSp]=useState(false);
@@ -123,19 +123,11 @@ return(<div className="min-h-screen flex flex-col">
   <button onClick={()=>sMn(!mn)} className="lg:hidden ml-auto p-1.5 rounded hover:bg-white/5"><svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
 </div>
 </header>
-{/* ═══ FLOATING STATUS STRIP ═══ */}
-{pg==="home"&&<div className="fixed top-12 inset-x-0 z-40 hidden md:block">
-  <div className="max-w-[1400px] mx-auto px-3 py-1.5 flex items-center justify-center gap-3">
-    <span className="px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-wide bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-sm shadow-emerald-900/10 backdrop-blur-md">{mood}</span>
-    <span className="px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-wide bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 shadow-sm shadow-cyan-900/10 backdrop-blur-md">Health {hp}%</span>
-    {pwr>.6&&<span className="px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-wide bg-amber-500/10 text-amber-400 border border-amber-500/20 shadow-sm shadow-amber-900/10 backdrop-blur-md ap">⚡ Power Risk {Math.round(pwr*100)}%</span>}
-  </div>
-</div>}
 {mn&&<div className="fixed inset-0 z-40 bg-black/50 lg:hidden" onClick={()=>sMn(false)}/>}
 {mn&&<div className="fixed top-12 right-0 z-50 w-56 bg-[var(--card)] border-l border-[var(--border)] h-[calc(100vh-48px)] p-3 space-y-1 overflow-y-auto lg:hidden">{PG.map(p=><button key={p} onClick={()=>nav(p)} className="w-full text-left px-3 py-2.5 rounded-lg text-xs hover:bg-white/5">{PL[p]}</button>)}<div className="pt-2 border-t border-[var(--border)] mt-2">{dm?<button onClick={dPause} className="btn-s w-full text-[10px]">⏸ Pause</button>:<button onClick={dStart} className="btn-p w-full text-[10px]">▶ Demo</button>}</div></div>}
 
 {/* ═══ MAIN ═══ */}
-<main className={cn("flex-1 af",pg==="home"?"pt-[72px] md:pt-[76px]":"pt-12")} key={pg}>
+<main className="flex-1 pt-12 af" key={pg}>
 
 {/* HOME */}
 {pg==="home"&&<div>
@@ -780,6 +772,22 @@ return(<div className="min-h-screen flex flex-col">
     </div>
   </div>
 </div>}
+
+{/* ═══ FLOATING HOUSEHOLD STATUS WIDGET ═══ */}
+<button onClick={()=>setHsOpen(!hsOpen)} className="fixed bottom-4 right-[68px] z-50 w-11 h-11 rounded-full bg-gradient-to-br from-emerald-600 to-cyan-600 text-white shadow-lg shadow-emerald-500/20 flex items-center justify-center text-base hover:scale-110 transition-transform">{hsOpen?"✕":"🏠"}</button>
+{hsOpen&&<>
+<div className="fixed inset-0 z-40" onClick={()=>setHsOpen(false)}/>
+<div className="fixed bottom-[68px] right-[68px] z-50 w-[240px] bg-[var(--card)]/95 backdrop-blur-xl border border-cyan-800/30 rounded-xl shadow-2xl shadow-cyan-900/20 p-4 af">
+  <p className="text-[9px] font-bold text-cyan-400 uppercase tracking-wide mb-3">Current Household State</p>
+  <div className="space-y-2.5">
+    <div className="flex items-center justify-between"><span className="text-xs text-muted">🟢 Mood</span><span className="text-xs font-semibold text-emerald-400">{mood}</span></div>
+    <div className="flex items-center justify-between"><span className="text-xs text-muted">❤️ Health Score</span><span className="text-xs font-semibold text-cyan-400">{hp}%</span></div>
+    <div className="flex items-center justify-between"><span className="text-xs text-muted">⚡ Power Risk</span><span className={cn("text-xs font-semibold",pwr>.6?"text-amber-400":"text-emerald-400")}>{Math.round(pwr*100)}%</span></div>
+    <div className="flex items-center justify-between"><span className="text-xs text-muted">🧠 AI Confidence</span><span className="text-xs font-semibold text-cyan-400">89%</span></div>
+    <div className="flex items-center justify-between"><span className="text-xs text-muted">🕒 Updated</span><span className="text-[10px] text-muted">{clock.split("•")[1]?.trim()||"Now"}</span></div>
+  </div>
+</div>
+</>}
 
 {/* ═══ FLOATING CHAT ═══ */}
 {demoNote&&<div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-lg bg-[var(--card)] border border-cyan-800/40 shadow-lg text-xs text-cyan-400 font-medium af">{demoNote}</div>}
