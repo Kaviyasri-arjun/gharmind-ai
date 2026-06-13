@@ -690,6 +690,17 @@ return(<div className="min-h-screen flex flex-col">
 
 </main>
 
+{/* ═══ FOOTER ═══ */}
+<footer className="border-t border-[var(--border)] mt-8 py-8 px-4">
+<div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+  <div><p className="text-sm font-bold text-grad">GHARMIND AI</p><p className="text-[10px] text-muted mt-1">India's First AI Household Operating System</p></div>
+  <div><p className="text-[9px] font-bold text-muted uppercase tracking-wide mb-1.5">Built For</p><p className="text-xs">Amazon HackOn 6.0</p></div>
+  <div><p className="text-[9px] font-bold text-muted uppercase tracking-wide mb-1.5">Powered By</p><div className="space-y-0.5 text-[11px]"><p>AWS Bedrock</p><p>FastAPI</p><p>Next.js</p><p>PostgreSQL</p><p>Digital Twin Architecture</p></div></div>
+  <div><p className="text-[9px] font-bold text-muted uppercase tracking-wide mb-1.5">Project Links</p><div className="space-y-0.5 text-[11px]"><p className="text-cyan-400">GitHub Repository</p><p className="text-cyan-400">Documentation</p><p className="text-cyan-400">Demo Video</p></div></div>
+</div>
+<p className="text-center text-[9px] text-muted mt-6 pt-4 border-t border-[var(--border)]">© 2026 GharMind AI</p>
+</footer>
+
 {/* ═══ ALARM NOTIFICATION ═══ */}
 {alarm&&<div className="fixed top-16 left-1/2 -translate-x-1/2 z-[60] w-[90vw] max-w-sm af">
   <div className="bg-[var(--card)] border border-amber-500/30 rounded-xl p-4 shadow-2xl shadow-amber-900/20">
