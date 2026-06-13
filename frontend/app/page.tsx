@@ -6,7 +6,7 @@ import{ENERGY_INSIGHTS,SAFETY_ALERTS,CULTURAL_CONTEXT,ROUTINE_PROFILE,NEXT_HOUR_
 
 const HERO="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1400&q=80";
 const AV={m:"https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&q=80",f:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&q=80",s:"https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=80&q=80",p:"https://images.unsplash.com/photo-1566616213894-2d4e1baee5d8?w=80&q=80"};
-const GAL=["https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&q=80","https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400&q=80","https://images.unsplash.com/photo-1513694203232-719a280e022f?w=400&q=80","https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&q=80","https://images.unsplash.com/photo-1600607687644-aac4c3eac7f4?w=400&q=80","https://images.unsplash.com/photo-1581579438747-104c53d7fbb4?w=400&q=80","https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=400&q=80","https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=400&q=80","https://images.unsplash.com/photo-1616046229478-9901c5536a45?w=400&q=80"];
+const GAL=["https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&q=80","https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400&q=80","https://images.unsplash.com/photo-1513694203232-719a280e022f?w=400&q=80","https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&q=80","https://images.unsplash.com/photo-1600607687644-aac4c3eac7f4?w=400&q=80","https://images.unsplash.com/photo-1581579438747-104c53d7fbb4?w=400&q=80","https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=400&q=80","https://images.unsplash.com/photo-1600566753086-00f18a6c3ef3?w=400&q=80","https://images.unsplash.com/photo-1600210492493-0946911123ea?w=400&q=80"];
 const GAL_CAPS=["Family home","Cozy living room","Kitchen warmth","Festival lights","Evening glow","Together time","Study corner","Pooja space","Morning light"];
 const PG=["home","dashboard","family","predictions","whatif","energy","memory","calendar","gallery","why"]as const;
 type Pg=typeof PG[number];
@@ -74,7 +74,10 @@ function handleGalFile(e:React.ChangeEvent<HTMLInputElement>){const f=e.target.f
 function addGalFromFile(){if(galFile){sGal(p=>[...p,{id:`g${Date.now()}`,url:galFile,cap:galCap||"Uploaded"}]);setGalFile(null);setGalCap("");setGalUpOpen(false);}}
 function delGalConfirm(id:string){if(confirm("Delete this image from gallery?")){sGal(p=>p.filter(x=>x.id!==id));}}
 const[sr,sSr]=useState<any>(null);const[sl,sSl]=useState(false);
-const cal=[{i:"🎂",t:"Paati Birthday",d:"Jan 20"},{i:"🪔",t:"Pongal",d:"Jan 14"},{i:"📚",t:"Board Exam",d:"Jan 26"},{i:"💧",t:"Motor",d:"Daily 6:15"},{i:"⚡",t:"Power Cut",d:"Thu 2PM"},{i:"☕",t:"Coffee",d:"Daily 5PM"}];
+const[cal,sCal]=useState([{i:"🎂",t:"Paati Birthday",d:"2025-01-20"},{i:"🪔",t:"Pongal",d:"2025-01-14"},{i:"📚",t:"Board Exam",d:"2025-01-26"},{i:"💧",t:"Motor",d:"Daily 6:15"},{i:"⚡",t:"Power Cut",d:"Thu 2PM"},{i:"☕",t:"Coffee",d:"Daily 5PM"}]);
+const[calEdit,sCalEdit]=useState<{idx:number;t:string;d:string}|null>(null);
+function getDaysLeft(d:string):string{if(d.startsWith("Daily")||d.startsWith("Thu"))return"Recurring";try{const diff=Math.ceil((new Date(d).getTime()-Date.now())/(86400000));if(diff<0)return"Passed";if(diff===0)return"Today";if(diff===1)return"Tomorrow";return`${diff} days left`;}catch{return"";}}
+function saveCalEdit(){if(calEdit){sCal(p=>p.map((e,i)=>i===calEdit.idx?{...e,t:calEdit.t,d:calEdit.d}:e));sCalEdit(null);}}
 // Mood/Energy profile
 const moods=["Calm","Busy","Festive","Stressed","Sleeping"];const mood=moods[Math.floor(Date.now()/60000)%5];
 const ePro=["Eco-Friendly","Balanced","High Consumption","Night Active"][1];
@@ -84,7 +87,7 @@ useEffect(()=>{Promise.all([getMembers(),getTwinState(),getPredictions(),getRout
 const urg=tw?.urgency_score??0,tank=tw?.resources?.water?.tank_level_pct??50,pwr=tw?.resources?.power?.cut_probability??0;
 const hp=Math.min(100,Math.round((tank>60?25:15)+(pwr<.3?25:10)+(urg<30?25:15)+25));
 
-function nav(p:Pg){sP(p);sMn(false);}
+function nav(p:Pg){sP(p);sMn(false);sCo(false);}
 // Demo
 function dStart(){sDm(true);sDi(0);setDemoNote("");}function dPause(){sDm(false);}function dRestart(){sDi(0);sDm(true);setDemoNote("");}
 const[demoNote,setDemoNote]=useState("");
@@ -176,7 +179,6 @@ return(<div className="min-h-screen flex flex-col">
     <div key={i} className="flex items-center gap-3 py-3 border-b border-[var(--border)] last:border-0">
       <span className="text-2xl w-10 text-center">{s.icon}</span>
       <div className="flex-1"><p className="text-xs font-semibold">{s.label}</p><p className="text-[10px] text-[var(--muted)]">{s.sub}</p></div>
-      {i<5&&<span className="text-cyan-500/60 text-xs">↓</span>}
     </div>
   ))}
 </div>
@@ -231,34 +233,166 @@ return(<div className="min-h-screen flex flex-col">
   ))}
 </div>
 </section>
+
+{/* ── MISSION ── */}
+<section className="max-w-4xl mx-auto px-6 py-14">
+<div className="card-glow text-center py-8 px-6 af">
+  <h2 className="text-lg font-bold mb-3">Our Mission</h2>
+  <p className="text-sm text-[var(--muted)] leading-relaxed max-w-2xl mx-auto">To build the world's first AI Household Operating System that understands families, not just devices.</p>
+  <p className="text-xs text-[var(--muted)] mt-3 max-w-xl mx-auto leading-relaxed">Indian homes run on routines, relationships, culture, and context. GharMind transforms household behavior into intelligence that predicts needs before anyone asks.</p>
+</div>
+</section>
+
+{/* ── WHY WE BUILT GHARMIND ── */}
+<section className="max-w-4xl mx-auto px-6 py-12">
+<h2 className="text-lg font-bold text-center mb-2">Why We Built GharMind</h2>
+<p className="text-xs text-[var(--muted)] text-center mb-6">Every Indian home has invisible intelligence. We made it visible.</p>
+<div className="relative pl-6">
+  {/* Vertical line - spans only the items */}
+  <div className="absolute left-0 top-[18px] bottom-[18px] w-px bg-cyan-800/40"/>
+  <div className="space-y-3">
+  {[{icon:"🪔",event:"Morning pooja at dawn"},{icon:"🚌",event:"School schedules and bus timings"},{icon:"💧",event:"Water motor aligned to municipal supply"},{icon:"⚡",event:"Unpredictable power cuts"},{icon:"☕",event:"Evening chai rituals"},{icon:"🤖",event:"Smart homes that only wait for commands"}].map((s,i)=>(
+    <div key={i} className="relative flex items-center gap-3 af" style={{animationDelay:`${i*0.06}s`}}>
+      <span className="absolute -left-[29px] w-2.5 h-2.5 rounded-full bg-cyan-500/40 border border-cyan-400"/>
+      <span className="text-lg">{s.icon}</span><p className="text-xs">{s.event}</p>
+    </div>
+  ))}
+  </div>
+</div>
+<p className="text-xs text-cyan-400 mt-4 text-center font-medium">GharMind learns household behavior and acts proactively — no commands needed.</p>
+</section>
+
+{/* ── GHARMIND VS TRADITIONAL ── */}
+<section className="max-w-5xl mx-auto px-6 py-12">
+<h2 className="text-lg font-bold text-center mb-6">Why GharMind is Different</h2>
+<div className="grid md:grid-cols-2 gap-4">
+  <div className="card border-l-2 border-l-red-500/40"><p className="text-[10px] font-bold text-red-400 uppercase mb-3">Traditional Smart Homes</p>{["Need explicit voice commands","Device-centric control only","Reactive — acts after the problem","Generic automation rules","No cultural or family context","Same for every household"].map((t,i)=><p key={i} className="text-xs text-[var(--muted)] py-1.5 border-b border-[var(--border)] last:border-0">✗ {t}</p>)}</div>
+  <div className="card-glow border-l-2 border-l-emerald-500/40"><p className="text-[10px] font-bold text-emerald-400 uppercase mb-3">GharMind AI</p>{["Learns routines automatically","Family-centric intelligence","Predictive — acts before you ask","Indian-context aware (festivals, pooja)","Cultural intelligence built-in","Digital Twin powered simulation"].map((t,i)=><p key={i} className="text-xs text-emerald-300/80 py-1.5 border-b border-[var(--border)] last:border-0">✓ {t}</p>)}</div>
+</div>
+</section>
+
+{/* ── AI ARCHITECTURE ── */}
+<section className="max-w-3xl mx-auto px-6 py-12">
+<h2 className="text-lg font-bold text-center mb-6">The Intelligence Behind GharMind</h2>
+<div className="space-y-1">
+  {[{icon:"👨‍👩‍👧‍👦",label:"Family Activities",sub:"Schedules, appliances, daily patterns"},{icon:"🧠",label:"Routine Learning Engine",sub:"Detects weekday/weekend patterns"},{icon:"🏠",label:"Household Digital Twin",sub:"Real-time home state simulation"},{icon:"🔮",label:"Prediction Engine",sub:"Forecasts next actions with confidence"},{icon:"💡",label:"Explainable AI Layer",sub:"Transparent reasoning for every decision"},{icon:"⚡",label:"Recommendations & Actions",sub:"Proactive automation without commands"}].map((s,i)=>(
+    <div key={i} className="flex items-center gap-3 py-3 border-b border-[var(--border)] last:border-0 af" style={{animationDelay:`${i*0.08}s`}}>
+      <span className="w-9 h-9 rounded-lg bg-cyan-500/10 border border-cyan-800/30 flex items-center justify-center text-lg">{s.icon}</span>
+      <div className="flex-1"><p className="text-xs font-semibold">{s.label}</p><p className="text-[10px] text-[var(--muted)]">{s.sub}</p></div>
+    </div>
+  ))}
+</div>
+</section>
+
+{/* ── LIVE AI METRICS ── */}
+<section className="max-w-4xl mx-auto px-6 py-12">
+<h2 className="text-lg font-bold text-center mb-6">Live Intelligence Metrics</h2>
+<div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+  {[{v:"12+",l:"Routine Patterns Learned"},{v:"89%",l:"Prediction Accuracy"},{v:"7",l:"Actions Automated Today"},{v:"5",l:"Family Members Modeled"}].map((m,i)=>(
+    <div key={i} className="card text-center py-5 af" style={{animationDelay:`${i*0.1}s`}}>
+      <p className="text-2xl md:text-3xl font-black text-cyan-400">{m.v}</p>
+      <p className="text-[10px] text-[var(--muted)] mt-1">{m.l}</p>
+    </div>
+  ))}
+</div>
+</section>
+
+{/* ── TODAY PREDICTED ── */}
+<section className="max-w-5xl mx-auto px-6 py-12">
+<h2 className="text-lg font-bold text-center mb-2">Today, GharMind Predicted</h2>
+<p className="text-xs text-[var(--muted)] text-center mb-6">Live predictions from household intelligence.</p>
+<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+  {[{p:"Arjun leaving for school in 15 minutes",c:92},{p:"Water motor should run at 6:15 AM",c:96},{p:"Evening pooja approaching",c:88},{p:"Quiet Study Mode activating at 8 PM",c:91},{p:"Possible power interruption tonight",c:76},{p:"Filter coffee preparation at 5 PM",c:93}].map((pred,i)=>(
+    <div key={i} className="card-glow af" style={{animationDelay:`${i*0.08}s`}}>
+      <div className="flex justify-between items-start gap-2 mb-1.5"><p className="text-xs flex-1">✓ {pred.p}</p><span className="text-emerald-400 font-bold text-xs">{pred.c}%</span></div>
+      <div className="w-full h-1 rounded-full bg-[var(--border)]"><div className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-emerald-500 transition-all" style={{width:`${pred.c}%`}}/></div>
+    </div>
+  ))}
+</div>
+</section>
+
+{/* ── FUTURE VISION ── */}
+<section className="max-w-4xl mx-auto px-6 py-12">
+<h2 className="text-lg font-bold text-center mb-6">The Future of Household Intelligence</h2>
+<div className="grid md:grid-cols-3 gap-4">
+  {[{stage:"Today",desc:"Predict household needs and automate routine decisions.",color:"text-cyan-400",border:"border-cyan-800/30"},{stage:"Tomorrow",desc:"Coordinate family schedules and resolve household conflicts.",color:"text-purple-400",border:"border-purple-800/30"},{stage:"Future",desc:"Fully autonomous household management with zero commands.",color:"text-emerald-400",border:"border-emerald-800/30"}].map((s,i)=>(
+    <div key={i} className={`card border-t-2 ${s.border} text-center py-6 af`} style={{animationDelay:`${i*0.1}s`}}>
+      <p className={`text-sm font-bold ${s.color}`}>{s.stage}</p>
+      <p className="text-[10px] text-[var(--muted)] mt-2 leading-relaxed">{s.desc}</p>
+    </div>
+  ))}
+</div>
+</section>
+
+{/* ── NO HARDWARE ── */}
+<section className="max-w-3xl mx-auto px-6 py-10">
+<div className="card-glow text-center py-6 px-5">
+  <p className="text-base font-bold">No Expensive Hardware Required</p>
+  <p className="text-xs text-[var(--muted)] mt-2 max-w-lg mx-auto leading-relaxed">GharMind learns from household routines, behavior patterns, contextual intelligence, and AI reasoning — without requiring specialized sensors, IoT devices, or smart appliances.</p>
+</div>
+</section>
+
 </div>}
 
 {/* DASHBOARD */}
-{pg==="dashboard"&&<div className="max-w-6xl mx-auto px-4 py-6 grid lg:grid-cols-[200px_1fr_220px] gap-4">
+{pg==="dashboard"&&<div className="max-w-6xl mx-auto px-4 py-6 space-y-4">
+
+{/* ── 6. EMERGENCY BANNER ── */}
+{pwr>.6&&<div className="rounded-xl border border-amber-500/30 bg-amber-500/5 px-4 py-3 flex items-center gap-3">
+  <span className="text-lg">⚠️</span>
+  <div className="flex-1"><p className="text-xs font-bold text-amber-400">HIGH IMPACT EVENT TODAY</p><p className="text-[10px] text-[var(--muted)]">Power outage expected at 2 PM. Recommended actions generated.</p></div>
+  <span className="badge badge-a">Action Required</span>
+</div>}
+
+{/* ── 1. HARMONY SCORE + Existing Stats ── */}
+<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
+  <div className="card-glow text-center py-3 md:col-span-1"><p className="text-xl font-black text-cyan-400">92</p><p className="text-[8px] text-[var(--muted)] mt-0.5">Harmony Score</p></div>
+  {[{v:hp,l:"Health",c:"text-emerald-400"},{v:urg,l:"Urgency",c:urg>60?"text-red-400":"text-amber-400"},{v:`${tank}%`,l:"Water",c:tank<40?"text-red-400":"text-cyan-400"},{v:`${Math.round(pwr*100)}%`,l:"Power",c:pwr>.6?"text-amber-400":"text-emerald-400"},{v:"Tmrw",l:"Exam",c:"text-purple-400"}].map((s,i)=><div key={i} className="card text-center py-3"><p className={cn("text-lg font-bold",s.c)}>{s.v}</p><p className="text-[10px] text-muted mt-0.5">{s.l}</p></div>)}
+</div>
+
+{/* ── 3-panel layout ── */}
+<div className="grid lg:grid-cols-[200px_1fr_220px] gap-4">
   {/* Left - Roles */}
   <aside className="hidden lg:block space-y-3">
     <div className="card-glow"><p className="text-[9px] font-bold text-cyan-400 uppercase mb-2">Detected Roles</p>{FAMILY_ROLES.map((r,i)=><div key={i} className="py-1.5 border-b border-[var(--border)] last:border-0"><p className="text-[10px] font-medium">{r.icon} {r.name}</p><p className="text-[8px] text-emerald-400">{r.role}</p></div>)}</div>
     <div className="card"><p className="text-[9px] font-bold text-amber-400 uppercase mb-1">Mood</p><p className="text-lg font-bold">{mood}</p><p className="text-[8px] text-muted">Based on activity patterns</p></div>
     <div className="card"><p className="text-[9px] font-bold text-purple-400 uppercase mb-1">Energy Profile</p><p className="text-sm font-bold">{ePro}</p><p className="text-[8px] text-emerald-400">↓18% savings available</p></div>
   </aside>
-  {/* Center - Command */}
+  {/* Center */}
   <div className="space-y-4">
-    {/* Stats */}
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">{[{v:hp,l:"Health",c:"text-emerald-400"},{v:urg,l:"Urgency",c:urg>60?"text-red-400":"text-amber-400"},{v:`${tank}%`,l:"Water",c:tank<40?"text-red-400":"text-cyan-400"},{v:`${Math.round(pwr*100)}%`,l:"Power",c:pwr>.6?"text-amber-400":"text-emerald-400"},{v:"Tmrw",l:"Exam",c:"text-purple-400"}].map((s,i)=><div key={i} className="card text-center py-3"><p className={cn("text-lg font-bold",s.c)}>{s.v}</p><p className="text-[10px] text-muted mt-0.5">{s.l}</p></div>)}</div>
-    {/* Next Actions */}
-    <div className="card-glow"><p className="text-[10px] font-bold text-cyan-400 uppercase mb-2">Next Action Predictions</p>{NEXT_HOUR_PREDICTIONS.map((p,i)=><div key={i} className="flex items-center gap-2 py-2 border-b border-[var(--border)] last:border-0"><span className="text-emerald-400 font-bold text-sm w-9">{Math.round(p.confidence*100)}%</span><div className="flex-1"><p className="text-xs font-medium">{p.action}</p><p className="text-[10px] text-muted">{p.explanation.slice(0,80)}...</p></div></div>)}</div>
-    {/* Twin */}
-    <div className="card"><div className="flex items-center gap-1.5 mb-2"><span className="w-1.5 h-1.5 bg-emerald-400 rounded-full ap"/><p className="text-[9px] font-bold">LIVE TWIN</p></div>{fam.slice(0,4).map((m:any,i:number)=><div key={i} className="flex items-center gap-2 py-1 border-b border-[var(--border)] last:border-0"><img src={m.img} alt="" className="w-5 h-5 rounded-full object-cover"/><span className="text-[10px] flex-1">{m.name}</span><span className="text-[8px] text-muted">{(m.simulated_location||"").replace(/_/g," ")}</span></div>)}</div>
-    {/* Predictions */}
-    <div className="card"><p className="text-[9px] font-bold uppercase mb-2">AI Predictions</p>{pr.slice(0,3).map((p:any,i:number)=><div key={i} className="flex gap-2 py-1.5 border-b border-[var(--border)] last:border-0"><div className="flex-1"><p className="text-[10px] font-medium">{p.title}</p><p className="text-[8px] text-muted">{p.action_suggestion}</p></div><span className={cn("badge",p.priority==="critical"?"badge-r":"badge-b")}>{Math.round(p.confidence*100)}%</span></div>)}</div>
+    {/* ── 9. AI DECISION CENTER ── */}
+    <div className="card-glow border-l-2 border-l-cyan-500/50">
+      <p className="text-[9px] font-bold text-cyan-400 uppercase mb-1">AI Decision Center</p>
+      <p className="text-xs font-semibold mt-1">Charge essential devices before 2 PM power cut.</p>
+      <p className="text-[10px] text-[var(--muted)] mt-1">Reason: Exam scheduled tomorrow. Outage probability: 76%.</p>
+      <p className="text-[10px] text-emerald-400 mt-1">Expected Impact: Avoid disruption to study schedule.</p>
+    </div>
+    {/* Next Actions with enhanced explanations (2) */}
+    <div className="card-glow"><p className="text-[10px] font-bold text-cyan-400 uppercase mb-2">Next Action Predictions</p>{NEXT_HOUR_PREDICTIONS.map((p,i)=><div key={i} className="py-2 border-b border-[var(--border)] last:border-0"><div className="flex items-start gap-2"><span className="text-emerald-400 font-bold text-sm w-9 flex-shrink-0 pt-0.5">{Math.round(p.confidence*100)}%</span><div className="flex-1"><p className="text-xs font-medium">{p.action}</p><p className="text-[10px] text-[var(--muted)] mt-0.5">{p.explanation}</p></div></div><details className="mt-1 ml-11"><summary className="text-[8px] text-cyan-400 cursor-pointer">Why this prediction?</summary><p className="text-[9px] text-[var(--muted)] mt-1 pl-2 border-l border-cyan-800/40">Confidence source: Historical routines • Context analysis • Household behavior patterns • {Math.round(p.confidence*100)}% match with past data.</p></details></div>)}</div>
+    {/* ── 3. ENHANCED TWIN ── */}
+    <div className="card"><div className="flex items-center gap-1.5 mb-2"><span className="w-1.5 h-1.5 bg-emerald-400 rounded-full ap"/><p className="text-[9px] font-bold">LIVE DIGITAL TWIN</p></div>
+      {[{name:"Lakshmi",loc:"Kitchen",status:"Active",color:"text-emerald-400",dot:"🟢"},{name:"Venkat",loc:"Bedroom",status:"Preparing for Work",color:"text-amber-400",dot:"🟡"},{name:"Arjun",loc:"Study Room",status:"Study Session",color:"text-emerald-400",dot:"🟢"},{name:"Paati",loc:"Pooja Room",status:"Morning Pooja",color:"text-blue-400",dot:"🔵"}].map((m,i)=><div key={i} className="flex items-center gap-2 py-1.5 border-b border-[var(--border)] last:border-0"><img src={fam[i]?.img||""} alt="" className="w-5 h-5 rounded-full object-cover"/><span className="text-[10px] flex-1 font-medium">{m.dot} {m.name}</span><span className={cn("text-[9px]",m.color)}>{m.loc} ({m.status})</span></div>)}
+    </div>
+    {/* Predictions with explanations (2) */}
+    <div className="card"><p className="text-[9px] font-bold uppercase mb-2">AI Predictions</p>{pr.slice(0,3).map((p:any,i:number)=><div key={i} className="py-1.5 border-b border-[var(--border)] last:border-0"><div className="flex gap-2"><div className="flex-1"><p className="text-[10px] font-medium">{p.title}</p><p className="text-[8px] text-muted">{p.action_suggestion}</p></div><span className={cn("badge",p.priority==="critical"?"badge-r":"badge-b")}>{Math.round(p.confidence*100)}%</span></div><details className="mt-1"><summary className="text-[8px] text-cyan-400 cursor-pointer">Why this prediction?</summary><p className="text-[9px] text-[var(--muted)] mt-1 pl-2 border-l border-cyan-800/40">{p.category==="water"?"• Tank at 42% • Supply window closes 6:45 AM • Pattern detected 14 times":p.category==="power"?"• TNEB Thu pattern • 5/7 weeks confirmed • Zone C2 data":"• Historical routine match • Calendar context • Behavioral consistency"}</p></details></div>)}</div>
+    {/* ── 4. TODAY'S TIMELINE ── */}
+    <div className="card"><p className="text-[9px] font-bold text-cyan-400 uppercase mb-2">Today's Household Timeline</p><div className="space-y-1">{[{t:"5:30 AM",e:"Pooja Started",c:"text-purple-400"},{t:"6:00 AM",e:"Breakfast Preparation",c:"text-emerald-400"},{t:"6:15 AM",e:"Water Motor Running",c:"text-cyan-400"},{t:"7:15 AM",e:"School Preparation",c:"text-amber-400"},{t:"8:00 AM",e:"School Departure",c:"text-emerald-400"},{t:"2:00 PM",e:"Power Cut Expected",c:"text-red-400"},{t:"5:00 PM",e:"Evening Coffee",c:"text-amber-400"},{t:"8:00 PM",e:"Exam Quiet Hours",c:"text-purple-400"}].map((ev,i)=><div key={i} className="flex items-center gap-2 py-1 border-b border-[var(--border)] last:border-0"><span className="text-[9px] font-mono text-[var(--muted)] w-14">{ev.t}</span><span className={cn("text-[10px] font-medium",ev.c)}>{ev.e}</span></div>)}</div></div>
   </div>
   {/* Right - Intelligence */}
   <aside className="hidden lg:block space-y-3">
-    <div className="card"><p className="text-[9px] font-bold text-cyan-400 uppercase mb-2">Power Intelligence</p><div className={cn("badge mb-1.5",POWER_CUT_INTEL.riskLevel==="high"?"badge-r":"badge-a")}>{POWER_CUT_INTEL.riskLevel} risk</div><p className="text-[9px]">{POWER_CUT_INTEL.probability}% at {POWER_CUT_INTEL.expectedTime}</p><div className="mt-2 space-y-0.5">{POWER_CUT_INTEL.recommendations.slice(0,3).map((r,i)=><p key={i} className="text-[8px] text-muted">• {r.action.slice(0,50)}</p>)}</div></div>
+    <div className="card"><p className="text-[9px] font-bold text-cyan-400 uppercase mb-2">Power Intelligence</p><div className={cn("badge mb-1.5",POWER_CUT_INTEL.riskLevel==="high"?"badge-r":"badge-a")}>{POWER_CUT_INTEL.riskLevel} risk</div><p className="text-[9px]">{POWER_CUT_INTEL.probability}% at {POWER_CUT_INTEL.expectedTime}</p><div className="mt-2 space-y-0.5">{POWER_CUT_INTEL.recommendations.slice(0,3).map((r,i)=><p key={i} className="text-[8px] text-muted">• {r.action}</p>)}</div></div>
     <div className="card"><p className="text-[9px] font-bold text-emerald-400 uppercase mb-2">Energy Optimizer</p><p className="text-xl font-bold text-emerald-400">↓{ENERGY_INSIGHTS.estimatedSavings}%</p><p className="text-[8px] text-muted">savings available</p></div>
-    <div className="card"><p className="text-[9px] font-bold text-purple-400 uppercase mb-2">Cultural Intel</p><p className="text-[10px]">🪔 {CULTURAL_CONTEXT.festivalName}</p><p className="text-[8px] text-muted">{CULTURAL_CONTEXT.daysAway} days away</p></div>
+    {/* ── 7. CULTURAL EXPANDED ── */}
+    <div className="card"><p className="text-[9px] font-bold text-purple-400 uppercase mb-2">Cultural Intel</p><p className="text-[10px]">🎉 {CULTURAL_CONTEXT.festivalName}</p><p className="text-[8px] text-[var(--muted)]">{CULTURAL_CONTEXT.daysAway} days • Confidence: 89%</p><div className="mt-1.5 space-y-0.5"><p className="text-[8px] text-emerald-400">✓ Grocery planning</p><p className="text-[8px] text-emerald-400">✓ Family gathering reminder</p><p className="text-[8px] text-emerald-400">✓ Traditional cooking prep</p><p className="text-[8px] text-emerald-400">✓ Schedule adjustments</p></div></div>
     <div className="card"><p className="text-[9px] font-bold text-amber-400 uppercase mb-2">Conflicts</p><p className="text-[9px] text-emerald-400">✓ No active conflicts</p><p className="text-[8px] text-muted">Schedule optimized</p></div>
   </aside>
+</div>
+
+{/* ── 5. AI REASONING + 8. MEMORY INSIGHTS (bottom row) ── */}
+<div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+  <div className="card"><p className="text-[9px] font-bold text-cyan-400 uppercase mb-2">AI Reasoning Insights</p><div className="space-y-1"><p className="text-[10px] text-emerald-400">✓ 180 days of household learning</p><p className="text-[10px] text-emerald-400">✓ Similar pattern detected 42 times</p><p className="text-[10px] text-emerald-400">✓ Routine confidence verified</p><p className="text-[10px] text-emerald-400">✓ Behavioral consistency high</p></div></div>
+  <div className="card"><p className="text-[9px] font-bold text-purple-400 uppercase mb-2">Memory Insights</p><div className="space-y-1"><p className="text-[10px]">✓ Arjun studies most effectively 8–10 PM</p><p className="text-[10px]">✓ Lakshmi runs water motor at 6:15 AM</p><p className="text-[10px]">✓ Paati performs pooja daily at 5:45 AM</p><p className="text-[10px]">✓ Household energy peaks at 8 PM</p></div></div>
+</div>
 </div>}
 
 {/* FAMILY */}
@@ -291,7 +425,21 @@ return(<div className="min-h-screen flex flex-col">
 {pg==="memory"&&<div className="max-w-4xl mx-auto px-4 py-6 space-y-3"><h2 className="text-base font-bold mb-3">Memory Timeline — 7 Days</h2>{MEMORY_TIMELINE.map((d,i)=><div key={i} className="card flex gap-3"><div className="w-14 flex-shrink-0"><p className="text-[9px] font-medium">{d.day}</p><div className="flex items-center gap-1 mt-0.5"><div className="h-1 flex-1 rounded-full bg-[var(--border)] overflow-hidden"><div className="h-full rounded-full bg-cyan-500/60" style={{width:`${d.consistency}%`}}/></div><span className="text-[7px] text-muted">{d.consistency}%</span></div></div><div><p className="text-[8px] text-cyan-400">{d.highlight}</p><p className="text-[8px] text-muted">{d.events.join(" • ")}</p></div></div>)}<div className="card"><p className="text-[9px] font-bold text-purple-400 uppercase mb-2">AI Home Diary — Today</p><p className="text-[9px] text-muted leading-relaxed">Morning pooja completed on schedule. Water motor ran 25 min at 6:15 AM. Arjun studied from 8-10 PM (exam prep mode). Power stable throughout. Household mood: focused. Tomorrow prediction: Board exam at 10 AM — quiet morning expected.</p></div></div>}
 
 {/* CALENDAR */}
-{pg==="calendar"&&<div className="max-w-3xl mx-auto px-4 py-6 space-y-2"><h2 className="text-base font-bold mb-3">Calendar</h2>{cal.map((e,i)=><div key={i} className="card flex items-center gap-3"><span className="text-lg">{e.i}</span><div><p className="text-[10px] font-medium">{e.t}</p><p className="text-[8px] text-muted">{e.d}</p></div></div>)}</div>}
+{pg==="calendar"&&<div className="max-w-3xl mx-auto px-4 py-6 space-y-2"><h2 className="text-base font-bold mb-3">Calendar</h2>{cal.map((e,i)=><div key={i} className="card flex items-center gap-3">
+  <span className="text-lg">{e.i}</span>
+  <div className="flex-1"><p className="text-xs font-medium">{e.t}</p><p className="text-[10px] text-muted">{e.d}</p></div>
+  <span className="text-[9px] text-cyan-400 font-medium">{getDaysLeft(e.d)}</span>
+  <button onClick={()=>sCalEdit({idx:i,t:e.t,d:e.d})} className="text-[10px] px-2 py-1 rounded bg-white/5 border border-[var(--border)] hover:bg-white/10 transition-all">✏️</button>
+</div>)}
+{/* Edit modal */}
+{calEdit&&<div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={()=>sCalEdit(null)}><div className="bg-[var(--card)] rounded-2xl p-5 w-full max-w-xs border border-[var(--border)] space-y-3" onClick={ev=>ev.stopPropagation()}>
+  <h3 className="text-sm font-bold">Edit Event</h3>
+  <div><label className="text-[9px] text-muted">Title</label><input value={calEdit.t} onChange={ev=>sCalEdit({...calEdit,t:ev.target.value})} className="w-full px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-xs mt-0.5"/></div>
+  <div><label className="text-[9px] text-muted">Date / Frequency</label><input value={calEdit.d} onChange={ev=>sCalEdit({...calEdit,d:ev.target.value})} className="w-full px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-xs mt-0.5" placeholder="2025-01-20 or Daily 6:15"/></div>
+  <p className="text-[9px] text-cyan-400">{getDaysLeft(calEdit.d)}</p>
+  <div className="flex gap-2"><button onClick={saveCalEdit} className="btn-p flex-1 text-[10px]">Save</button><button onClick={()=>sCalEdit(null)} className="btn-s flex-1 text-[10px]">Cancel</button></div>
+</div></div>}
+</div>}
 
 {/* GALLERY */}
 {pg==="gallery"&&<div className="max-w-5xl mx-auto px-4 py-6 space-y-5">
@@ -319,7 +467,7 @@ return(<div className="min-h-screen flex flex-col">
 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
   {gal.map(g=>(
     <div key={g.id} className="relative rounded-xl overflow-hidden group shadow-md">
-      <img src={g.url} alt={g.cap} className="w-full h-36 sm:h-40 object-cover group-hover:scale-105 transition-transform duration-300"/>
+      <img src={g.url} alt={g.cap} onError={(e)=>{(e.target as HTMLImageElement).src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&q=80";}} className="w-full h-36 sm:h-40 object-cover group-hover:scale-105 transition-transform duration-300"/>
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2.5">
         <p className="text-white text-[11px] font-medium">{g.cap}</p>
       </div>
