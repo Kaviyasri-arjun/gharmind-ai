@@ -555,7 +555,93 @@ return(<div className="min-h-screen flex flex-col">
 </div>}
 
 {/* WHAT-IF */}
-{pg==="whatif"&&<div className="max-w-4xl mx-auto px-4 py-6 space-y-4"><h2 className="text-base font-bold mb-3">What-If Simulator</h2><div className="grid grid-cols-3 gap-3">{[{k:"power",i:"⚡",l:"Power Cut"},{k:"exam",i:"📚",l:"Exam"},{k:"guests",i:"👥",l:"Guests"}].map(s=><button key={s.k} onClick={()=>doSim(s.k)} className="card-glow text-center py-4 hover:border-cyan-700/60 transition-all"><span className="text-xl">{s.i}</span><p className="text-[9px] mt-1">{s.l}</p></button>)}</div>{sl&&<p className="text-[10px] text-muted text-center ap py-4">Simulating...</p>}{sr&&<div className="card space-y-2"><span className="badge badge-a">Impact: {sr.overall_severity}</span><p className="text-[10px]">{sr.result_summary}</p>{sr.action_plan?.map((a:any,i:number)=><div key={i} className="flex gap-2 text-[9px]"><span className="font-mono text-muted w-10">{a.time}</span><span>{a.action}</span></div>)}{sr.cascade_chain?.length>0&&<details><summary className="text-[8px] text-cyan-400 cursor-pointer">Cascade chain</summary><div className="mt-1">{sr.cascade_chain.map((c:string,i:number)=><p key={i} className="text-[8px] text-muted">→ {c}</p>)}</div></details>}</div>}</div>}
+{pg==="whatif"&&<div className="max-w-4xl mx-auto px-4 py-6 space-y-4">
+
+{/* ── 12. AI BUTLER SUMMARY ── */}
+<div className="card-glow border-l-2 border-l-cyan-500/50 py-3">
+  <p className="text-[10px] text-cyan-400 font-medium">Household Butler AI</p>
+  <p className="text-xs mt-1">A 2 PM power outage is expected. If preventive actions are taken, disruption can be reduced by 58%. The most affected activity will be Arjun's study session. Recommended actions have been generated.</p>
+</div>
+
+<h2 className="text-base font-bold">What-If Simulator</h2>
+
+{/* ── SCENARIO CARDS (existing + expanded) ── */}
+<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+  {[{k:"power",i:"⚡",l:"Power Cut"},{k:"exam",i:"📚",l:"Exam"},{k:"guests",i:"👥",l:"Guests"},{k:"power",i:"🪔",l:"Festival"},{k:"power",i:"💧",l:"Water Shortage"},{k:"guests",i:"🌧️",l:"Heavy Rain"},{k:"exam",i:"🏠",l:"Work From Home"},{k:"power",i:"🌡️",l:"Heat Wave"}].map(s=>
+    <button key={s.l} onClick={()=>doSim(s.k)} className="card-glow text-center py-4 hover:border-cyan-700/60 transition-all"><span className="text-xl">{s.i}</span><p className="text-[9px] mt-1">{s.l}</p></button>
+  )}
+</div>
+
+{/* ── 9. INTERACTIVE CONTROLS ── */}
+<div className="card"><p className="text-[9px] font-bold text-cyan-400 uppercase mb-2">Scenario Parameters</p>
+<div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+  <div><p className="text-[9px] text-muted mb-1">Outage Duration</p><div className="flex gap-1">{["1 hr","2 hr","4 hr","8 hr"].map((d,i)=><button key={i} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",i===1?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
+  <div><p className="text-[9px] text-muted mb-1">Guest Count</p><div className="flex gap-1">{["2","4","8","12"].map((d,i)=><button key={i} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",i===1?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
+  <div><p className="text-[9px] text-muted mb-1">Exam Importance</p><div className="flex gap-1">{["Normal","Important","Board"].map((d,i)=><button key={i} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",i===2?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
+</div></div>
+
+{sl&&<p className="text-xs text-muted text-center ap py-4">Running Digital Twin simulation...</p>}
+
+{/* ── SIMULATION RESULTS (when available) ── */}
+{sr&&<div className="space-y-4 af">
+
+  {/* 1. Main Results */}
+  <div className="card-glow"><p className="text-[9px] font-bold text-cyan-400 uppercase mb-2">Simulation Results</p>
+    <span className={cn("badge mb-2",sr.overall_severity==="critical"?"badge-r":"badge-a")}>Impact: {sr.overall_severity}</span>
+    <p className="text-xs">{sr.result_summary}</p>
+    {/* 13. Confidence */}
+    <div className="mt-2"><p className="text-[9px] text-muted">Simulation Confidence</p><div className="flex items-center gap-2 mt-0.5"><div className="flex-1 h-1.5 rounded-full bg-[var(--border)]"><div className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-emerald-500" style={{width:"92%"}}/></div><span className="text-[10px] text-emerald-400 font-bold">92%</span></div></div>
+  </div>
+
+  {/* Action Plan */}
+  {sr.action_plan?.length>0&&<div className="card"><p className="text-[9px] font-bold text-emerald-400 uppercase mb-2">Recommended Actions</p>{sr.action_plan.map((a:any,i:number)=><div key={i} className="flex gap-2 py-1 border-b border-[var(--border)] last:border-0 text-[10px]"><span className="font-mono text-muted w-12">{a.time}</span><span>✓ {a.action}</span></div>)}<p className="text-[10px] text-emerald-400 mt-2 font-medium">Expected Improvement: +58%</p></div>}
+
+  {/* 5. Family Impact */}
+  <div className="card"><p className="text-[9px] font-bold text-purple-400 uppercase mb-2">Family Impact Analysis</p>
+  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">{[{n:"Arjun",impact:"Study session affected",c:"text-red-400"},{n:"Lakshmi",impact:"Kitchen workload increases",c:"text-amber-400"},{n:"Venkat",impact:"No major impact",c:"text-emerald-400"},{n:"Paati",impact:"Routine unchanged",c:"text-emerald-400"}].map((m,i)=><div key={i} className="text-center"><p className="text-[10px] font-medium">{m.n}</p><p className={cn("text-[9px]",m.c)}>{m.impact}</p></div>)}</div></div>
+
+  {/* 2. Before vs After */}
+  <div className="card"><p className="text-[9px] font-bold text-cyan-400 uppercase mb-2">Before vs After Optimization</p>
+  <div className="space-y-1.5">{[{m:"Power Risk",cur:"76%",opt:"18%"},{m:"Study Disruption",cur:"68%",opt:"15%"},{m:"Device Availability",cur:"45%",opt:"95%"},{m:"Household Comfort",cur:"60%",opt:"91%"}].map((r,i)=><div key={i} className="flex items-center gap-2 text-[10px] py-1 border-b border-[var(--border)] last:border-0"><span className="flex-1">{r.m}</span><span className="text-red-400 w-10 text-right">{r.cur}</span><span className="text-muted">→</span><span className="text-emerald-400 w-10">{r.opt}</span></div>)}</div></div>
+
+  {/* 6. No Action Risk */}
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+    <div className="card border-l-2 border-l-red-500/40"><p className="text-[9px] font-bold text-red-400 uppercase mb-2">Without AI Action</p>
+      <p className="text-[10px] text-muted">Power Outage Risk: <span className="text-red-400 font-bold">76%</span></p>
+      <div className="mt-1.5 space-y-0.5"><p className="text-[10px] text-muted">• Study interruption</p><p className="text-[10px] text-muted">• Device battery depletion</p><p className="text-[10px] text-muted">• Water shortage possible</p></div>
+      <p className="text-[10px] text-red-400 font-medium mt-1.5">Risk Score: High</p>
+    </div>
+    {/* 7. Optimized Outcome */}
+    <div className="card border-l-2 border-l-emerald-500/40"><p className="text-[9px] font-bold text-emerald-400 uppercase mb-2">With GharMind Optimization</p>
+      <div className="space-y-1"><p className="text-[10px]">Power Risk: <span className="text-emerald-400 font-bold">18%</span></p><p className="text-[10px]">Comfort Score: <span className="text-emerald-400 font-bold">91%</span></p><p className="text-[10px]">Device Readiness: <span className="text-emerald-400 font-bold">95%</span></p><p className="text-[10px]">Schedule Efficiency: <span className="text-emerald-400 font-bold">89%</span></p></div>
+    </div>
+  </div>
+
+  {/* 8. Cost & Energy */}
+  <div className="card"><p className="text-[9px] font-bold text-amber-400 uppercase mb-2">Cost & Energy Impact</p>
+  <div className="grid grid-cols-3 gap-3 text-center"><div><p className="text-[10px] text-muted">Without</p><p className="text-sm font-bold text-red-400">₹180</p></div><div><p className="text-[10px] text-muted">Optimized</p><p className="text-sm font-bold text-emerald-400">₹135</p></div><div><p className="text-[10px] text-muted">Savings</p><p className="text-sm font-bold text-cyan-400">₹45 (14%)</p></div></div></div>
+
+  {/* 3. Digital Twin Recalculation Flow */}
+  <div className="card"><p className="text-[9px] font-bold text-cyan-400 uppercase mb-2">Digital Twin Recalculation</p>
+  <div className="flex flex-wrap items-center gap-1 text-[9px]">{["Current State","→","Scenario Applied","→","Twin Recalculates","→","Predictions Updated","→","Optimized Outcome"].map((s,i)=><span key={i} className={s==="→"?"text-muted":cn("px-2 py-0.5 rounded bg-cyan-500/10 border border-cyan-800/30 text-cyan-400")}>{s}</span>)}</div></div>
+
+  {/* 10. Scenario Timeline */}
+  <div className="card"><p className="text-[9px] font-bold text-cyan-400 uppercase mb-2">Scenario Timeline</p>
+  <div className="space-y-1">{[{t:"6:00 AM",e:"Water Motor",c:"text-cyan-400"},{t:"8:00 AM",e:"School Preparation",c:"text-amber-400"},{t:"1:30 PM",e:"Devices Charged ✓",c:"text-emerald-400"},{t:"2:00 PM",e:"Power Outage Begins",c:"text-red-400"},{t:"3:30 PM",e:"Power Restored",c:"text-emerald-400"},{t:"5:00 PM",e:"Coffee Preparation",c:"text-amber-400"},{t:"8:00 PM",e:"Exam Quiet Hours",c:"text-purple-400"}].map((ev,i)=><div key={i} className="flex items-center gap-2 py-0.5"><span className="text-[9px] font-mono text-muted w-14">{ev.t}</span><span className={cn("text-[10px]",ev.c)}>{ev.e}</span></div>)}</div></div>
+
+  {/* Cascade chain (existing) */}
+  {sr.cascade_chain?.length>0&&<details><summary className="text-[9px] text-cyan-400 cursor-pointer">View cascade chain</summary><div className="mt-1 card">{sr.cascade_chain.map((c:string,i:number)=><p key={i} className="text-[10px] text-muted py-0.5">→ {c}</p>)}</div></details>}
+
+  {/* 4. AI Recommendation Engine */}
+  <div className="card-glow"><p className="text-[9px] font-bold text-emerald-400 uppercase mb-2">AI Recommendation Engine</p>
+    <p className="text-xs font-medium mb-1.5">Optimized action plan generated for current scenario.</p>
+    <div className="space-y-0.5">{["Increase water reserve before outage","Shift laundry to post-restoration window","Download study materials for offline access","Charge all devices to 100% by 1:30 PM"].map((r,i)=><p key={i} className="text-[10px] text-emerald-400">✓ {r}</p>)}</div>
+    <p className="text-[10px] text-cyan-400 mt-2 font-medium">Confidence: 92%</p>
+  </div>
+
+</div>}
+
+</div>}
 
 {/* ENERGY */}
 {pg==="energy"&&<div className="max-w-4xl mx-auto px-4 py-6 space-y-4"><h2 className="text-base font-bold mb-3">Energy & Safety</h2><div className="grid md:grid-cols-2 gap-3"><div className="card-glow text-center"><p className="text-2xl font-bold text-emerald-400">↓{ENERGY_INSIGHTS.estimatedSavings}%</p><p className="text-[8px] text-muted">savings identified</p><div className="mt-2 text-left">{ENERGY_INSIGHTS.topConsumers.slice(0,3).map((c,i)=><p key={i} className="text-[9px] py-1 border-b border-[var(--border)] last:border-0 flex justify-between"><span>{c.appliance}</span><span className="text-muted">{c.usage}</span></p>)}</div></div><div className="card"><p className="text-[9px] font-bold text-amber-400 uppercase mb-2">Safety Monitoring</p>{SAFETY_ALERTS.map(a=><div key={a.id} className="py-1.5 border-b border-[var(--border)] last:border-0"><p className="text-[9px] font-medium">{a.appliance}</p><p className="text-[8px] text-muted">{a.reason}</p><p className="text-[8px] text-emerald-400">→ {a.action}</p></div>)}</div></div></div>}
