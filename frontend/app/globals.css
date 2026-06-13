@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #080b12;
+  --bg2: #0d1117;
+  --card: #111827;
+  --card2: #1a2234;
+  --fg: #e2e8f0;
+  --muted: #64748b;
+  --border: #1e293b;
+  --blue: #3b82f6;
+  --cyan: #22d3ee;
+  --emerald: #10b981;
+  --amber: #f59e0b;
+  --red: #ef4444;
+  --purple: #8b5cf6;
+}
+
+@layer base { body { background: var(--bg); color: var(--fg); @apply antialiased text-[13px] leading-relaxed; } }
+
+@layer components {
+  .card { background: var(--card); @apply rounded-xl border border-[var(--border)] p-3 shadow-lg shadow-black/30; }
+  .card-glow { @apply card border-cyan-900/40 shadow-cyan-900/10; }
+  .btn { @apply inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold transition-all; }
+  .btn-p { @apply btn text-white bg-gradient-to-r from-blue-600 to-cyan-600 shadow-md shadow-blue-900/30 hover:shadow-lg; }
+  .btn-s { @apply btn border border-[var(--border)] text-[var(--muted)] hover:text-white hover:bg-white/5; }
+  .btn-g { @apply px-3 py-1.5 rounded-md text-[11px] text-[var(--muted)] hover:text-white hover:bg-white/5 transition-all; }
+  .badge { @apply inline-flex items-center px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider; }
+  .badge-r { @apply badge bg-red-500/10 text-red-400; }
+  .badge-a { @apply badge bg-amber-500/10 text-amber-400; }
+  .badge-b { @apply badge bg-cyan-500/10 text-cyan-400; }
+  .badge-g { @apply badge bg-emerald-500/10 text-emerald-400; }
+  .text-grad { @apply bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500; }
+  .glow { box-shadow: 0 0 30px rgba(34,211,238,0.06), 0 0 60px rgba(59,130,246,0.04); }
+}
+
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#1e293b;border-radius:2px}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}.af{animation:fi .25s ease-out}
+@keyframes pp{0%,100%{opacity:.5}50%{opacity:1}}.ap{animation:pp 2s ease-in-out infinite}

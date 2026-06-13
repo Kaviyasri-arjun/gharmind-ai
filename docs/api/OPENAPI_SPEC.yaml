@@ -1,0 +1,1095 @@
+openapi: 3.0.3
+info:
+  title: GHARMIND AI — Household Operating System API
+  description: |
+    API for GHARMIND AI — India's First AI-powered Household Operating System.
+    
+    Powers the Digital Twin, Prediction Engine, What-If Simulator, and 
+    conversational household AI (Gharji).
+    
+    All timestamps are in ISO 8601 format with Asia/Kolkata (IST) timezone.
+    Authentication via AWS Cognito JWT.
+  version: "1.0.0"
+  contact:
+    name: GHARMIND AI Team
+    email: dev@gharmind.in
+  license:
+    name: Proprietary
+
+servers:
+  - url: https://api.gharmind.in/v1
+    description: Production
+  - url: http://localhost:8000/v1
+    description: Development
+
+security:
+  - CognitoJWT: []
+
+tags:
+  - name: Households
+    description: Household management and onboarding
+  - name: Members
+    description: Family member management
+  - name: Twin
+    description: Household Digital Twin state and history
+  - name: Routines
+    description: Routine definition and execution tracking
+  - name: Predictions
+    description: AI-generated household predictions
+  - name: Simulator
+    description: What-If scenario simulation
+  - name: Chat
+    description: Conversational AI (Gharji)
+  - name: Insights
+    description: Household intelligence insights
+  - name: Calendar
+    description: Event and festival calendar
+
+paths:
+
+  # ─── HOUSEHOLDS ─────────────────────────────────────────────
+  /households:
+    post:
+      tags: [Households]
+      summary: Create a new household
+      operationId: createHousehold
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateHouseholdRequest'
+      responses:
+        '201':
+          description: Household created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Household'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /households/{householdId}:
+    get:
+      tags: [Households]
+      summary: Get household details
+      operationId: getHousehold
+      parameters:
+        - $ref: '#/components/parameters/HouseholdId'
+      responses:
+        '200':
+          description: Household details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Household'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    patch:
+      tags: [Households]
+      summary: Update household settings
+      operationId: updateHousehold
+      parameters:
+        - $ref: '#/components/parameters/HouseholdId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateHouseholdRequest'
+      responses:
+        '200':
+          description: Household updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Household'
+
+  /households/{householdId}/status:
+    get:
+      tags: [Households]
+      summary: Get household health and status summary
+      operationId: getHouseholdStatus
+      parameters:
+        - $ref: '#/components/parameters/HouseholdId'
+      responses:
+        '200':
+          description: Status summary
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HouseholdStatus'
+
+  # ─── DIGITAL TWIN ────────────────────────────────────────────
+  /households/{householdId}/twin/state:
+    get:
+      tags: [Twin]
+      summary: Get current household Digital Twin state
+      operationId: getTwinState
+      parameters:
+        - $ref: '#/components/parameters/HouseholdId'
+      responses:
+        '200':
+          description: Current twin state snapshot
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TwinStateSnapshot'
+
+  /households/{householdId}/twin/history:
+    get:
+      tags: [Twin]
+      summary: Get historical twin snapshots
+      operationId: getTwinHistory
+      parameters:
+        - $ref: '#/components/parameters/HouseholdId'
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: resolution
+          in: query
+          schema:
+            type: string
+            enum: [1min, 5min, 15min, 1hour]
+            default: 15min
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Historical snapshots
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TwinHistoryResponse'
+
+  /households/{householdId}/twin/resources:
+    get:
+      tags: [Twin]
+      summary: Get current resource status (water/power/internet)
+      operationId: getResourceStatus
+      parameters:
+        - $ref: '#/components/parameters/HouseholdId'
+      responses:
+        '200':
+          description: Resource status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceStatus'
+
+  # ─── PREDICTIONS ─────────────────────────────────────────────
+  /households/{householdId}/predictions:
+    get:
+      tags: [Predictions]
+      summary: Get current prediction feed
+      operationId: getPredictions
+      parameters:
+        - $ref: '#/components/parameters/HouseholdId'
+        - name: horizon
+          in: query
+          schema:
+            type: string
+            enum: [30min, 2h, today, week]
+            default: 2h
+        - name: priority
+          in: query
+          schema:
+            type: string
+            enum: [critical, high, all]
+            default: all
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Prediction feed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PredictionFeed'
+
+  /households/{householdId}/predictions/{predictionId}:
+    get:
+      tags: [Predictions]
+      summary: Get specific prediction with full reasoning
+      operationId: getPrediction
+      parameters:
+        - $ref: '#/components/parameters/HouseholdId'
+        - name: predictionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Prediction detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PredictionDetail'
+
+  /households/{householdId}/predictions/{predictionId}/feedback:
+    post:
+      tags: [Predictions]
+      summary: Rate a prediction (feedback loop)
+      operationId: ratePrediction
+      parameters:
+        - $ref: '#/components/parameters/HouseholdId'
+        - name: predictionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PredictionFeedbackRequest'
+      responses:
+        '200':
+          description: Feedback recorded
+
+  /households/{householdId}/predictions/refresh:
+    post:
+      tags: [Predictions]
+      summary: Force regenerate predictions now
+      operationId: refreshPredictions
+      parameters:
+        - $ref: '#/components/parameters/HouseholdId'
+      responses:
+        '200':
+          description: Predictions refreshed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PredictionFeed'
+
+  # ─── SIMULATOR ───────────────────────────────────────────────
+  /households/{householdId}/simulator/run:
+    post:
+      tags: [Simulator]
+      summary: Run a What-If simulation
+      operationId: runSimulation
+      parameters:
+        - $ref: '#/components/parameters/HouseholdId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SimulationRunRequest'
+      responses:
+        '200':
+          description: Simulation result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimulationResult'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /households/{householdId}/simulator/scenarios:
+    get:
+      tags: [Simulator]
+      summary: List built-in scenario templates
+      operationId: getScenarios
+      parameters:
+        - $ref: '#/components/parameters/HouseholdId'
+      responses:
+        '200':
+          description: Scenario templates
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScenarioList'
+
+  # ─── CHAT ─────────────────────────────────────────────────────
+  /households/{householdId}/chat/message:
+    post:
+      tags: [Chat]
+      summary: Send message to Gharji (household AI)
+      operationId: sendChatMessage
+      parameters:
+        - $ref: '#/components/parameters/HouseholdId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatMessageRequest'
+      responses:
+        '200':
+          description: AI response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatMessageResponse'
+        '503':
+          $ref: '#/components/responses/BedrockUnavailable'
+
+  # ─── ROUTINES ────────────────────────────────────────────────
+  /households/{householdId}/routines:
+    get:
+      tags: [Routines]
+      summary: List all household routines
+      operationId: listRoutines
+      parameters:
+        - $ref: '#/components/parameters/HouseholdId'
+        - name: type
+          in: query
+          schema:
+            type: string
+        - name: active_only
+          in: query
+          schema:
+            type: boolean
+            default: true
+      responses:
+        '200':
+          description: List of routines
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoutineList'
+
+    post:
+      tags: [Routines]
+      summary: Create a new routine
+      operationId: createRoutine
+      parameters:
+        - $ref: '#/components/parameters/HouseholdId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRoutineRequest'
+      responses:
+        '201':
+          description: Routine created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Routine'
+
+  /households/{householdId}/routines/upcoming:
+    get:
+      tags: [Routines]
+      summary: Get routines in next 24 hours
+      operationId: getUpcomingRoutines
+      parameters:
+        - $ref: '#/components/parameters/HouseholdId'
+        - name: hours
+          in: query
+          schema:
+            type: integer
+            default: 24
+            maximum: 168
+      responses:
+        '200':
+          description: Upcoming routines
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpcomingRoutinesResponse'
+
+  # ─── INSIGHTS ────────────────────────────────────────────────
+  /households/{householdId}/insights/patterns:
+    get:
+      tags: [Insights]
+      summary: Get AI-detected behavioral patterns
+      operationId: getPatterns
+      parameters:
+        - $ref: '#/components/parameters/HouseholdId'
+      responses:
+        '200':
+          description: Detected patterns
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatternsInsight'
+
+  /households/{householdId}/insights/festival-impact:
+    get:
+      tags: [Insights]
+      summary: Get upcoming festival impact analysis
+      operationId: getFestivalImpact
+      parameters:
+        - $ref: '#/components/parameters/HouseholdId'
+        - name: days_ahead
+          in: query
+          schema:
+            type: integer
+            default: 30
+      responses:
+        '200':
+          description: Festival impact analysis
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FestivalImpactAnalysis'
+
+# ─── COMPONENTS ──────────────────────────────────────────────────
+
+components:
+
+  securitySchemes:
+    CognitoJWT:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: AWS Cognito Access Token
+
+  parameters:
+    HouseholdId:
+      name: householdId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Household UUID
+
+    Limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        default: 20
+        minimum: 1
+        maximum: 100
+
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+
+    ValidationError:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+
+    BedrockUnavailable:
+      description: AWS Bedrock temporarily unavailable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+
+  schemas:
+
+    # ── Core ──────────────────────────────────────────────────
+    ProblemDetail:
+      type: object
+      required: [type, title, status]
+      properties:
+        type:
+          type: string
+          format: uri
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string
+
+    # ── Household ─────────────────────────────────────────────
+    Household:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: "Sharma Residence"
+        city:
+          type: string
+          example: "Pune"
+        state:
+          type: string
+          example: "Maharashtra"
+        home_type:
+          type: string
+          enum: [apartment, villa, row_house, independent]
+        language_preference:
+          type: string
+          enum: [en, hi, hinglish]
+          default: hinglish
+        ai_persona_name:
+          type: string
+          default: "Gharji"
+        twin_initialized:
+          type: boolean
+        subscription_tier:
+          type: string
+          enum: [free, pro, family]
+        created_at:
+          type: string
+          format: date-time
+
+    CreateHouseholdRequest:
+      type: object
+      required: [name, city, state]
+      properties:
+        name:
+          type: string
+          maxLength: 200
+        city:
+          type: string
+        state:
+          type: string
+        pincode:
+          type: string
+        home_type:
+          type: string
+          enum: [apartment, villa, row_house, independent]
+        language_preference:
+          type: string
+          enum: [en, hi, hinglish]
+          default: hinglish
+
+    UpdateHouseholdRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        language_preference:
+          type: string
+          enum: [en, hi, hinglish]
+        ai_persona_name:
+          type: string
+
+    HouseholdStatus:
+      type: object
+      properties:
+        household_id:
+          type: string
+          format: uuid
+        as_of:
+          type: string
+          format: date-time
+        urgency_score:
+          type: integer
+          minimum: 0
+          maximum: 100
+        active_alerts:
+          type: integer
+        pending_predictions:
+          type: integer
+        twin_health:
+          type: string
+          enum: [healthy, degraded, offline]
+        summary:
+          type: string
+
+    # ── Twin ──────────────────────────────────────────────────
+    TwinStateSnapshot:
+      type: object
+      properties:
+        household_id:
+          type: string
+          format: uuid
+        snapshot_at:
+          type: string
+          format: date-time
+        temporal:
+          $ref: '#/components/schemas/TemporalContext'
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/MemberState'
+        rooms:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoomState'
+        appliances:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApplianceState'
+        resources:
+          $ref: '#/components/schemas/ResourceStatus'
+        context_summary:
+          type: string
+        urgency_score:
+          type: integer
+
+    TemporalContext:
+      type: object
+      properties:
+        ist_time:
+          type: string
+          format: time
+        date:
+          type: string
+          format: date
+        day_of_week:
+          type: string
+        season:
+          type: string
+          enum: [summer, monsoon, post_monsoon, winter, spring, winter_onset]
+        phase_of_day:
+          type: string
+        festivals_active:
+          type: array
+          items:
+            type: string
+        is_holiday:
+          type: boolean
+        is_school_day:
+          type: boolean
+
+    MemberState:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        location:
+          type: string
+          description: Current room name
+        activity:
+          type: string
+        status:
+          type: string
+          enum: [home, away, sleeping, active]
+
+    RoomState:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        room_type:
+          type: string
+        is_occupied:
+          type: boolean
+        occupants:
+          type: array
+          items:
+            type: string
+        lighting_state:
+          type: string
+          enum: [off, dim, on, auto]
+
+    ApplianceState:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        appliance_type:
+          type: string
+        state:
+          type: string
+          enum: [off, on, standby, error]
+        alert:
+          type: string
+          nullable: true
+
+    ResourceStatus:
+      type: object
+      properties:
+        power:
+          type: object
+          properties:
+            available:
+              type: boolean
+            quality:
+              type: string
+              enum: [stable, unstable, cut]
+            cut_risk:
+              type: string
+              enum: [none, low, medium, high]
+        water:
+          type: object
+          properties:
+            available:
+              type: boolean
+            tank_level_pct:
+              type: number
+              format: float
+              minimum: 0
+              maximum: 100
+        internet:
+          type: object
+          properties:
+            available:
+              type: boolean
+
+    TwinHistoryResponse:
+      type: object
+      properties:
+        household_id:
+          type: string
+          format: uuid
+        from:
+          type: string
+          format: date-time
+        to:
+          type: string
+          format: date-time
+        snapshots:
+          type: array
+          items:
+            $ref: '#/components/schemas/TwinStateSnapshot'
+        total_count:
+          type: integer
+
+    # ── Predictions ───────────────────────────────────────────
+    PredictionFeed:
+      type: object
+      properties:
+        household_id:
+          type: string
+          format: uuid
+        generated_at:
+          type: string
+          format: date-time
+        predictions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Prediction'
+        summary:
+          type: object
+          properties:
+            critical_count:
+              type: integer
+            high_count:
+              type: integer
+            normal_count:
+              type: integer
+
+    Prediction:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum: [routine_start, appliance_action, member_arrival, festival_prep, power_event, water_event, meal_time, study_reminder]
+        title:
+          type: string
+        description:
+          type: string
+        action_suggestion:
+          type: string
+          description: Actionable recommendation in user's language
+        predicted_for:
+          type: string
+          format: date-time
+        confidence:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+        priority:
+          type: string
+          enum: [critical, high, normal, low]
+        category:
+          type: string
+        expires_at:
+          type: string
+          format: date-time
+
+    PredictionDetail:
+      allOf:
+        - $ref: '#/components/schemas/Prediction'
+        - type: object
+          properties:
+            reasoning:
+              type: string
+              description: Claude's reasoning chain
+            evidence:
+              type: array
+              items:
+                type: string
+              description: Supporting data points
+
+    PredictionFeedbackRequest:
+      type: object
+      required: [feedback]
+      properties:
+        feedback:
+          type: string
+          enum: [helpful, not_helpful, wrong]
+        note:
+          type: string
+          maxLength: 500
+
+    # ── Simulator ─────────────────────────────────────────────
+    SimulationRunRequest:
+      type: object
+      required: [scenario_name, hypothesis, perturbations, sim_start, sim_duration_hours]
+      properties:
+        scenario_name:
+          type: string
+          maxLength: 200
+        hypothesis:
+          type: string
+          description: Natural language description of what is being tested
+        perturbations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Perturbation'
+          minItems: 1
+        sim_start:
+          type: string
+          format: date-time
+        sim_duration_hours:
+          type: integer
+          minimum: 1
+          maximum: 48
+
+    Perturbation:
+      type: object
+      required: [type, params]
+      properties:
+        type:
+          type: string
+          enum: [power_cut, water_shortage, internet_outage, unexpected_guest, member_absent, exam_week, festival_tomorrow, motor_failure, gas_cylinder_empty]
+        params:
+          type: object
+          additionalProperties: true
+
+    SimulationResult:
+      type: object
+      properties:
+        run_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [running, complete, failed]
+        scenario_name:
+          type: string
+        result_summary:
+          type: string
+          description: Plain English summary in user's language
+        overall_severity:
+          type: string
+          enum: [minimal, moderate, significant, critical]
+        impact_analysis:
+          type: object
+          properties:
+            disrupted_routines:
+              type: array
+              items:
+                type: object
+            resource_impacts:
+              type: array
+              items:
+                type: object
+            cascade_chain:
+              type: array
+              items:
+                type: string
+        action_plan:
+          type: array
+          items:
+            type: object
+            properties:
+              time:
+                type: string
+              action:
+                type: string
+        risk_flags:
+          type: array
+          items:
+            type: object
+
+    ScenarioList:
+      type: object
+      properties:
+        scenarios:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              name:
+                type: string
+              description:
+                type: string
+              perturbation_types:
+                type: array
+                items:
+                  type: string
+
+    # ── Chat ──────────────────────────────────────────────────
+    ChatMessageRequest:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+          maxLength: 1000
+        language:
+          type: string
+          enum: [en, hi, hinglish]
+        context_include:
+          type: boolean
+          default: true
+          description: Include current household context in AI call
+
+    ChatMessageResponse:
+      type: object
+      properties:
+        message_id:
+          type: string
+          format: uuid
+        response:
+          type: string
+        language:
+          type: string
+        referenced_predictions:
+          type: array
+          items:
+            type: string
+            format: uuid
+        context_used:
+          type: array
+          items:
+            type: string
+
+    # ── Routines ──────────────────────────────────────────────
+    Routine:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        routine_type:
+          type: string
+        recurrence:
+          type: string
+        is_active:
+          type: boolean
+        is_ai_detected:
+          type: boolean
+        confidence_score:
+          type: number
+        next_expected_at:
+          type: string
+          format: date-time
+        last_executed_at:
+          type: string
+          format: date-time
+
+    RoutineList:
+      type: object
+      properties:
+        total:
+          type: integer
+        routines:
+          type: array
+          items:
+            $ref: '#/components/schemas/Routine'
+
+    CreateRoutineRequest:
+      type: object
+      required: [name, routine_type, recurrence, schedule_expression]
+      properties:
+        name:
+          type: string
+          maxLength: 200
+        routine_type:
+          type: string
+          enum: [pooja, motor, tuition, meal, study, chai, cleaning, exercise, commute, festival]
+        recurrence:
+          type: string
+          enum: [daily, weekly, monthly, annual, conditional]
+        schedule_expression:
+          type: object
+        primary_member_id:
+          type: string
+          format: uuid
+
+    UpcomingRoutinesResponse:
+      type: object
+      properties:
+        routines:
+          type: array
+          items:
+            type: object
+            properties:
+              routine:
+                $ref: '#/components/schemas/Routine'
+              expected_at:
+                type: string
+                format: date-time
+              confidence:
+                type: number
+
+    # ── Insights ──────────────────────────────────────────────
+    PatternsInsight:
+      type: object
+      properties:
+        household_id:
+          type: string
+          format: uuid
+        patterns:
+          type: array
+          items:
+            type: object
+            properties:
+              pattern_type:
+                type: string
+              description:
+                type: string
+              confidence:
+                type: number
+              observation_count:
+                type: integer
+
+    FestivalImpactAnalysis:
+      type: object
+      properties:
+        upcoming_festivals:
+          type: array
+          items:
+            type: object
+            properties:
+              festival_name:
+                type: string
+              date:
+                type: string
+                format: date
+              days_away:
+                type: integer
+              impact_level:
+                type: string
+                enum: [low, medium, high, major]
+              affected_routines:
+                type: array
+                items:
+                  type: string
+              preparations_needed:
+                type: array
+                items:
+                  type: string

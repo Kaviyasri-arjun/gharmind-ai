@@ -1,0 +1,141 @@
+version: '3.9'
+
+# GHARMIND AI — Local Development Stack
+# Run: docker-compose up -d
+
+services:
+
+  # ─── PostgreSQL with pgvector ────────────────────────────────────────
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: gharmind_postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: gharmind
+      POSTGRES_USER: gharmind
+      POSTGRES_PASSWORD: devpassword
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/db/seeds/init.sql:/docker-entrypoint-initdb.d/01_init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gharmind -d gharmind"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── Redis ───────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: gharmind_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── Backend (FastAPI) ───────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: gharmind_backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      APP_ENV: development
+      DEBUG: "true"
+      DATABASE_URL: postgresql+asyncpg://gharmind:devpassword@postgres:5432/gharmind
+      REDIS_URL: redis://redis:6379/0
+      AWS_REGION: ${AWS_REGION:-ap-south-1}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      BEDROCK_REGION: ${BEDROCK_REGION:-ap-south-1}
+      BEDROCK_CLAUDE_MODEL_ID: ${BEDROCK_CLAUDE_MODEL_ID:-anthropic.claude-3-sonnet-20240229-v1:0}
+      BEDROCK_TITAN_EMBED_MODEL_ID: ${BEDROCK_TITAN_EMBED_MODEL_ID:-amazon.titan-embed-text-v1}
+      COGNITO_USER_POOL_ID: ${COGNITO_USER_POOL_ID}
+      COGNITO_APP_CLIENT_ID: ${COGNITO_APP_CLIENT_ID}
+      COGNITO_REGION: ${COGNITO_REGION:-ap-south-1}
+      TWIN_TICK_INTERVAL_SECONDS: 60
+      PREDICTION_INTERVAL_SECONDS: 300
+    volumes:
+      - ./backend:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/system/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ─── Frontend (Next.js) ──────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: gharmind_frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000/v1
+      NEXT_PUBLIC_WS_URL: ws://localhost:8000/ws
+      NEXT_PUBLIC_APP_NAME: GHARMIND AI
+      NEXT_PUBLIC_DEFAULT_LANGUAGE: hinglish
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  # ─── Database Admin (Optional) ───────────────────────────────────────
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: gharmind_pgadmin
+    restart: unless-stopped
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@gharmind.local
+      PGADMIN_DEFAULT_PASSWORD: devpassword
+    profiles:
+      - tools
+    depends_on:
+      - postgres
+
+  # ─── Redis Commander (Optional) ──────────────────────────────────────
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: gharmind_redis_ui
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      REDIS_HOSTS: local:redis:6379
+    profiles:
+      - tools
+    depends_on:
+      - redis
+
+volumes:
+  postgres_data:
+    name: gharmind_postgres_data
+  redis_data:
+    name: gharmind_redis_data
+
+networks:
+  default:
+    name: gharmind_network

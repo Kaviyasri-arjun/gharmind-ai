@@ -1,0 +1,1 @@
+"""GHARMIND AI — Service layer"""

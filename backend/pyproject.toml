@@ -1,0 +1,76 @@
+[tool.poetry]
+name = "gharmind-backend"
+version = "1.0.0"
+description = "GHARMIND AI — Household Operating System Backend"
+authors = ["GHARMIND AI Team <dev@gharmind.in>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+# ─── Web Framework ────────────────────────────────────────────────────
+fastapi = "^0.111.0"
+uvicorn = {extras = ["standard"], version = "^0.29.0"}
+python-multipart = "^0.0.9"
+
+# ─── Database ─────────────────────────────────────────────────────────
+sqlalchemy = {extras = ["asyncio"], version = "^2.0.30"}
+asyncpg = "^0.29.0"
+alembic = "^1.13.1"
+pgvector = "^0.3.0"
+
+# ─── Cache & Messaging ────────────────────────────────────────────────
+redis = {extras = ["asyncio"], version = "^5.0.4"}
+
+# ─── AWS ──────────────────────────────────────────────────────────────
+boto3 = "^1.34.0"
+botocore = "^1.34.0"
+
+# ─── Auth ─────────────────────────────────────────────────────────────
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+pycognito = "^2024.5.1"
+
+# ─── Data Validation ──────────────────────────────────────────────────
+pydantic = "^2.7.1"
+pydantic-settings = "^2.2.1"
+
+# ─── Task Scheduling ──────────────────────────────────────────────────
+apscheduler = "^3.10.4"
+
+# ─── Utilities ────────────────────────────────────────────────────────
+python-dateutil = "^2.9.0"
+pytz = "^2024.1"
+httpx = "^0.27.0"
+tenacity = "^8.3.0"    # Retry logic for Bedrock calls
+
+# ─── Indian Calendar ──────────────────────────────────────────────────
+ephem = "^4.1.5"       # Astronomical calculations for lunar calendar
+
+# ─── Monitoring ───────────────────────────────────────────────────────
+structlog = "^24.1.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.0"
+pytest-asyncio = "^0.23.6"
+pytest-cov = "^5.0.0"
+httpx = "^0.27.0"
+black = "^24.4.2"
+ruff = "^0.4.4"
+mypy = "^1.10.0"
+pre-commit = "^3.7.1"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

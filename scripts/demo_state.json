@@ -1,0 +1,348 @@
+{
+  "_comment": "GHARMIND AI — Frozen demo state for hackathon presentation. Friday Oct 25, 2024 06:08 IST.",
+
+  "household": {
+    "id": "550e8400-e29b-41d4-a716-446655440001",
+    "name": "Sharma Residence",
+    "city": "Pune",
+    "state": "Maharashtra",
+    "ai_persona_name": "Gharji",
+    "language_preference": "hinglish",
+    "twin_initialized": true
+  },
+
+  "twin_state": {
+    "snapshot_at": "2024-10-25T06:08:00+05:30",
+    "temporal": {
+      "ist_time": "06:08:00",
+      "date": "2024-10-25",
+      "day_of_week": "Friday",
+      "season": "winter_onset",
+      "phase_of_day": "early_morning",
+      "festivals_active": ["Diwali Prep Week"],
+      "festival_phase": "preparation",
+      "days_to_diwali": 3,
+      "is_holiday": false,
+      "is_school_day": true,
+      "is_exam_week": false,
+      "jee_mock_days_away": 3
+    },
+    "members": [
+      {
+        "id": "mem-001", "name": "Dadi", "age": 70,
+        "location": "Pooja Room", "activity": "Morning Aarti",
+        "status": "home", "emoji": "🪔"
+      },
+      {
+        "id": "mem-002", "name": "Anjali", "age": 42,
+        "location": "Kitchen", "activity": "Chai preparation",
+        "status": "home", "emoji": "☕"
+      },
+      {
+        "id": "mem-003", "name": "Rahul", "age": 45,
+        "location": "Master Bedroom", "activity": "Sleeping",
+        "status": "home", "emoji": "😴"
+      },
+      {
+        "id": "mem-004", "name": "Priya", "age": 16,
+        "location": "Bedroom 2", "activity": "Getting ready for school",
+        "status": "home", "emoji": "📚"
+      }
+    ],
+    "rooms": [
+      {"name": "Master Bedroom", "type": "bedroom", "is_occupied": true, "occupants": ["Rahul"], "lighting": "off"},
+      {"name": "Bedroom 2", "type": "bedroom", "is_occupied": true, "occupants": ["Priya"], "lighting": "on"},
+      {"name": "Pooja Room", "type": "pooja_room", "is_occupied": true, "occupants": ["Dadi"], "lighting": "on"},
+      {"name": "Kitchen", "type": "kitchen", "is_occupied": true, "occupants": ["Anjali"], "lighting": "on"},
+      {"name": "Living Room", "type": "living_room", "is_occupied": false, "occupants": [], "lighting": "off"},
+      {"name": "Balcony", "type": "balcony", "is_occupied": false, "occupants": [], "lighting": "off"},
+      {"name": "Bathroom", "type": "bathroom", "is_occupied": false, "occupants": [], "lighting": "off"},
+      {"name": "Study Nook", "type": "study", "is_occupied": false, "occupants": [], "lighting": "off"}
+    ],
+    "appliances": [
+      {
+        "name": "Water Motor", "type": "motor",
+        "state": "off", "is_critical": true,
+        "alert": "OVERDUE 8 MINUTES",
+        "alert_severity": "critical",
+        "last_run": "2024-10-24T17:45:00+05:30",
+        "scheduled_at": "06:00"
+      },
+      {
+        "name": "Geyser", "type": "geyser",
+        "state": "on", "is_critical": false,
+        "running_since": "06:05",
+        "auto_off_at": "06:25"
+      },
+      {
+        "name": "Fridge", "type": "fridge",
+        "state": "on", "is_critical": true,
+        "health_score": 88
+      },
+      {
+        "name": "WiFi Router", "type": "wifi",
+        "state": "on", "is_critical": true,
+        "health_score": 98
+      },
+      {
+        "name": "AC (Master)", "type": "ac",
+        "state": "off"
+      },
+      {
+        "name": "TV (Living Room)", "type": "tv",
+        "state": "off"
+      }
+    ],
+    "resources": {
+      "power": {
+        "available": true,
+        "quality": "stable",
+        "cut_risk": "high",
+        "cut_prediction": "19:30 IST tonight (79% confidence)",
+        "msedcl_pattern": "Fri 7:30pm — 3 of last 4 Fridays confirmed"
+      },
+      "water": {
+        "available": true,
+        "tank_level_pct": 38,
+        "alert": "LOW — motor overdue",
+        "supply_window": "06:00-06:45 (PCMC)"
+      },
+      "internet": {"available": true, "speed": "normal"},
+      "gas": {"status": "sufficient"}
+    },
+    "urgency_score": 68,
+    "household_mood": "festive_alert",
+    "context_summary": "Festive Friday morning. Diwali 3 days away. Motor overdue 8 mins — CRITICAL. Geyser ON. School bus in 67 min. Power cut risk tonight 7:30pm. JEE mock exam Monday."
+  },
+
+  "predictions": [
+    {
+      "id": "pred-001",
+      "type": "appliance_action",
+      "priority": "critical",
+      "title": "Water Motor — Run Immediately",
+      "description": "Tank at 38%. Motor overdue by 8 minutes. School bus in 67 minutes. Diwali week water usage is 40% higher than normal. If not run now, tank hits 20% critical threshold by 8am.",
+      "action_suggestion": "Anjali, motor abhi chalao! 🚨",
+      "action_suggestion_en": "Run the water motor now. Tank is at 38% — critical threshold approaching.",
+      "predicted_for": "2024-10-25T06:08:00+05:30",
+      "confidence": 0.94,
+      "category": "water",
+      "evidence": [
+        "Motor ran between 06:00-06:30 on 14/14 Fridays (last 3.5 months)",
+        "Tank below 45% on 11/14 of those mornings",
+        "Diwali week context: water_usage_multiplier = 1.40 active",
+        "Similar past morning (Oct 18, similarity 0.94): motor ran at 06:12",
+        "School bus at 07:15 — 67 min window closing"
+      ],
+      "reasoning": "Historical pattern (14 Fridays) combined with current tank level (38%), active Diwali week multiplier (+40% usage), and school departure constraint (07:15) produces 94% confidence. The similarity matcher found last Friday (Oct 18) as the closest historical context — that morning the motor ran at 06:12. Today is already 8 minutes past that. Every minute of delay increases risk.",
+      "status": "pending",
+      "expires_at": "2024-10-25T07:00:00+05:30"
+    },
+    {
+      "id": "pred-002",
+      "type": "routine_start",
+      "priority": "high",
+      "title": "Priya's School Bus — 07:15",
+      "description": "School bus arrives at 07:15. Breakfast must be served by 06:55. Bag check by 07:05. Priya currently getting ready in Bedroom 2.",
+      "action_suggestion": "Breakfast ready karo 6:55 tak. Priya ka bag check karo.",
+      "predicted_for": "2024-10-25T07:15:00+05:30",
+      "confidence": 0.95,
+      "category": "routine",
+      "status": "pending"
+    },
+    {
+      "id": "pred-003",
+      "type": "routine_start",
+      "priority": "high",
+      "title": "Rahul's Zoom Call — 10:00",
+      "description": "Rahul has a recurring Friday morning Zoom call. WFH confirmed (pattern: 91% consistency). Quiet mode required in living room 09:45–10:45.",
+      "action_suggestion": "Zoom call se pehle living room quiet rakhna. 9:45 se.",
+      "predicted_for": "2024-10-25T10:00:00+05:30",
+      "confidence": 0.91,
+      "category": "routine",
+      "status": "pending"
+    },
+    {
+      "id": "pred-004",
+      "type": "power_event",
+      "priority": "high",
+      "title": "Load Shedding Expected — 19:30",
+      "description": "MSEDCL Friday evening pattern for this zone. 3 of last 4 Fridays had power cut at 7:30pm. Duration: 60-90 minutes typical.",
+      "action_suggestion": "7 baje se pehle dinner ready karo. Devices charge karo. Rahul ka Zoom khatam karna hoga.",
+      "predicted_for": "2024-10-25T19:30:00+05:30",
+      "confidence": 0.79,
+      "category": "power",
+      "evidence": [
+        "MSEDCL Friday 7:30pm cut: 3 of last 4 Fridays confirmed",
+        "Zone: Kothrud — historical reliability 75%",
+        "Oct 18: cut at 19:32, lasted 72 min",
+        "Oct 11: cut at 19:28, lasted 88 min",
+        "Oct 04: no cut (exception)"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "pred-005",
+      "type": "festival_prep",
+      "priority": "normal",
+      "title": "Diwali Prep Day 2 — Decoration Shopping",
+      "description": "Day 2 of 5-day Diwali prep. Today: decoration shopping and rangoli material. Best time: 5pm (after Rahul's WFH day ends, before 7pm power cut risk).",
+      "action_suggestion": "Sham 5 baje decoration shopping — Rahul saath le jao. 7 baje se pehle wapas.",
+      "predicted_for": "2024-10-25T17:00:00+05:30",
+      "confidence": 0.82,
+      "category": "festival",
+      "status": "pending"
+    }
+  ],
+
+  "what_if_simulation": {
+    "scenario_id": "sim-fri-powercut",
+    "name": "Power Cut on Diwali Prep Evening",
+    "run_at": "2024-10-25T06:09:15+05:30",
+    "status": "complete",
+    "overall_severity": "significant",
+    "perturbations": [
+      {
+        "type": "power_cut",
+        "start_time": "2024-10-25T19:30:00+05:30",
+        "duration_hours": 1.5,
+        "affects_inverter": false
+      }
+    ],
+    "gharji_narrative": "Anjali ji, agar aap 6:45 tak ghar nahi aayi aur 7:30 baje light gayi, toh Rahul ka Zoom call abruptly cut ho jayega aur dinner 9 baje tak delay ho sakta hai — Dadi ke liye yeh theek nahi. Ek chhota plan change sab fix kar sakta hai.",
+    "cascade_chain": [
+      "19:30 — Power cut triggers",
+      "19:30:03 — WiFi router loses power (3 second delay)",
+      "19:30:03 — Rahul's active Zoom call DROPS (mid-presentation)",
+      "19:30:05 — Inverter kicks in (2.5 hr capacity at current load)",
+      "19:30:10 — Motor automatically stops (inverter protection mode)",
+      "19:35 — Anjali returns, begins cooking in dark kitchen",
+      "20:45 — Dinner served (105 min delay vs baseline)",
+      "20:45 — Dadi eats at 8:45pm (normally 7:30pm — medical concern)",
+      "21:00 — Power restored",
+      "21:05 — Water motor MISSED tonight's window → tomorrow morning risk"
+    ],
+    "impact_matrix": [
+      {
+        "routine": "Rahul's Zoom Call", "baseline_time": "Complete",
+        "simulated_time": "DROPPED 🔴", "deviation_mins": null,
+        "severity": "critical",
+        "mitigation": "Send 'back at 8' message before 7:20pm. Reschedule or use mobile data hotspot."
+      },
+      {
+        "routine": "Dinner Preparation", "baseline_time": "19:00",
+        "simulated_time": "20:45 🔴", "deviation_mins": 105,
+        "severity": "high",
+        "mitigation": "Start dinner at 18:15 (before shopping return). Or Anjali returns by 18:00."
+      },
+      {
+        "routine": "Dadi's Dinner", "baseline_time": "19:30",
+        "simulated_time": "20:45 🔴", "deviation_mins": 75,
+        "severity": "high",
+        "mitigation": "Dadi eats light snack at 7pm as backup if dinner delayed."
+      },
+      {
+        "routine": "Priya's Study", "baseline_time": "Quiet ✅",
+        "simulated_time": "Quiet ✅", "deviation_mins": 0,
+        "severity": "none",
+        "mitigation": "No change needed. Bedroom 2 unaffected."
+      },
+      {
+        "routine": "Diwali Decoration Work", "baseline_time": "20:00",
+        "simulated_time": "Delayed 🟡", "deviation_mins": 45,
+        "severity": "medium",
+        "mitigation": "Use diyas and torch during cut — actually more festive!"
+      },
+      {
+        "routine": "Motor (Tomorrow Morning)", "baseline_time": "06:10",
+        "simulated_time": "Risk! 🔴", "deviation_mins": null,
+        "severity": "high",
+        "mitigation": "Run motor BEFORE 7:15pm cut tonight. Last window is 7:15."
+      }
+    ],
+    "action_plan": [
+      {"time": "17:00", "action": "Anjali departs for decoration shopping", "urgency": "normal"},
+      {"time": "18:00", "action": "⚠️ RETURN BY THIS TIME (not 6:45 — cut is at 7:30!)", "urgency": "critical"},
+      {"time": "18:15", "action": "Start dinner prep immediately on return", "urgency": "high"},
+      {"time": "18:30", "action": "Rahul: save all work, send Zoom 'back at 8' message", "urgency": "high"},
+      {"time": "18:45", "action": "Charge ALL devices fully (phones, tablets, Priya's laptop)", "urgency": "high"},
+      {"time": "19:00", "action": "Dinner must be SERVED — family eating by 7pm", "urgency": "critical"},
+      {"time": "19:15", "action": "Run water motor — LAST WINDOW before cut", "urgency": "critical"},
+      {"time": "19:25", "action": "Switch inverter to standby-ready mode", "urgency": "normal"},
+      {"time": "19:30", "action": "⚡ Expected power cut — HOUSEHOLD FULLY PREPARED", "urgency": "normal"},
+      {"time": "19:35", "action": "Diwali decoration work continues by diya/candle light", "urgency": "normal"},
+      {"time": "21:00", "action": "Power restored (estimated) — resume normal", "urgency": "normal"}
+    ],
+    "risk_flags": [
+      {
+        "risk": "Rahul's Zoom call drops mid-presentation if no action taken",
+        "severity": "critical",
+        "mitigation": "Pro-actively reschedule or use mobile hotspot as backup"
+      },
+      {
+        "risk": "Dadi eating dinner at 9pm — health concern for elderly",
+        "severity": "high",
+        "mitigation": "Light snack at 7pm guarantees she's not hungry if dinner delayed"
+      },
+      {
+        "risk": "Water motor missed → tomorrow morning tank critically low",
+        "severity": "high",
+        "mitigation": "Run motor by 7:15pm tonight — this is the hard deadline"
+      }
+    ]
+  },
+
+  "conflict_detection": {
+    "date": "2024-10-28",
+    "label": "Diwali + JEE Mock Collision — Monday",
+    "detected_at": "2024-10-25T06:08:00+05:30",
+    "conflict_severity": "significant",
+    "events_in_conflict": [
+      {
+        "event": "Diwali",
+        "type": "festival",
+        "activities": ["Extended pooja 5:00am", "Bell ringing 6am–8am", "Guest arrivals 11am–7pm", "All-day cooking"]
+      },
+      {
+        "event": "Priya JEE Mock Exam",
+        "type": "exam",
+        "requirements": ["Quiet 6am–9am", "Depart 8:15am", "Concentration — NO disruptions", "Return by 2pm"]
+      }
+    ],
+    "conflict_zones": [
+      {"time": "06:00–08:00", "conflict": "Pooja bells vs Priya's pre-exam concentration", "severity": "high"},
+      {"time": "08:00–08:30", "conflict": "First guests arriving vs Priya's exam departure", "severity": "medium"},
+      {"time": "All day", "conflict": "Festive noise, cooking, visitors vs post-exam rest/study", "severity": "medium"}
+    ],
+    "gharji_resolution": "Dono ho sakta hai — bas thodi planning chahiye! 🙏",
+    "household_zoning": {
+      "quiet_zone": ["Study Nook", "Bedroom 2"],
+      "festive_zone": ["Living Room", "Kitchen", "Balcony", "Pooja Room"]
+    },
+    "revised_monday_plan": [
+      {"time": "04:30", "action": "Dadi's private aarti — bedroom, quiet bells only"},
+      {"time": "05:00", "action": "Main pooja starts — bells MUTED until 8am (Priya sleeping)"},
+      {"time": "05:30", "action": "Priya wakes — study session in quiet Study Nook"},
+      {"time": "07:30", "action": "Priya's exam-day breakfast — special meal from Anjali"},
+      {"time": "08:00", "action": "Rahul drives Priya to exam center (return by 8:20)"},
+      {"time": "08:30", "action": "FULL Diwali celebrations begin — bells, guests welcome"},
+      {"time": "10:00", "action": "First guest wave — living room fully festive"},
+      {"time": "14:00", "action": "Priya returns — Study Nook reserved, quiet enforced"},
+      {"time": "17:00", "action": "Priya joins family for evening Diwali celebrations"}
+    ],
+    "mode_label": "Diwali + Exam Hybrid Mode 🪔📚"
+  },
+
+  "demo_end_state": {
+    "urgency_score": 18,
+    "household_mood": "calm_prepared",
+    "completed_actions": [
+      "Motor running ✅",
+      "Diwali week plan set ✅",
+      "Power cut action plan ready ✅",
+      "JEE exam day conflict resolved ✅",
+      "Priya school bus on track ✅"
+    ],
+    "gharji_closing_message": "Your home is ready for the day. And for Diwali. 🪔"
+  }
+}
