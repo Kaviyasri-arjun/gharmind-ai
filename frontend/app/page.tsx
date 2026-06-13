@@ -122,18 +122,18 @@ return(<div className="min-h-screen flex flex-col">
 </div>
 </header>
 {/* ═══ FLOATING STATUS STRIP ═══ */}
-<div className="fixed top-12 inset-x-0 z-40 hidden md:block">
+{pg==="home"&&<div className="fixed top-12 inset-x-0 z-40 hidden md:block">
   <div className="max-w-[1400px] mx-auto px-3 py-1.5 flex items-center justify-center gap-3">
     <span className="px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-wide bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-sm shadow-emerald-900/10 backdrop-blur-md">{mood}</span>
     <span className="px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-wide bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 shadow-sm shadow-cyan-900/10 backdrop-blur-md">Health {hp}%</span>
     {pwr>.6&&<span className="px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-wide bg-amber-500/10 text-amber-400 border border-amber-500/20 shadow-sm shadow-amber-900/10 backdrop-blur-md ap">⚡ Power Risk {Math.round(pwr*100)}%</span>}
   </div>
-</div>
+</div>}
 {mn&&<div className="fixed inset-0 z-40 bg-black/50 lg:hidden" onClick={()=>sMn(false)}/>}
 {mn&&<div className="fixed top-12 right-0 z-50 w-56 bg-[var(--card)] border-l border-[var(--border)] h-[calc(100vh-48px)] p-3 space-y-1 overflow-y-auto lg:hidden">{PG.map(p=><button key={p} onClick={()=>nav(p)} className="w-full text-left px-3 py-2.5 rounded-lg text-xs hover:bg-white/5">{PL[p]}</button>)}<div className="pt-2 border-t border-[var(--border)] mt-2">{dm?<button onClick={dPause} className="btn-s w-full text-[10px]">⏸ Pause</button>:<button onClick={dStart} className="btn-p w-full text-[10px]">▶ Demo</button>}</div></div>}
 
 {/* ═══ MAIN ═══ */}
-<main className="flex-1 pt-[72px] md:pt-[76px] af" key={pg}>
+<main className={cn("flex-1 af",pg==="home"?"pt-[72px] md:pt-[76px]":"pt-12")} key={pg}>
 
 {/* HOME */}
 {pg==="home"&&<div>
