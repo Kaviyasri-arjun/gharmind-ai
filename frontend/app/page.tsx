@@ -8,12 +8,13 @@ const HERO="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1400&
 const AV={m:"https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&q=80",f:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&q=80",s:"https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=80&q=80",p:"https://images.unsplash.com/photo-1566616213894-2d4e1baee5d8?w=80&q=80"};
 const GAL=["https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&q=80","https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400&q=80","https://images.unsplash.com/photo-1513694203232-719a280e022f?w=400&q=80","https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&q=80","https://images.unsplash.com/photo-1600607687644-aac4c3eac7f4?w=400&q=80","https://images.unsplash.com/photo-1581579438747-104c53d7fbb4?w=400&q=80","https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=400&q=80","https://images.unsplash.com/photo-1600566753086-00f18a6c3ef3?w=400&q=80","https://images.unsplash.com/photo-1600210492493-0946911123ea?w=400&q=80"];
 const GAL_CAPS=["Family home","Cozy living room","Kitchen warmth","Festival lights","Evening glow","Together time","Study corner","Pooja space","Morning light"];
-const PG=["home","dashboard","family","predictions","whatif","energy","memory","calendar","gallery","why"]as const;
+const PG=["home","dashboard","family","predictions","memory"]as const;
 type Pg=typeof PG[number];
-const PL:Record<Pg,string>={home:"Home",dashboard:"Dashboard",family:"Family",predictions:"Predictions",whatif:"What-If",energy:"Energy",memory:"Memory",calendar:"Calendar",gallery:"Gallery",why:"Why Us"};
+const PL:Record<Pg,string>={home:"Home",dashboard:"Dashboard",family:"Family",predictions:"Predictions",memory:"Memory"};
 
 export default function App(){
 const[pg,sP]=useState<Pg>("home");const[mn,sMn]=useState(false);const[co,sCo]=useState(false);
+const[subTab,setSubTab]=useState<string>("");
 const[ld,sLd]=useState(true);const[mems,sMs]=useState<any[]>([]);const[tw,sTw]=useState<any>(null);const[pr,sPr]=useState<any[]>([]);const[rt,sRt]=useState<any[]>([]);
 const[msgs,sMsg]=useState<{r:string;t:string}[]>([]);const[ci,sCi]=useState("");const[cl,sCl]=useState(false);const[sp,sSp]=useState(false);
 const[dm,sDm]=useState(false);const[di,sDi]=useState(0);const dr=useRef<any>(null);
@@ -87,7 +88,7 @@ useEffect(()=>{Promise.all([getMembers(),getTwinState(),getPredictions(),getRout
 const urg=tw?.urgency_score??0,tank=tw?.resources?.water?.tank_level_pct??50,pwr=tw?.resources?.power?.cut_probability??0;
 const hp=Math.min(100,Math.round((tank>60?25:15)+(pwr<.3?25:10)+(urg<30?25:15)+25));
 
-function nav(p:Pg){sP(p);sMn(false);sCo(false);}
+function nav(p:Pg){sP(p);sMn(false);sCo(false);setSubTab("");}
 // Demo
 function dStart(){sDm(true);sDi(0);setDemoNote("");}function dPause(){sDm(false);}function dRestart(){sDi(0);sDm(true);setDemoNote("");}
 const[demoNote,setDemoNote]=useState("");
@@ -395,6 +396,9 @@ return(<div className="min-h-screen flex flex-col">
   <div className="card"><p className="text-[9px] font-bold text-cyan-400 uppercase mb-2">AI Reasoning Insights</p><div className="space-y-1"><p className="text-[10px] text-emerald-400">✓ 180 days of household learning</p><p className="text-[10px] text-emerald-400">✓ Similar pattern detected 42 times</p><p className="text-[10px] text-emerald-400">✓ Routine confidence verified</p><p className="text-[10px] text-emerald-400">✓ Behavioral consistency high</p></div></div>
   <div className="card"><p className="text-[9px] font-bold text-purple-400 uppercase mb-2">Memory Insights</p><div className="space-y-1"><p className="text-[10px]">✓ Arjun studies most effectively 8–10 PM</p><p className="text-[10px]">✓ Lakshmi runs water motor at 6:15 AM</p><p className="text-[10px]">✓ Paati performs pooja daily at 5:45 AM</p><p className="text-[10px]">✓ Household energy peaks at 8 PM</p></div></div>
 </div>
+
+{/* Energy & Safety (merged into Dashboard) */}
+<div className="grid md:grid-cols-2 gap-3"><div className="card-glow text-center"><p className="text-[9px] font-bold text-emerald-400 uppercase mb-1">Energy Optimizer</p><p className="text-2xl font-bold text-emerald-400">↓{ENERGY_INSIGHTS.estimatedSavings}%</p><p className="text-[8px] text-muted">savings identified</p><div className="mt-2 text-left">{ENERGY_INSIGHTS.topConsumers.slice(0,3).map((c,i)=><p key={i} className="text-[9px] py-1 border-b border-[var(--border)] last:border-0 flex justify-between"><span>{c.appliance}</span><span className="text-muted">{c.usage}</span></p>)}</div></div><div className="card"><p className="text-[9px] font-bold text-amber-400 uppercase mb-2">Safety Monitoring</p>{SAFETY_ALERTS.map(a=><div key={a.id} className="py-1.5 border-b border-[var(--border)] last:border-0"><p className="text-[9px] font-medium">{a.appliance}</p><p className="text-[8px] text-muted">{a.reason}</p><p className="text-[8px] text-emerald-400">→ {a.action}</p></div>)}</div></div>
 </div>}
 
 {/* FAMILY */}
@@ -478,10 +482,18 @@ return(<div className="min-h-screen flex flex-col">
 
 {/* Add Member Modal */}
 {fm&&<div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={()=>sFm(false)}><div className="bg-[var(--card)] rounded-2xl p-5 w-full max-w-xs md:max-w-sm border border-[var(--border)] space-y-2.5 max-h-[90vh] overflow-y-auto" onClick={e=>e.stopPropagation()}><h3 className="text-sm font-bold">Add Member</h3><input placeholder="Name" value={ff.name} onChange={e=>sff(f=>({...f,name:e.target.value}))} className="w-full px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-xs"/><select value={ff.role} onChange={e=>sff(f=>({...f,role:e.target.value}))} className="w-full px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-xs">{["Student","Professional","Homemaker","Elderly","Child"].map(r=><option key={r}>{r}</option>)}</select><div className="grid grid-cols-2 gap-2"><input placeholder="Age" type="number" value={ff.age} onChange={e=>sff(f=>({...f,age:e.target.value}))} className="px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-xs"/><input type="date" value={ff.bday} onChange={e=>sff(f=>({...f,bday:e.target.value}))} className="px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-xs"/></div><input placeholder="Image URL" value={ff.img} onChange={e=>sff(f=>({...f,img:e.target.value}))} className="w-full px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-xs"/><div className="flex gap-2"><button onClick={addF} className="btn-p flex-1 text-[10px]">Save</button><button onClick={()=>sFm(false)} className="btn-s flex-1 text-[10px]">Cancel</button></div></div></div>}
+
+{/* Calendar merged into Family */}
+<h3 className="text-sm font-bold mt-4">📅 Family Events & Calendar</h3>
+<div className="space-y-2">{cal.map((e,i)=><div key={i} className="card flex items-center gap-3"><span className="text-lg">{e.i}</span><div className="flex-1"><p className="text-xs font-medium">{e.t}</p><p className="text-[10px] text-muted">{e.d}</p></div><span className="text-[9px] text-cyan-400 font-medium">{getDaysLeft(e.d)}</span><button onClick={()=>sCalEdit({idx:i,t:e.t,d:e.d})} className="text-[10px] px-2 py-1 rounded bg-white/5 border border-[var(--border)] hover:bg-white/10 transition-all">✏️</button></div>)}</div>
+{calEdit&&<div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={()=>sCalEdit(null)}><div className="bg-[var(--card)] rounded-2xl p-5 w-full max-w-xs border border-[var(--border)] space-y-3" onClick={ev=>ev.stopPropagation()}><h3 className="text-sm font-bold">Edit Event</h3><div><label className="text-[9px] text-muted">Title</label><input value={calEdit.t} onChange={ev=>sCalEdit({...calEdit,t:ev.target.value})} className="w-full px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-xs mt-0.5"/></div><div><label className="text-[9px] text-muted">Date / Frequency</label><input value={calEdit.d} onChange={ev=>sCalEdit({...calEdit,d:ev.target.value})} className="w-full px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-xs mt-0.5" placeholder="2025-01-20 or Daily 6:15"/></div><p className="text-[9px] text-cyan-400">{getDaysLeft(calEdit.d)}</p><div className="flex gap-2"><button onClick={saveCalEdit} className="btn-p flex-1 text-[10px]">Save</button><button onClick={()=>sCalEdit(null)} className="btn-s flex-1 text-[10px]">Cancel</button></div></div></div>}
 </div>}
 
 {/* PREDICTIONS */}
-{pg==="predictions"&&<div className="max-w-4xl mx-auto px-4 py-6 space-y-4">
+{pg==="predictions"&&(subTab===""||subTab==="predictions")&&<div className="max-w-4xl mx-auto px-4 py-6 space-y-4">
+
+{/* Tabs */}
+<div className="flex gap-2 mb-2">{[{k:"predictions",l:"🔮 Predictions"},{k:"whatif",l:"🧪 What-If Simulator"}].map(t=><button key={t.k} onClick={()=>setSubTab(t.k)} className={cn("btn-g px-3 py-1.5",(!subTab||subTab===t.k)&&t.k==="predictions"?"text-cyan-400 bg-cyan-500/10":subTab===t.k?"text-cyan-400 bg-cyan-500/10":"")}>{t.l}</button>)}</div>
 
 {/* ── 10. AI BUTLER NARRATIVE ── */}
 <div className="card-glow border-l-2 border-l-cyan-500/50 py-3">
@@ -556,8 +568,11 @@ return(<div className="min-h-screen flex flex-col">
 
 </div>}
 
-{/* WHAT-IF */}
-{pg==="whatif"&&<div className="max-w-4xl mx-auto px-4 py-6 space-y-4">
+{/* WHAT-IF (merged into predictions page via tab) */}
+{pg==="predictions"&&subTab==="whatif"&&<div className="max-w-4xl mx-auto px-4 py-6 space-y-4">
+
+{/* Tabs */}
+<div className="flex gap-2 mb-2">{[{k:"predictions",l:"🔮 Predictions"},{k:"whatif",l:"🧪 What-If Simulator"}].map(t=><button key={t.k} onClick={()=>setSubTab(t.k==="predictions"?"":t.k)} className={cn("btn-g px-3 py-1.5",subTab===t.k?"text-cyan-400 bg-cyan-500/10":"")}>{t.l}</button>)}</div>
 
 {/* ── 12. AI BUTLER SUMMARY ── */}
 <div className="card-glow border-l-2 border-l-cyan-500/50 py-3">
@@ -645,74 +660,33 @@ return(<div className="min-h-screen flex flex-col">
 
 </div>}
 
-{/* ENERGY */}
-{pg==="energy"&&<div className="max-w-4xl mx-auto px-4 py-6 space-y-4"><h2 className="text-base font-bold mb-3">Energy & Safety</h2><div className="grid md:grid-cols-2 gap-3"><div className="card-glow text-center"><p className="text-2xl font-bold text-emerald-400">↓{ENERGY_INSIGHTS.estimatedSavings}%</p><p className="text-[8px] text-muted">savings identified</p><div className="mt-2 text-left">{ENERGY_INSIGHTS.topConsumers.slice(0,3).map((c,i)=><p key={i} className="text-[9px] py-1 border-b border-[var(--border)] last:border-0 flex justify-between"><span>{c.appliance}</span><span className="text-muted">{c.usage}</span></p>)}</div></div><div className="card"><p className="text-[9px] font-bold text-amber-400 uppercase mb-2">Safety Monitoring</p>{SAFETY_ALERTS.map(a=><div key={a.id} className="py-1.5 border-b border-[var(--border)] last:border-0"><p className="text-[9px] font-medium">{a.appliance}</p><p className="text-[8px] text-muted">{a.reason}</p><p className="text-[8px] text-emerald-400">→ {a.action}</p></div>)}</div></div></div>}
+{/* Energy merged into dashboard below */}
 
 {/* MEMORY */}
-{pg==="memory"&&<div className="max-w-4xl mx-auto px-4 py-6 space-y-3"><h2 className="text-base font-bold mb-3">Memory Timeline — 7 Days</h2>{MEMORY_TIMELINE.map((d,i)=><div key={i} className="card flex gap-3"><div className="w-14 flex-shrink-0"><p className="text-[9px] font-medium">{d.day}</p><div className="flex items-center gap-1 mt-0.5"><div className="h-1 flex-1 rounded-full bg-[var(--border)] overflow-hidden"><div className="h-full rounded-full bg-cyan-500/60" style={{width:`${d.consistency}%`}}/></div><span className="text-[7px] text-muted">{d.consistency}%</span></div></div><div><p className="text-[8px] text-cyan-400">{d.highlight}</p><p className="text-[8px] text-muted">{d.events.join(" • ")}</p></div></div>)}<div className="card"><p className="text-[9px] font-bold text-purple-400 uppercase mb-2">AI Home Diary — Today</p><p className="text-[9px] text-muted leading-relaxed">Morning pooja completed on schedule. Water motor ran 25 min at 6:15 AM. Arjun studied from 8-10 PM (exam prep mode). Power stable throughout. Household mood: focused. Tomorrow prediction: Board exam at 10 AM — quiet morning expected.</p></div></div>}
+{pg==="memory"&&<div className="max-w-5xl mx-auto px-4 py-6 space-y-4">
+<h2 className="text-base font-bold mb-3">Memory & Gallery</h2>
 
-{/* CALENDAR */}
-{pg==="calendar"&&<div className="max-w-3xl mx-auto px-4 py-6 space-y-2"><h2 className="text-base font-bold mb-3">Calendar</h2>{cal.map((e,i)=><div key={i} className="card flex items-center gap-3">
-  <span className="text-lg">{e.i}</span>
-  <div className="flex-1"><p className="text-xs font-medium">{e.t}</p><p className="text-[10px] text-muted">{e.d}</p></div>
-  <span className="text-[9px] text-cyan-400 font-medium">{getDaysLeft(e.d)}</span>
-  <button onClick={()=>sCalEdit({idx:i,t:e.t,d:e.d})} className="text-[10px] px-2 py-1 rounded bg-white/5 border border-[var(--border)] hover:bg-white/10 transition-all">✏️</button>
-</div>)}
-{/* Edit modal */}
-{calEdit&&<div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={()=>sCalEdit(null)}><div className="bg-[var(--card)] rounded-2xl p-5 w-full max-w-xs border border-[var(--border)] space-y-3" onClick={ev=>ev.stopPropagation()}>
-  <h3 className="text-sm font-bold">Edit Event</h3>
-  <div><label className="text-[9px] text-muted">Title</label><input value={calEdit.t} onChange={ev=>sCalEdit({...calEdit,t:ev.target.value})} className="w-full px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-xs mt-0.5"/></div>
-  <div><label className="text-[9px] text-muted">Date / Frequency</label><input value={calEdit.d} onChange={ev=>sCalEdit({...calEdit,d:ev.target.value})} className="w-full px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-xs mt-0.5" placeholder="2025-01-20 or Daily 6:15"/></div>
-  <p className="text-[9px] text-cyan-400">{getDaysLeft(calEdit.d)}</p>
-  <div className="flex gap-2"><button onClick={saveCalEdit} className="btn-p flex-1 text-[10px]">Save</button><button onClick={()=>sCalEdit(null)} className="btn-s flex-1 text-[10px]">Cancel</button></div>
-</div></div>}
-</div>}
+{/* Memory Timeline */}
+<h3 className="text-sm font-bold">🧠 7-Day Memory Timeline</h3>
+<div className="space-y-2">{MEMORY_TIMELINE.map((d,i)=><div key={i} className="card flex gap-3"><div className="w-14 flex-shrink-0"><p className="text-[9px] font-medium">{d.day}</p><div className="flex items-center gap-1 mt-0.5"><div className="h-1 flex-1 rounded-full bg-[var(--border)] overflow-hidden"><div className="h-full rounded-full bg-cyan-500/60" style={{width:`${d.consistency}%`}}/></div><span className="text-[7px] text-muted">{d.consistency}%</span></div></div><div><p className="text-[8px] text-cyan-400">{d.highlight}</p><p className="text-[8px] text-muted">{d.events.join(" • ")}</p></div></div>)}</div>
 
-{/* GALLERY */}
-{pg==="gallery"&&<div className="max-w-5xl mx-auto px-4 py-6 space-y-5">
-<h2 className="text-base font-bold">Family Gallery</h2>
+{/* AI Learning Summary */}
+<div className="card"><p className="text-[9px] font-bold text-purple-400 uppercase mb-2">AI Learning Summary</p><p className="text-[9px] text-muted leading-relaxed">Morning pooja completed on schedule. Water motor ran 25 min at 6:15 AM. Arjun studied from 8-10 PM (exam prep mode). Power stable throughout. Household mood: focused. Tomorrow prediction: Board exam at 10 AM — quiet morning expected.</p></div>
+
+{/* Gallery merged here */}
+<h3 className="text-sm font-bold mt-4">🖼️ Family Gallery</h3>
 <p className="text-xs text-[var(--muted)] italic">&ldquo;Every home has memories. GharMind helps protect the rhythm behind them.&rdquo;</p>
-
-{/* Upload controls */}
 <div className="flex flex-wrap gap-2 items-center">
   <input ref={galFileRef} type="file" accept="image/jpeg,image/jpg,image/png,image/webp" onChange={handleGalFile} className="hidden"/>
-  <button onClick={()=>galFileRef.current?.click()} className="btn-p text-[11px]">📷 Upload Image</button>
-  <div className="flex gap-2 flex-1 min-w-[200px]"><input value={gi} onChange={e=>sGi(e.target.value)} placeholder="Or paste image URL..." className="flex-1 px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-xs"/><button onClick={()=>{if(gi.trim()){sGal(p=>[...p,{id:`g${Date.now()}`,url:gi.trim(),cap:"Added"}]);sGi("");}}} className="btn-s text-[10px]">+ Add URL</button></div>
+  <button onClick={()=>galFileRef.current?.click()} className="btn-p text-[11px]">📷 Upload</button>
+  <div className="flex gap-2 flex-1 min-w-[180px]"><input value={gi} onChange={e=>sGi(e.target.value)} placeholder="Paste image URL..." className="flex-1 px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-xs"/><button onClick={()=>{if(gi.trim()){sGal(p=>[...p,{id:`g${Date.now()}`,url:gi.trim(),cap:"Added"}]);sGi("");}}} className="btn-s text-[10px]">+ Add</button></div>
 </div>
-
-{/* Upload preview modal */}
-{galUpOpen&&galFile&&<div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={()=>{setGalUpOpen(false);setGalFile(null);}}>
-  <div className="bg-[var(--card)] rounded-2xl p-5 w-full max-w-sm border border-[var(--border)] space-y-3" onClick={e=>e.stopPropagation()}>
-    <h3 className="text-sm font-bold">Add to Gallery</h3>
-    <img src={galFile} alt="Preview" className="w-full h-40 object-cover rounded-xl border border-[var(--border)]"/>
-    <input value={galCap} onChange={e=>setGalCap(e.target.value)} placeholder="Add a caption..." className="w-full px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-xs"/>
-    <div className="flex gap-2"><button onClick={addGalFromFile} className="btn-p flex-1 text-[10px]">Add to Gallery</button><button onClick={()=>{setGalUpOpen(false);setGalFile(null);}} className="btn-s flex-1 text-[10px]">Cancel</button></div>
-  </div>
+{galUpOpen&&galFile&&<div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={()=>{setGalUpOpen(false);setGalFile(null);}}><div className="bg-[var(--card)] rounded-2xl p-5 w-full max-w-sm border border-[var(--border)] space-y-3" onClick={e=>e.stopPropagation()}><h3 className="text-sm font-bold">Add to Gallery</h3><img src={galFile} alt="Preview" className="w-full h-40 object-cover rounded-xl border border-[var(--border)]"/><input value={galCap} onChange={e=>setGalCap(e.target.value)} placeholder="Caption..." className="w-full px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-xs"/><div className="flex gap-2"><button onClick={addGalFromFile} className="btn-p flex-1 text-[10px]">Add</button><button onClick={()=>{setGalUpOpen(false);setGalFile(null);}} className="btn-s flex-1 text-[10px]">Cancel</button></div></div></div>}
+<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">{gal.map(g=>(<div key={g.id} className="relative rounded-xl overflow-hidden group shadow-md"><img src={g.url} alt={g.cap} onError={(e)=>{(e.target as HTMLImageElement).src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&q=80";}} className="w-full h-36 sm:h-40 object-cover group-hover:scale-105 transition-transform duration-300"/><div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2.5"><p className="text-white text-[11px] font-medium">{g.cap}</p></div><button onClick={()=>delGalConfirm(g.id)} className="absolute top-2 right-2 w-6 h-6 rounded-full bg-red-500/80 text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600">✕</button></div>))}</div>
 </div>}
 
-{/* Image grid — responsive */}
-<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-  {gal.map(g=>(
-    <div key={g.id} className="relative rounded-xl overflow-hidden group shadow-md">
-      <img src={g.url} alt={g.cap} onError={(e)=>{(e.target as HTMLImageElement).src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&q=80";}} className="w-full h-36 sm:h-40 object-cover group-hover:scale-105 transition-transform duration-300"/>
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2.5">
-        <p className="text-white text-[11px] font-medium">{g.cap}</p>
-      </div>
-      <button onClick={()=>delGalConfirm(g.id)} className="absolute top-2 right-2 w-6 h-6 rounded-full bg-red-500/80 text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600">✕</button>
-    </div>
-  ))}
-</div>
+{/* Calendar and Gallery moved into Family and Memory pages */}
 
-{/* Quotes */}
-<div className="space-y-2 pt-2 border-t border-[var(--border)]">
-  {["A family gallery is more than photos — it is the emotional memory of the household.","GharMind connects routines, people, and moments into one intelligent home story."].map((q,i)=>(
-    <p key={i} className="text-[11px] text-[var(--muted)] italic text-center">&ldquo;{q}&rdquo;</p>
-  ))}
-</div>
-</div>}
-
-{/* WHY */}
-{pg==="why"&&<div className="max-w-4xl mx-auto px-4 py-6 space-y-4"><h2 className="text-base font-bold mb-3">Why GharMind AI is Different</h2><div className="grid md:grid-cols-2 gap-4"><div className="card border-l-2 border-l-red-500/50"><p className="text-[9px] font-bold text-red-400 uppercase mb-2">Traditional Smart Home</p>{COMPARISON_DATA.traditional.map((t,i)=><p key={i} className="text-[9px] text-muted py-1 border-b border-[var(--border)] last:border-0">✗ {t.value}</p>)}</div><div className="card-glow border-l-2 border-l-emerald-500/50"><p className="text-[9px] font-bold text-emerald-400 uppercase mb-2">GharMind AI</p>{COMPARISON_DATA.gharmind.map((g,i)=><p key={i} className="text-[9px] text-emerald-300 py-1 border-b border-[var(--border)] last:border-0">✓ {g.value}</p>)}</div></div><div className="card mt-4"><p className="text-[9px] font-bold text-cyan-400 uppercase mb-2">Self-Learning Feedback</p><p className="text-[9px] text-muted">Every prediction can be accepted or rejected. GharMind learns from your feedback to improve future suggestions continuously.</p><div className="flex gap-2 mt-2"><button className="btn-p text-[8px] py-1 px-2">✓ Accept</button><button className="btn-s text-[8px] py-1 px-2">✗ Reject</button><span className="text-[8px] text-emerald-400 self-center ml-2">→ GharMind learned from this feedback.</span></div></div></div>}
 
 </main>
 
