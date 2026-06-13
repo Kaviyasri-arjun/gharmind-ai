@@ -479,7 +479,80 @@ return(<div className="min-h-screen flex flex-col">
 </div>}
 
 {/* PREDICTIONS */}
-{pg==="predictions"&&<div className="max-w-4xl mx-auto px-4 py-6 space-y-3"><h2 className="text-base font-bold mb-3">Predictions</h2>{pr.map((p:any,i:number)=><div key={i} className="card-glow"><div className="flex gap-2"><div className="flex-1"><p className="text-xs font-semibold">{p.title}</p><p className="text-[11px] text-muted mt-0.5">{p.action_suggestion}</p></div><span className={cn("badge",p.priority==="critical"?"badge-r":p.priority==="high"?"badge-a":"badge-b")}>{Math.round(p.confidence*100)}%</span></div><details className="mt-2"><summary className="text-[10px] text-cyan-400 cursor-pointer">Explainable AI — View reasoning</summary><p className="text-[11px] text-muted mt-1 pl-2 border-l border-cyan-800">{p.category==="water"?"14 weekday motor patterns. Tank below 45%. CMWSSB supply window active. Confidence adjusted by seasonal context.":p.category==="power"?"TNEB Thursday 2 PM load-shedding. Confirmed 5 of 7 weeks. Zone C2 historical data.":"Historical routine execution analysis with seasonal and calendar context."}</p></details></div>)}</div>}
+{pg==="predictions"&&<div className="max-w-4xl mx-auto px-4 py-6 space-y-4">
+
+{/* ── 10. AI BUTLER NARRATIVE ── */}
+<div className="card-glow border-l-2 border-l-cyan-500/50 py-3">
+  <p className="text-[10px] text-cyan-400 font-medium">Good Evening.</p>
+  <p className="text-xs mt-1">GharMind has detected elevated household activity due to tomorrow's exam. The most important action today is charging devices before the predicted 2 PM outage. Three routine events and one risk event require attention.</p>
+</div>
+
+{/* ── 4. DIGITAL TWIN SUMMARY ── */}
+<div className="card"><p className="text-[9px] font-bold text-cyan-400 uppercase mb-2">Current Household State</p>
+<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 text-center">{[{l:"Mood",v:"Focused",c:"text-purple-400"},{l:"Energy",v:"Moderate",c:"text-amber-400"},{l:"Water",v:"42%",c:"text-cyan-400"},{l:"Power Risk",v:"76%",c:"text-red-400"},{l:"Events Today",v:"5",c:"text-emerald-400"},{l:"Harmony",v:"92%",c:"text-cyan-400"}].map((s,i)=><div key={i}><p className={cn("text-sm font-bold",s.c)}>{s.v}</p><p className="text-[8px] text-muted">{s.l}</p></div>)}</div>
+<p className="text-[9px] text-muted mt-2">Reason: Board exam tomorrow. Study activity elevated.</p>
+</div>
+
+{/* ── 3. NEXT 12 HOURS TIMELINE ── */}
+<div className="card"><p className="text-[9px] font-bold text-cyan-400 uppercase mb-2">Next 12 Hours</p>
+<div className="flex gap-1.5 overflow-x-auto pb-1">{[{t:"6:15",e:"💧 Motor"},{t:"8:00",e:"🎒 School"},{t:"14:00",e:"⚡ Outage"},{t:"17:00",e:"☕ Coffee"},{t:"18:00",e:"📚 Tuition"},{t:"20:00",e:"🔇 Quiet"},{t:"22:00",e:"😴 Rest"}].map((x,i)=><div key={i} className="flex-shrink-0 text-center"><div className="w-10 h-10 rounded-full border border-cyan-800/40 flex items-center justify-center text-sm bg-cyan-500/5">{x.e.split(" ")[0]}</div><p className="text-[8px] text-muted mt-1">{x.t}</p><p className="text-[7px]">{x.e.split(" ")[1]}</p></div>)}</div>
+</div>
+
+{/* ── 6. PREDICTION ENGINE PERFORMANCE ── */}
+<div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+  {[{v:"89%",l:"Accuracy (30d)",c:"text-emerald-400"},{v:"267",l:"Successful",c:"text-cyan-400"},{v:"31",l:"Missed",c:"text-amber-400"},{v:"+12%",l:"Improvement",c:"text-emerald-400"}].map((s,i)=><div key={i} className="card text-center py-2"><p className={cn("text-base font-bold",s.c)}>{s.v}</p><p className="text-[8px] text-muted">{s.l}</p></div>)}
+</div>
+
+<h2 className="text-base font-bold">Predictions</h2>
+
+{/* ── PREDICTION CARDS (enhanced) ── */}
+{pr.map((p:any,i:number)=><div key={i} className="card-glow space-y-2">
+  {/* Existing: title + suggestion + badge */}
+  <div className="flex gap-2"><div className="flex-1"><p className="text-xs font-semibold">{p.title}</p><p className="text-[11px] text-muted mt-0.5">{p.action_suggestion}</p></div><span className={cn("badge",p.priority==="critical"?"badge-r":p.priority==="high"?"badge-a":"badge-b")}>{Math.round(p.confidence*100)}%</span></div>
+
+  {/* 5. Confidence Bar */}
+  <div className="w-full h-1.5 rounded-full bg-[var(--border)]"><div className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-emerald-500 transition-all" style={{width:`${Math.round(p.confidence*100)}%`}}/></div>
+
+  {/* 1. Explainable AI (enhanced) */}
+  <details className="mt-1"><summary className="text-[10px] text-cyan-400 cursor-pointer">Explainable AI — View reasoning</summary><div className="mt-2 pl-2 border-l border-cyan-800/40 space-y-2">
+    <div><p className="text-[9px] font-bold text-cyan-400 uppercase">Evidence</p><div className="space-y-0.5 mt-1">{(p.category==="water"?["Tank level reached 42%","Municipal supply window closes at 6:45 AM","Similar action occurred on 31 of last 35 days","Household consumption indicates shortage before noon"]:p.category==="power"?["TNEB Thursday load-shedding pattern","Confirmed in 5 of last 7 weeks","Zone C2 historical outage data","Duration: 60-90 minutes typical"]:["Historical routine detected on similar days","Calendar context: exam tomorrow","Behavioral consistency score: high","Time-of-day pattern match"]).map((e,j)=><p key={j} className="text-[10px] text-emerald-400">✓ {e}</p>)}</div></div>
+    <div><p className="text-[9px] font-bold text-purple-400 uppercase">Contributing Factors</p><p className="text-[10px] text-muted mt-0.5">Time Context • Historical Routine • Resource Availability • Household Behavior Pattern</p></div>
+    <div><p className="text-[9px] font-bold text-emerald-400 uppercase">Expected Outcome</p><p className="text-[10px] text-muted mt-0.5">{p.category==="water"?"Avoid water shortage and emergency motor usage.":p.category==="power"?"Minimize disruption from power outage.":"Maintain optimal household schedule."}</p></div>
+  </div></details>
+
+  {/* 2. Impact Analysis */}
+  <details><summary className="text-[10px] text-amber-400 cursor-pointer">Impact Analysis</summary><div className="mt-2 pl-2 border-l border-amber-800/40">
+    <p className="text-[9px]">Severity: <span className={cn("font-bold",p.priority==="critical"?"text-red-400":"text-amber-400")}>{p.priority==="critical"?"HIGH":"MEDIUM"}</span></p>
+    <div className="mt-1"><p className="text-[9px] text-emerald-400">Benefits:</p>{(p.category==="water"?["Prevents water shortage","Avoids emergency appliance usage","Improves household efficiency"]:p.category==="power"?["Protects devices from damage","Ensures study continuity","Reduces stress"]:["Maintains routine consistency","Supports exam preparation","Reduces household disruption"]).map((b,j)=><p key={j} className="text-[10px] text-muted">✓ {b}</p>)}</div>
+    <p className="text-[9px] text-muted mt-1">Affected: {p.category==="water"?"Water System • Schedule • Energy":p.category==="power"?"Power • Devices • Study":"Routine • Family • Comfort"}</p>
+  </div></details>
+
+  {/* 8. What Happens If Ignored */}
+  <details><summary className="text-[10px] text-red-400 cursor-pointer">What happens if ignored?</summary><div className="mt-2 pl-2 border-l border-red-800/40">
+    <p className="text-[10px] text-muted">{p.category==="water"?"Water level likely drops below 20%. Emergency motor activation required. Higher electricity usage.":p.category==="power"?"Devices may lose charge mid-use. Study session interrupted. WiFi disconnection.":"Routine disruption cascade. Schedule delays propagate to next events."}</p>
+    <p className="text-[10px] text-red-400 mt-1 font-medium">Risk Increase: {p.category==="water"?"+67%":p.category==="power"?"+54%":"+38%"}</p>
+  </div></details>
+
+  {/* 11. Workflow (compact) */}
+  <div className="flex items-center gap-1 text-[8px] text-muted pt-1 border-t border-[var(--border)]">
+    <span className="text-cyan-400">Prediction</span><span>→</span><span>Reason</span><span>→</span><span>Impact</span><span>→</span><span className="text-red-400">If Ignored</span><span>→</span><span className="text-emerald-400">{Math.round(p.confidence*100)}%</span>
+  </div>
+</div>)}
+
+{/* ── 9. PREDICTION RELATIONSHIP GRAPH ── */}
+<div className="card"><p className="text-[9px] font-bold text-cyan-400 uppercase mb-2">Prediction Dependencies</p>
+<div className="space-y-1">{[{from:"Power Cut at 2 PM",to:"Charge Devices by 1:30 PM"},{from:"Charge Devices",to:"Exam Quiet Mode at 8 PM"},{from:"Exam Quiet Mode",to:"Study Session Continuity"},{from:"Water Motor at 6:15",to:"Morning Routine Stability"}].map((r,i)=><div key={i} className="flex items-center gap-2 text-[10px]"><span className="text-cyan-400">{r.from}</span><span className="text-muted">→</span><span className="text-emerald-400">{r.to}</span></div>)}</div>
+</div>
+
+{/* ── 7. SELF-LEARNING AI ── */}
+<div className="card"><p className="text-[9px] font-bold text-purple-400 uppercase mb-2">Adaptive Learning</p>
+<div className="space-y-1.5">
+  <div className="py-1.5 border-b border-[var(--border)]"><p className="text-[10px] text-muted">Yesterday: Prediction <span className="text-red-400">Rejected</span></p><p className="text-[10px]">AI shifted water motor recommendation from 6:00 AM to 6:15 AM</p></div>
+  <div className="py-1.5"><p className="text-[10px] text-muted">Today: Recommendation <span className="text-emerald-400">Accepted</span></p><p className="text-[10px] text-emerald-400">✓ Successfully Adapted</p></div>
+</div>
+</div>
+
+</div>}
 
 {/* WHAT-IF */}
 {pg==="whatif"&&<div className="max-w-4xl mx-auto px-4 py-6 space-y-4"><h2 className="text-base font-bold mb-3">What-If Simulator</h2><div className="grid grid-cols-3 gap-3">{[{k:"power",i:"⚡",l:"Power Cut"},{k:"exam",i:"📚",l:"Exam"},{k:"guests",i:"👥",l:"Guests"}].map(s=><button key={s.k} onClick={()=>doSim(s.k)} className="card-glow text-center py-4 hover:border-cyan-700/60 transition-all"><span className="text-xl">{s.i}</span><p className="text-[9px] mt-1">{s.l}</p></button>)}</div>{sl&&<p className="text-[10px] text-muted text-center ap py-4">Simulating...</p>}{sr&&<div className="card space-y-2"><span className="badge badge-a">Impact: {sr.overall_severity}</span><p className="text-[10px]">{sr.result_summary}</p>{sr.action_plan?.map((a:any,i:number)=><div key={i} className="flex gap-2 text-[9px]"><span className="font-mono text-muted w-10">{a.time}</span><span>{a.action}</span></div>)}{sr.cascade_chain?.length>0&&<details><summary className="text-[8px] text-cyan-400 cursor-pointer">Cascade chain</summary><div className="mt-1">{sr.cascade_chain.map((c:string,i:number)=><p key={i} className="text-[8px] text-muted">→ {c}</p>)}</div></details>}</div>}</div>}
