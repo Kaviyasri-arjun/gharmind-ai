@@ -39,8 +39,9 @@ const hp=Math.min(100,Math.round((tank>60?25:15)+(pwr<.3?25:10)+(urg<30?25:15)+2
 
 function nav(p:Pg){sP(p);sMn(false);}
 // Demo
-function dStart(){sDm(true);sDi(0);}function dPause(){sDm(false);}function dRestart(){sDi(0);sDm(true);}
-useEffect(()=>{if(!dm){if(dr.current)clearInterval(dr.current);return;}dr.current=setInterval(()=>{sDi(i=>{const n=(i+1)%PG.length;sP(PG[n]);return n;});},500);return()=>{if(dr.current)clearInterval(dr.current);};},[dm]);
+function dStart(){sDm(true);sDi(0);setDemoNote("");}function dPause(){sDm(false);}function dRestart(){sDi(0);sDm(true);setDemoNote("");}
+const[demoNote,setDemoNote]=useState("");
+useEffect(()=>{if(!dm){if(dr.current)clearInterval(dr.current);return;}dr.current=setInterval(()=>{sDi(i=>{const n=i+1;if(n>=PG.length){sP("home");sDm(false);setDemoNote("Demo Complete — Returning to Home");setTimeout(()=>setDemoNote(""),3000);return 0;}sP(PG[n]);return n;});},2000);return()=>{if(dr.current)clearInterval(dr.current);};},[dm]);
 // Chat
 async function csend(){if(!ci.trim())return;sMsg(p=>[...p,{r:"u",t:ci.trim()}]);sCi("");sCl(true);const r=await sendChat(ci.trim());sMsg(p=>[...p,{r:"a",t:r.response||"Processing."}]);sCl(false);}
 function speak(t:string){if(sp){speechSynthesis.cancel();sSp(false);return;}const u=new SpeechSynthesisUtterance(t);u.lang="en-IN";u.rate=.95;u.onend=()=>sSp(false);speechSynthesis.speak(u);sSp(true);}
@@ -69,7 +70,7 @@ return(<div className="min-h-screen flex flex-col">
     {PG.map(p=><button key={p} onClick={()=>nav(p)} className={cn("btn-g",pg===p&&"text-cyan-400 bg-cyan-500/10")}>{PL[p]}</button>)}
   </nav>
   {/* Demo */}
-  <div className="hidden md:flex items-center gap-1.5 ml-3">{dm?<><button onClick={dPause} className="btn-s text-[9px] py-1 px-2">⏸</button><button onClick={dRestart} className="btn-s text-[9px] py-1 px-2">🔄</button></>:<button onClick={dStart} className="btn-p text-[9px] py-1 px-2.5">▶ Demo</button>}</div>
+  <div className="hidden md:flex items-center gap-1.5 ml-3">{dm?<><button onClick={dPause} className="btn-s text-[10px] py-1.5 px-2.5">⏸ Pause</button><button onClick={dRestart} className="btn-s text-[10px] py-1.5 px-2.5">🔄</button></>:<button onClick={dStart} className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-[10px] font-bold text-white bg-gradient-to-r from-cyan-500 to-blue-500 shadow-md shadow-cyan-500/20 hover:scale-105 transition-all animate-[pulse_4s_ease-in-out_infinite]">▶ Demo Tour</button>}</div>
   {/* Hamburger */}
   <button onClick={()=>sMn(!mn)} className="lg:hidden ml-auto p-1.5 rounded hover:bg-white/5"><svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
 </div>
@@ -88,7 +89,7 @@ return(<div className="min-h-screen flex flex-col">
   <p className="text-cyan-400 text-[9px] font-bold tracking-[.3em] uppercase mb-2">India's First</p>
   <h1 className="text-4xl md:text-6xl font-black text-white leading-[1.05]">GHARMIND<br/><span className="text-grad">AI</span></h1>
   <p className="text-sm text-white/60 mt-3 max-w-sm">AI Household Operating System. Predicting household needs before anyone asks.</p>
-  <div className="flex gap-2.5 mt-6"><button onClick={dStart} className="btn-p">▶ Start Demo</button><button onClick={()=>nav("dashboard")} className="btn-s border-white/20 text-white/80">Open Dashboard</button></div>
+  <div className="flex flex-wrap gap-3 mt-6"><button onClick={dStart} className="relative inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white text-sm font-bold bg-gradient-to-r from-cyan-500 to-blue-500 shadow-lg shadow-cyan-500/30 hover:scale-105 transition-all animate-[pulse_3s_ease-in-out_infinite]">▶ Demo Tour</button><button onClick={()=>nav("dashboard")} className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white text-sm font-semibold bg-gradient-to-r from-blue-600 to-blue-500 shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:scale-[1.03] transition-all border border-blue-400/20">Open Dashboard</button></div>
 </div>
 </section>}
 
@@ -161,6 +162,7 @@ return(<div className="min-h-screen flex flex-col">
 </main>
 
 {/* ═══ FLOATING CHAT ═══ */}
+{demoNote&&<div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-lg bg-[var(--card)] border border-cyan-800/40 shadow-lg text-xs text-cyan-400 font-medium af">{demoNote}</div>}
 <button onClick={()=>sCo(!co)} className="fixed bottom-4 right-4 z-50 w-11 h-11 rounded-full bg-gradient-to-br from-blue-600 to-cyan-500 text-white shadow-lg shadow-cyan-500/30 flex items-center justify-center text-base hover:scale-110 transition-transform">{co?"✕":"💬"}</button>
 {co&&<div className={cn("fixed z-50 bg-[var(--card)] border border-[var(--border)] shadow-2xl flex flex-col","inset-0 md:inset-auto md:bottom-16 md:right-4 md:w-[340px] md:max-h-[420px] md:rounded-xl")}>
 <div className="px-3 py-2 border-b border-[var(--border)] flex items-center justify-between"><div><p className="text-xs font-bold text-grad">Gharji AI</p><p className="text-[9px] text-muted">Household intelligence</p></div><button onClick={()=>sCo(false)} className="md:hidden text-sm">✕</button></div>
