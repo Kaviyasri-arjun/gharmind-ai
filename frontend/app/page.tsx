@@ -74,7 +74,8 @@ const galFileRef=useRef<HTMLInputElement>(null);
 function handleGalFile(e:React.ChangeEvent<HTMLInputElement>){const f=e.target.files?.[0];if(f&&f.type.startsWith("image/")){const url=URL.createObjectURL(f);setGalFile(url);setGalUpOpen(true);}}
 function addGalFromFile(){if(galFile){sGal(p=>[...p,{id:`g${Date.now()}`,url:galFile,cap:galCap||"Uploaded"}]);setGalFile(null);setGalCap("");setGalUpOpen(false);}}
 function delGalConfirm(id:string){if(confirm("Delete this image from gallery?")){sGal(p=>p.filter(x=>x.id!==id));}}
-const[sr,sSr]=useState<any>(null);const[sl,sSl]=useState(false);
+const[sr,sSr]=useState<any>(null);const[sl,sSl]=useState(false);const[simSc,setSimSc]=useState<string>("");
+const[simP,setSimP]=useState<Record<string,string>>({});
 const[cal,sCal]=useState([{i:"🎂",t:"Paati Birthday",d:"2025-01-20"},{i:"🪔",t:"Pongal",d:"2025-01-14"},{i:"📚",t:"Board Exam",d:"2025-01-26"},{i:"💧",t:"Motor",d:"Daily 6:15"},{i:"⚡",t:"Power Cut",d:"Thu 2PM"},{i:"☕",t:"Coffee",d:"Daily 5PM"}]);
 const[calEdit,sCalEdit]=useState<{idx:number;t:string;d:string}|null>(null);
 function getDaysLeft(d:string):string{if(d.startsWith("Daily")||d.startsWith("Thu"))return"Recurring";try{const diff=Math.ceil((new Date(d).getTime()-Date.now())/(86400000));if(diff<0)return"Passed";if(diff===0)return"Today";if(diff===1)return"Tomorrow";return`${diff} days left`;}catch{return"";}}
@@ -101,7 +102,7 @@ const qk=[{l:"Predict Today",t:"Motor 6:15 (96%). Power cut 2 PM (76%). Quiet mo
 function addF(){if(!ff.name)return;sFam(p=>[...p,{id:`f${Date.now()}`,name:ff.name,role:ff.role,age:ff.age,birthday:ff.bday,img:ff.img||`https://i.pravatar.cc/60?u=${Date.now()}`}]);sff({name:"",role:"Student",age:"",bday:"",img:""});sFm(false);}
 function delF(id:string){if(confirm("Remove?")){sFam(p=>p.filter(f=>f.id!==id));}}
 // Sim
-async function doSim(k:string){sSl(true);sSr(null);const s:any={power:{scenario_name:"Power Cut",hypothesis:"Outage 2PM",perturbations:[{type:"power_cut",params:{start_time:"14:00",duration_hours:1.5}}],sim_duration_hours:6},exam:{scenario_name:"Exam",hypothesis:"Board exam tomorrow",perturbations:[{type:"exam_week",params:{exam_type:"Board",duration_days:1}}],sim_duration_hours:12},guests:{scenario_name:"Guests",hypothesis:"6 guests 7PM",perturbations:[{type:"unexpected_guest",params:{count:6,arrival_time:"19:00",duration_hours:3}}],sim_duration_hours:6}};const r=await runSimulation(s[k]);sSr(r);sSl(false);}
+async function doSim(k:string){setSimSc(k);sSl(true);sSr(null);const s:any={power:{scenario_name:"Power Cut",hypothesis:"Outage 2PM",perturbations:[{type:"power_cut",params:{start_time:"14:00",duration_hours:1.5}}],sim_duration_hours:6},exam:{scenario_name:"Exam",hypothesis:"Board exam tomorrow",perturbations:[{type:"exam_week",params:{exam_type:"Board",duration_days:1}}],sim_duration_hours:12},guests:{scenario_name:"Guests",hypothesis:"6 guests 7PM",perturbations:[{type:"unexpected_guest",params:{count:6,arrival_time:"19:00",duration_hours:3}}],sim_duration_hours:6}};const r=await runSimulation(s[k]);sSr(r);sSl(false);}
 
 if(ld)return<div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin"/></div>;
 
@@ -585,17 +586,78 @@ return(<div className="min-h-screen flex flex-col">
 {/* ── SCENARIO CARDS (existing + expanded) ── */}
 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
   {[{k:"power",i:"⚡",l:"Power Cut"},{k:"exam",i:"📚",l:"Exam"},{k:"guests",i:"👥",l:"Guests"},{k:"power",i:"🪔",l:"Festival"},{k:"power",i:"💧",l:"Water Shortage"},{k:"guests",i:"🌧️",l:"Heavy Rain"},{k:"exam",i:"🏠",l:"Work From Home"},{k:"power",i:"🌡️",l:"Heat Wave"}].map(s=>
-    <button key={s.l} onClick={()=>doSim(s.k)} className="card-glow text-center py-4 hover:border-cyan-700/60 transition-all"><span className="text-xl">{s.i}</span><p className="text-[9px] mt-1">{s.l}</p></button>
+    <button key={s.l} onClick={()=>{setSimSc(s.l);doSim(s.k);}} className="card-glow text-center py-4 hover:border-cyan-700/60 transition-all"><span className="text-xl">{s.i}</span><p className="text-[9px] mt-1">{s.l}</p></button>
   )}
 </div>
 
-{/* ── 9. INTERACTIVE CONTROLS ── */}
-<div className="card"><p className="text-[9px] font-bold text-cyan-400 uppercase mb-2">Scenario Parameters</p>
-<div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-  <div><p className="text-[9px] text-muted mb-1">Outage Duration</p><div className="flex gap-1">{["1 hr","2 hr","4 hr","8 hr"].map((d,i)=><button key={i} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",i===1?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
-  <div><p className="text-[9px] text-muted mb-1">Guest Count</p><div className="flex gap-1">{["2","4","8","12"].map((d,i)=><button key={i} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",i===1?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
-  <div><p className="text-[9px] text-muted mb-1">Exam Importance</p><div className="flex gap-1">{["Normal","Important","Board"].map((d,i)=><button key={i} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",i===2?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
-</div></div>
+{/* ── 9. DYNAMIC SCENARIO PARAMETERS ── */}
+<div className="card"><p className="text-[9px] font-bold text-cyan-400 uppercase mb-2">AI Simulation Inputs {simSc&&<span className="text-muted normal-case">— {simSc.charAt(0).toUpperCase()+simSc.slice(1)}</span>}</p>
+
+{/* Power Cut */}
+{(simSc==="power"||!simSc)&&<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+  <div><p className="text-[9px] text-muted mb-1">Outage Duration</p><div className="flex gap-1 flex-wrap">{["1 hr","2 hr","4 hr","8 hr"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,dur:d}))} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",(simP.dur||"2 hr")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
+  <div><p className="text-[9px] text-muted mb-1">Time of Outage</p><div className="flex gap-1 flex-wrap">{["10 AM","2 PM","6 PM","10 PM"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,time:d}))} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",(simP.time||"2 PM")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
+  <div><p className="text-[9px] text-muted mb-1">Battery Backup</p><div className="flex gap-1">{["Yes","No"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,backup:d}))} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",(simP.backup||"Yes")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
+  <div><p className="text-[9px] text-muted mb-1">Members at Home</p><div className="flex gap-1">{["2","3","4","5"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,members:d}))} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",(simP.members||"4")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
+</div>}
+
+{/* Exam */}
+{simSc==="exam"&&<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+  <div><p className="text-[9px] text-muted mb-1">Exam Importance</p><div className="flex gap-1 flex-wrap">{["Normal","Important","Board"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,imp:d}))} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",(simP.imp||"Board")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
+  <div><p className="text-[9px] text-muted mb-1">Days Remaining</p><div className="flex gap-1">{["1","3","7","14"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,days:d}))} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",(simP.days||"1")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
+  <div><p className="text-[9px] text-muted mb-1">Study Hours</p><div className="flex gap-1">{["2 hr","4 hr","6 hr","8 hr"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,study:d}))} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",(simP.study||"6 hr")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
+  <div><p className="text-[9px] text-muted mb-1">Quiet Hours</p><div className="flex gap-1 flex-wrap">{["8–10 PM","7–11 PM","Full Day"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,quiet:d}))} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",(simP.quiet||"8–10 PM")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
+</div>}
+
+{/* Guests */}
+{simSc==="guests"&&<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+  <div><p className="text-[9px] text-muted mb-1">Guest Count</p><div className="flex gap-1">{["2","4","8","12"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,gc:d}))} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",(simP.gc||"4")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
+  <div><p className="text-[9px] text-muted mb-1">Duration of Stay</p><div className="flex gap-1">{["2 hr","4 hr","8 hr","Overnight"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,gd:d}))} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",(simP.gd||"4 hr")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
+  <div><p className="text-[9px] text-muted mb-1">Meal Requirement</p><div className="flex gap-1">{["Snacks","1 Meal","2 Meals"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,gm:d}))} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",(simP.gm||"1 Meal")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
+  <div><p className="text-[9px] text-muted mb-1">Overnight Stay</p><div className="flex gap-1">{["Yes","No"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,go:d}))} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",(simP.go||"No")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
+</div>}
+
+{/* Festival */}
+{simSc==="Festival"&&<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+  <div><p className="text-[9px] text-muted mb-1">Festival Type</p><div className="flex gap-1 flex-wrap">{["Pongal","Diwali","Navaratri","Other"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,ft:d}))} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",(simP.ft||"Pongal")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
+  <div><p className="text-[9px] text-muted mb-1">Visitors Expected</p><div className="flex gap-1">{["5","10","15","20+"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,fv:d}))} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",(simP.fv||"10")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
+  <div><p className="text-[9px] text-muted mb-1">Preparation Days</p><div className="flex gap-1">{["1","3","5","7"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,fp:d}))} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",(simP.fp||"3")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
+  <div><p className="text-[9px] text-muted mb-1">Grocery Level</p><div className="flex gap-1">{["Low","Medium","High"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,fg:d}))} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",(simP.fg||"High")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
+</div>}
+
+{/* Water Shortage */}
+{simSc==="Water Shortage"&&<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+  <div><p className="text-[9px] text-muted mb-1">Tank Level %</p><div className="flex gap-1">{["10%","20%","35%","50%"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,wt:d}))} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",(simP.wt||"20%")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
+  <div><p className="text-[9px] text-muted mb-1">Supply Delay</p><div className="flex gap-1">{["2 hr","6 hr","12 hr","24 hr"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,wd:d}))} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",(simP.wd||"6 hr")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
+  <div><p className="text-[9px] text-muted mb-1">Usage Level</p><div className="flex gap-1">{["Low","Normal","High"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,wu:d}))} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",(simP.wu||"Normal")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
+  <div><p className="text-[9px] text-muted mb-1">Reserve Available</p><div className="flex gap-1">{["Yes","No"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,wr:d}))} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",(simP.wr||"No")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
+</div>}
+
+{/* Heavy Rain */}
+{simSc==="Heavy Rain"&&<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+  <div><p className="text-[9px] text-muted mb-1">Rain Intensity</p><div className="flex gap-1">{["Light","Moderate","Heavy","Severe"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,ri:d}))} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",(simP.ri||"Heavy")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
+  <div><p className="text-[9px] text-muted mb-1">Duration</p><div className="flex gap-1">{["2 hr","6 hr","12 hr","24 hr"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,rd:d}))} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",(simP.rd||"6 hr")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
+  <div><p className="text-[9px] text-muted mb-1">School Closure</p><div className="flex gap-1">{["Unlikely","Possible","Likely"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,rs:d}))} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",(simP.rs||"Possible")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
+  <div><p className="text-[9px] text-muted mb-1">Travel Impact</p><div className="flex gap-1">{["Low","Medium","High"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,rt:d}))} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",(simP.rt||"High")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
+</div>}
+
+{/* Work From Home */}
+{simSc==="Work From Home"&&<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+  <div><p className="text-[9px] text-muted mb-1">Members WFH</p><div className="flex gap-1">{["1","2","3","4"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,wm:d}))} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",(simP.wm||"1")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
+  <div><p className="text-[9px] text-muted mb-1">Meeting Load</p><div className="flex gap-1">{["Light","Normal","Heavy"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,wl:d}))} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",(simP.wl||"Normal")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
+  <div><p className="text-[9px] text-muted mb-1">Internet Need</p><div className="flex gap-1">{["Low","Medium","Critical"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,wi:d}))} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",(simP.wi||"Critical")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
+  <div><p className="text-[9px] text-muted mb-1">Power Requirement</p><div className="flex gap-1">{["Standard","High","Critical"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,wp:d}))} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",(simP.wp||"High")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
+</div>}
+
+{/* Heat Wave */}
+{simSc==="Heat Wave"&&<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+  <div><p className="text-[9px] text-muted mb-1">Temperature</p><div className="flex gap-1">{["38°C","40°C","42°C","45°C"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,ht:d}))} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",(simP.ht||"40°C")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
+  <div><p className="text-[9px] text-muted mb-1">Duration</p><div className="flex gap-1">{["1 day","3 days","5 days","7 days"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,hd:d}))} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",(simP.hd||"3 days")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
+  <div><p className="text-[9px] text-muted mb-1">AC Usage</p><div className="flex gap-1">{["4 hr","8 hr","12 hr","24 hr"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,ha:d}))} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",(simP.ha||"12 hr")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
+  <div><p className="text-[9px] text-muted mb-1">Water Usage</p><div className="flex gap-1">{["Normal","High","Very High"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,hw:d}))} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",(simP.hw||"High")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
+</div>}
+
+</div>
 
 {sl&&<p className="text-xs text-muted text-center ap py-4">Running Digital Twin simulation...</p>}
 
