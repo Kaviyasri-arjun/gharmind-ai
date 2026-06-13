@@ -18,16 +18,16 @@
   --purple: #8b5cf6;
 }
 
-@layer base { body { background: var(--bg); color: var(--fg); @apply antialiased text-[13px] leading-relaxed; } }
+@layer base { body { background: var(--bg); color: var(--fg); @apply antialiased text-sm leading-relaxed; } }
 
 @layer components {
   .card { background: var(--card); @apply rounded-xl border border-[var(--border)] p-3 shadow-lg shadow-black/30; }
   .card-glow { @apply card border-cyan-900/40 shadow-cyan-900/10; }
-  .btn { @apply inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold transition-all; }
+  .btn { @apply inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-[11px] font-semibold transition-all; }
   .btn-p { @apply btn text-white bg-gradient-to-r from-blue-600 to-cyan-600 shadow-md shadow-blue-900/30 hover:shadow-lg; }
   .btn-s { @apply btn border border-[var(--border)] text-[var(--muted)] hover:text-white hover:bg-white/5; }
-  .btn-g { @apply px-3 py-1.5 rounded-md text-[11px] text-[var(--muted)] hover:text-white hover:bg-white/5 transition-all; }
-  .badge { @apply inline-flex items-center px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider; }
+  .btn-g { @apply px-3 py-1.5 rounded-md text-xs text-[var(--muted)] hover:text-white hover:bg-white/5 transition-all; }
+  .badge { @apply inline-flex items-center px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider; }
   .badge-r { @apply badge bg-red-500/10 text-red-400; }
   .badge-a { @apply badge bg-amber-500/10 text-amber-400; }
   .badge-b { @apply badge bg-cyan-500/10 text-cyan-400; }

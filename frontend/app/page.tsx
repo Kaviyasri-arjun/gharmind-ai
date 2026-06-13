@@ -6,7 +6,8 @@ import{ENERGY_INSIGHTS,SAFETY_ALERTS,CULTURAL_CONTEXT,ROUTINE_PROFILE,NEXT_HOUR_
 
 const HERO="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1400&q=80";
 const AV={m:"https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&q=80",f:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&q=80",s:"https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=80&q=80",p:"https://images.unsplash.com/photo-1566616213894-2d4e1baee5d8?w=80&q=80"};
-const GAL=["https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&q=80","https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400&q=80","https://images.unsplash.com/photo-1513694203232-719a280e022f?w=400&q=80","https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&q=80","https://images.unsplash.com/photo-1600607687644-aac4c3eac7f4?w=400&q=80","https://images.unsplash.com/photo-1581579438747-104c53d7fbb4?w=400&q=80"];
+const GAL=["https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&q=80","https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400&q=80","https://images.unsplash.com/photo-1513694203232-719a280e022f?w=400&q=80","https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&q=80","https://images.unsplash.com/photo-1600607687644-aac4c3eac7f4?w=400&q=80","https://images.unsplash.com/photo-1581579438747-104c53d7fbb4?w=400&q=80","https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=400&q=80","https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=400&q=80","https://images.unsplash.com/photo-1616046229478-9901c5536a45?w=400&q=80"];
+const GAL_CAPS=["Family home","Cozy living room","Kitchen warmth","Festival lights","Evening glow","Together time","Study corner","Pooja space","Morning light"];
 const PG=["home","dashboard","family","predictions","whatif","energy","memory","calendar","gallery","why"]as const;
 type Pg=typeof PG[number];
 const PL:Record<Pg,string>={home:"Home",dashboard:"Dashboard",family:"Family",predictions:"Predictions",whatif:"What-If",energy:"Energy",memory:"Memory",calendar:"Calendar",gallery:"Gallery",why:"Why Us"};
@@ -17,6 +18,47 @@ const[ld,sLd]=useState(true);const[mems,sMs]=useState<any[]>([]);const[tw,sTw]=u
 const[msgs,sMsg]=useState<{r:string;t:string}[]>([]);const[ci,sCi]=useState("");const[cl,sCl]=useState(false);const[sp,sSp]=useState(false);
 const[dm,sDm]=useState(false);const[di,sDi]=useState(0);const dr=useRef<any>(null);
 const[fam,sFam]=useState<any[]>([]);const[fm,sFm]=useState(false);const[ff,sff]=useState({name:"",role:"Student",age:"",bday:"",img:""});
+
+// ── Live Clock ──
+const[clock,setClock]=useState("");
+useEffect(()=>{const tick=()=>{const d=new Date();setClock(d.toLocaleDateString("en-IN",{weekday:"short",timeZone:"Asia/Kolkata"})+" • "+d.toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:true,timeZone:"Asia/Kolkata"})+" IST");};tick();const t=setInterval(tick,1000);return()=>clearInterval(t);},[]);
+
+// ── Alarm Notification System ──
+const[alarm,setAlarm]=useState<{name:string;routine:string;action:string}|null>(null);
+const alarmChecked=useRef<Set<string>>(new Set());
+const routineAlarms=[
+  {member:"Arjun",routine:"School Departure",time:"08:00",action:"Ensure school bag is packed and breakfast is done."},
+  {member:"Arjun",routine:"Tuition Class",time:"18:00",action:"Keep study materials ready."},
+  {member:"Arjun",routine:"Exam Quiet Mode",time:"20:00",action:"Enforce quiet hours. Turn off TV."},
+  {member:"Lakshmi",routine:"Morning Pooja",time:"06:00",action:"Prepare pooja thali and light lamp."},
+  {member:"Lakshmi",routine:"Water Motor",time:"06:15",action:"Run water motor. CMWSSB supply window active."},
+  {member:"Lakshmi",routine:"Evening Coffee",time:"17:00",action:"Start filter coffee preparation."},
+  {member:"Venkat",routine:"Office Departure",time:"09:00",action:"Check traffic and ensure laptop is charged."},
+  {member:"Paati",routine:"Morning Aarti",time:"05:30",action:"Pooja room ready for morning prayers."},
+  {member:"Paati",routine:"Afternoon Rest",time:"13:00",action:"Minimize household noise."},
+];
+useEffect(()=>{
+  // Request browser notification permission
+  if(typeof window!=="undefined"&&"Notification"in window&&Notification.permission==="default"){Notification.requestPermission();}
+  const checker=setInterval(()=>{
+    const now=new Date();const hhmm=now.toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit",hour12:false,timeZone:"Asia/Kolkata"});
+    for(const a of routineAlarms){
+      const key=`${a.member}_${a.routine}_${now.toDateString()}`;
+      if(a.time===hhmm&&!alarmChecked.current.has(key)){
+        alarmChecked.current.add(key);
+        setAlarm({name:a.member,routine:a.routine,action:a.action});
+        playAlarmTone();
+        // Browser notification
+        if("Notification"in window&&Notification.permission==="granted"){new Notification(`GharMind AI — ${a.member}`,{body:`${a.routine}: ${a.action}`,icon:"💡"});}
+        break;
+      }
+    }
+  },5000);
+  return()=>clearInterval(checker);
+},[]);
+function playAlarmTone(){try{const ctx=new(window.AudioContext||(window as any).webkitAudioContext)();const osc=ctx.createOscillator();const gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.frequency.value=880;osc.type="sine";gain.gain.value=0.15;osc.start();osc.stop(ctx.currentTime+0.2);setTimeout(()=>{const o2=ctx.createOscillator();const g2=ctx.createGain();o2.connect(g2);g2.connect(ctx.destination);o2.frequency.value=1100;o2.type="sine";g2.gain.value=0.12;o2.start();o2.stop(ctx.currentTime+0.15);},250);}catch(e){}}
+function dismissAlarm(){setAlarm(null);}
+function snoozeAlarm(){const a=alarm;setAlarm(null);if(a)setTimeout(()=>{setAlarm(a);playAlarmTone();},300000);}
 const[famDet,sFamDet]=useState<any>(null);
 // Member tasks/alarms data
 const memberData:Record<string,{tasks:string[];alarms:{time:string;label:string}[]}> = {
@@ -25,7 +67,12 @@ const memberData:Record<string,{tasks:string[];alarms:{time:string;label:string}
   "Arjun":{tasks:["Study Physics from 8:00 PM","Keep laptop charged before power cut","Follow quiet mode during exam preparation","Complete tuition assignments"],alarms:[{time:"05:30",label:"Wake up"},{time:"13:00",label:"Download study materials (power cut prep)"},{time:"19:00",label:"Revision reminder"},{time:"20:00",label:"Exam quiet mode active"}]},
   "Paati":{tasks:["Morning aarti at 5:30 AM","Temple visit on Tuesday and Friday","Afternoon rest period","Evening prayer"],alarms:[{time:"04:30",label:"Wake up"},{time:"05:30",label:"Morning aarti"},{time:"13:00",label:"Afternoon rest"},{time:"18:00",label:"Evening prayer"}]},
 };
-const[gal,sGal]=useState(GAL.map((u,i)=>({id:`g${i}`,url:u})));const[gi,sGi]=useState("");
+const[gal,sGal]=useState(GAL.map((u,i)=>({id:`g${i}`,url:u,cap:GAL_CAPS[i]||"Memory"})));const[gi,sGi]=useState("");
+const[galFile,setGalFile]=useState<string|null>(null);const[galCap,setGalCap]=useState("");const[galUpOpen,setGalUpOpen]=useState(false);
+const galFileRef=useRef<HTMLInputElement>(null);
+function handleGalFile(e:React.ChangeEvent<HTMLInputElement>){const f=e.target.files?.[0];if(f&&f.type.startsWith("image/")){const url=URL.createObjectURL(f);setGalFile(url);setGalUpOpen(true);}}
+function addGalFromFile(){if(galFile){sGal(p=>[...p,{id:`g${Date.now()}`,url:galFile,cap:galCap||"Uploaded"}]);setGalFile(null);setGalCap("");setGalUpOpen(false);}}
+function delGalConfirm(id:string){if(confirm("Delete this image from gallery?")){sGal(p=>p.filter(x=>x.id!==id));}}
 const[sr,sSr]=useState<any>(null);const[sl,sSl]=useState(false);
 const cal=[{i:"🎂",t:"Paati Birthday",d:"Jan 20"},{i:"🪔",t:"Pongal",d:"Jan 14"},{i:"📚",t:"Board Exam",d:"Jan 26"},{i:"💧",t:"Motor",d:"Daily 6:15"},{i:"⚡",t:"Power Cut",d:"Thu 2PM"},{i:"☕",t:"Coffee",d:"Daily 5PM"}];
 // Mood/Energy profile
@@ -58,7 +105,9 @@ return(<div className="min-h-screen flex flex-col">
 {/* ═══ TOP BAR ═══ */}
 <header className="fixed top-0 inset-x-0 z-50 bg-[#080b12]/90 backdrop-blur-xl border-b border-[var(--border)] h-12">
 <div className="h-full max-w-[1400px] mx-auto px-3 flex items-center">
-  <span className="text-sm font-extrabold text-grad cursor-pointer mr-4" onClick={()=>nav("home")}>GHARMIND AI</span>
+  <span className="text-sm font-extrabold text-grad cursor-pointer mr-3" onClick={()=>nav("home")}>GHARMIND AI</span>
+  {/* Live Clock */}
+  <span className="hidden sm:inline text-[10px] text-[var(--muted)] font-mono mr-3 whitespace-nowrap">{clock}</span>
   {/* Status pills */}
   <div className="hidden md:flex items-center gap-2 mr-4">
     <span className="badge badge-g">{mood}</span>
@@ -82,16 +131,107 @@ return(<div className="min-h-screen flex flex-col">
 <main className="flex-1 pt-12 af" key={pg}>
 
 {/* HOME */}
-{pg==="home"&&<section className="h-[100vh] relative flex items-center">
+{pg==="home"&&<div>
+{/* ── HERO ── */}
+<section className="min-h-[100vh] relative flex items-center overflow-hidden">
 <img src={HERO} alt="" className="absolute inset-0 w-full h-full object-cover"/>
-<div className="absolute inset-0 bg-gradient-to-r from-[#080b12]/90 via-[#080b12]/60 to-[#080b12]/30"/>
-<div className="relative z-10 max-w-5xl mx-auto px-6">
-  <p className="text-cyan-400 text-[9px] font-bold tracking-[.3em] uppercase mb-2">India's First</p>
+<div className="absolute inset-0 bg-gradient-to-r from-[#080b12]/95 via-[#080b12]/75 to-[#080b12]/40"/>
+<div className="absolute inset-0 bg-gradient-to-t from-[#080b12] via-transparent to-transparent opacity-60"/>
+<div className="relative z-10 max-w-5xl mx-auto px-6 py-20">
+  <div className="flex flex-wrap gap-2 mb-4">
+    <span className="badge badge-b">✓ Powered by AWS Bedrock</span>
+    <span className="badge badge-g">✓ Amazon HackOn 6.0</span>
+  </div>
+  <p className="text-cyan-400 text-[10px] font-bold tracking-[.3em] uppercase mb-2">India's First Household Digital Twin</p>
   <h1 className="text-4xl md:text-6xl font-black text-white leading-[1.05]">GHARMIND<br/><span className="text-grad">AI</span></h1>
-  <p className="text-sm text-white/60 mt-3 max-w-sm">AI Household Operating System. Predicting household needs before anyone asks.</p>
-  <div className="flex flex-wrap gap-3 mt-6"><button onClick={dStart} className="relative inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white text-sm font-bold bg-gradient-to-r from-cyan-500 to-blue-500 shadow-lg shadow-cyan-500/30 hover:scale-105 transition-all animate-[pulse_3s_ease-in-out_infinite]">▶ Demo Tour</button><button onClick={()=>nav("dashboard")} className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white text-sm font-semibold bg-gradient-to-r from-blue-600 to-blue-500 shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:scale-[1.03] transition-all border border-blue-400/20">Open Dashboard</button></div>
+  <p className="text-sm md:text-base text-white/60 mt-3 max-w-lg leading-relaxed">Learns family routines, predicts needs, understands cultural context, and automates household decisions before anyone asks.</p>
+  {/* Animated counters */}
+  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6 max-w-lg">
+    {[{v:"12",l:"Routines Learned"},{v:"89%",l:"Prediction Accuracy"},{v:"7",l:"Actions Automated"},{v:"4",l:"Members Modeled"}].map((m,i)=>(
+      <div key={i} className="text-center"><p className="text-xl md:text-2xl font-black text-cyan-400">{m.v}</p><p className="text-[9px] text-white/40">{m.l}</p></div>
+    ))}
+  </div>
+  <div className="flex flex-wrap gap-3 mt-8">
+    <button onClick={()=>nav("dashboard")} className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white text-sm font-bold bg-gradient-to-r from-blue-600 to-cyan-500 shadow-lg shadow-cyan-500/25 hover:scale-[1.03] transition-all">View Dashboard</button>
+    <button onClick={dStart} className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold border border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/10 transition-all animate-[pulse_4s_ease-in-out_infinite]">▶ Watch AI Demo</button>
+  </div>
 </div>
-</section>}
+</section>
+
+{/* ── WHY DIFFERENT ── */}
+<section className="max-w-5xl mx-auto px-6 py-16">
+<h2 className="text-lg md:text-xl font-bold text-center mb-2">Why GharMind is Different</h2>
+<p className="text-xs text-[var(--muted)] text-center mb-8">Not another smart home. A household intelligence system built for Indian families.</p>
+<div className="grid md:grid-cols-2 gap-4">
+  <div className="card border-l-2 border-l-red-500/40"><p className="text-[10px] font-bold text-red-400 uppercase mb-3">Traditional Smart Home</p>{["Waits for voice commands","Device focused only","Reactive — acts after the fact","No cultural awareness","Treats every home the same","No learning capability"].map((t,i)=><p key={i} className="text-xs text-[var(--muted)] py-1.5 border-b border-[var(--border)] last:border-0">✗ {t}</p>)}</div>
+  <div className="card-glow border-l-2 border-l-emerald-500/40"><p className="text-[10px] font-bold text-emerald-400 uppercase mb-3">GharMind AI</p>{["Learns family behavior automatically","Household focused — whole family view","Predictive — acts before you ask","Indian cultural intelligence (festivals, pooja)","Adapts to your unique household","Improves from every interaction"].map((t,i)=><p key={i} className="text-xs text-emerald-300/80 py-1.5 border-b border-[var(--border)] last:border-0">✓ {t}</p>)}</div>
+</div>
+</section>
+
+{/* ── AI BRAIN FLOW ── */}
+<section className="max-w-3xl mx-auto px-6 py-12">
+<h2 className="text-lg font-bold text-center mb-6">How GharMind AI Thinks</h2>
+<div className="space-y-0">
+  {[{icon:"👨‍👩‍👧‍👦",label:"Family Activity Data",sub:"Schedules, appliances, routines"},{icon:"🧠",label:"Routine Learning Engine",sub:"Detects patterns across days and weeks"},{icon:"🏠",label:"Household Digital Twin",sub:"Real-time simulation of home state"},{icon:"🔮",label:"Prediction Engine",sub:"Forecasts next actions with confidence"},{icon:"💡",label:"Explainable AI Layer",sub:"Shows why every decision was made"},{icon:"⚡",label:"Recommendations & Actions",sub:"Proactive household automation"}].map((s,i)=>(
+    <div key={i} className="flex items-center gap-3 py-3 border-b border-[var(--border)] last:border-0">
+      <span className="text-2xl w-10 text-center">{s.icon}</span>
+      <div className="flex-1"><p className="text-xs font-semibold">{s.label}</p><p className="text-[10px] text-[var(--muted)]">{s.sub}</p></div>
+      {i<5&&<span className="text-cyan-500/60 text-xs">↓</span>}
+    </div>
+  ))}
+</div>
+</section>
+
+{/* ── TODAY GHARMIND PREDICTED ── */}
+<section className="max-w-5xl mx-auto px-6 py-12">
+<h2 className="text-lg font-bold text-center mb-2">Today, GharMind Predicted</h2>
+<p className="text-xs text-[var(--muted)] text-center mb-6">Live predictions generated from household intelligence.</p>
+<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+  {[{p:"Arjun leaving for school in 15 minutes",c:92,cat:"family"},{p:"Water motor should run at 6:15 AM",c:96,cat:"appliance"},{p:"Evening pooja approaching at 6:00 PM",c:88,cat:"cultural"},{p:"Power outage likely at 2:00 PM",c:76,cat:"power"},{p:"Quiet Study Mode activating at 8 PM",c:91,cat:"study"},{p:"Filter coffee preparation at 5:00 PM",c:93,cat:"routine"}].map((pred,i)=>(
+    <div key={i} className="card-glow af" style={{animationDelay:`${i*0.1}s`}}>
+      <div className="flex justify-between items-start gap-2 mb-1"><p className="text-xs font-medium flex-1">{pred.p}</p><span className="text-emerald-400 font-bold text-xs">{pred.c}%</span></div>
+      <div className="w-full h-1 rounded-full bg-[var(--border)]"><div className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-emerald-500" style={{width:`${pred.c}%`}}/></div>
+    </div>
+  ))}
+</div>
+</section>
+
+{/* ── SUNDARAM FAMILY STORY ── */}
+<section className="max-w-4xl mx-auto px-6 py-12">
+<h2 className="text-lg font-bold text-center mb-2">Meet The Sundaram Family</h2>
+<p className="text-xs text-[var(--muted)] text-center mb-6">A day in the life of a GharMind-powered household in Coimbatore.</p>
+<div className="relative pl-6 border-l border-cyan-800/40 space-y-4">
+  {[{time:"6:30 AM",event:"GharMind notices Arjun waking up 10 minutes late.",icon:"⏰"},{time:"6:35 AM",event:"Predicts school departure delay risk. Confidence: 87%.",icon:"🔮"},{time:"6:36 AM",event:"Notifies Lakshmi to prepare breakfast faster.",icon:"📲"},{time:"6:45 AM",event:"Adjusts household timeline. Motor delayed 5 minutes.",icon:"⚙️"},{time:"2:00 PM",event:"Power outage detected. Devices already charged at 1:30 PM.",icon:"⚡"},{time:"8:00 PM",event:"Activates Quiet Study Mode. TV turned off. Family notified.",icon:"📚"}].map((s,i)=>(
+    <div key={i} className="relative af" style={{animationDelay:`${i*0.08}s`}}>
+      <span className="absolute -left-[22px] top-1 w-3 h-3 rounded-full bg-cyan-500/40 border border-cyan-400"/>
+      <div className="card py-2.5 px-3"><div className="flex items-center gap-2"><span className="text-base">{s.icon}</span><span className="text-[10px] font-mono text-cyan-400">{s.time}</span></div><p className="text-xs text-[var(--fg)]/80 mt-1">{s.event}</p></div>
+    </div>
+  ))}
+</div>
+</section>
+
+{/* ── AI FEATURES ── */}
+<section className="max-w-5xl mx-auto px-6 py-12">
+<h2 className="text-lg font-bold text-center mb-6">Intelligence Modules</h2>
+<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+  {[{i:"📋",t:"Routine Learning"},{i:"🏠",t:"Digital Twin"},{i:"⚡",t:"Power Intel"},{i:"🪔",t:"Cultural AI"},{i:"💡",t:"Explainable AI"},{i:"🧪",t:"What-If Sim"},{i:"🔋",t:"Energy Opt."},{i:"🧠",t:"Memory Graph"},{i:"👥",t:"Family Collab"},{i:"🛡️",t:"Safety Monitor"}].map((f,i)=>(
+    <div key={i} className="card text-center py-3 hover:border-cyan-800/50 transition-all group"><span className="text-xl group-hover:scale-110 inline-block transition-transform">{f.i}</span><p className="text-[10px] font-medium mt-1.5">{f.t}</p></div>
+  ))}
+</div>
+</section>
+
+{/* ── BUILT FOR INDIAN HOMES ── */}
+<section className="max-w-5xl mx-auto px-6 py-12 pb-20">
+<h2 className="text-lg font-bold text-center mb-6">Built For Indian Homes</h2>
+<div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+  {[{i:"🪔",t:"Morning Pooja Awareness",d:"Knows prayer times and adjusts household noise"},{i:"💧",t:"Water Motor Scheduling",d:"Aligned with municipal supply windows"},{i:"⚡",t:"Power Cut Intelligence",d:"Predicts TNEB/MSEDCL outages by zone"},{i:"📚",t:"Exam Quiet Mode",d:"Automatically enforces study hours"},{i:"🎉",t:"Festival Adaptation",d:"Pongal, Diwali, Navaratri preparation"},{i:"👨‍👩‍👧‍👦",t:"Family Routine Learning",d:"Understands each member's patterns"}].map((f,i)=>(
+    <div key={i} className="card af" style={{animationDelay:`${i*0.05}s`}}>
+      <span className="text-xl">{f.i}</span><p className="text-xs font-semibold mt-2">{f.t}</p><p className="text-[10px] text-[var(--muted)] mt-1">{f.d}</p>
+    </div>
+  ))}
+</div>
+</section>
+</div>}
 
 {/* DASHBOARD */}
 {pg==="dashboard"&&<div className="max-w-6xl mx-auto px-4 py-6 grid lg:grid-cols-[200px_1fr_220px] gap-4">
@@ -154,12 +294,70 @@ return(<div className="min-h-screen flex flex-col">
 {pg==="calendar"&&<div className="max-w-3xl mx-auto px-4 py-6 space-y-2"><h2 className="text-base font-bold mb-3">Calendar</h2>{cal.map((e,i)=><div key={i} className="card flex items-center gap-3"><span className="text-lg">{e.i}</span><div><p className="text-[10px] font-medium">{e.t}</p><p className="text-[8px] text-muted">{e.d}</p></div></div>)}</div>}
 
 {/* GALLERY */}
-{pg==="gallery"&&<div className="max-w-4xl mx-auto px-4 py-6 space-y-4"><h2 className="text-base font-bold">Gallery</h2><div className="flex gap-2"><input value={gi} onChange={e=>sGi(e.target.value)} placeholder="Image URL..." className="flex-1 px-3 py-1.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-xs"/><button onClick={()=>{if(gi.trim()){sGal(p=>[...p,{id:`g${Date.now()}`,url:gi.trim()}]);sGi("");}}} className="btn-p text-[9px]">+ Add</button></div><div className="grid grid-cols-2 md:grid-cols-3 gap-3">{gal.map(g=><div key={g.id} className="relative rounded-xl overflow-hidden group"><img src={g.url} alt="" className="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-300"/><button onClick={()=>sGal(p=>p.filter(x=>x.id!==g.id))} className="absolute top-1.5 right-1.5 w-5 h-5 rounded bg-red-500/80 text-white text-[8px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">✕</button></div>)}</div></div>}
+{pg==="gallery"&&<div className="max-w-5xl mx-auto px-4 py-6 space-y-5">
+<h2 className="text-base font-bold">Family Gallery</h2>
+<p className="text-xs text-[var(--muted)] italic">&ldquo;Every home has memories. GharMind helps protect the rhythm behind them.&rdquo;</p>
+
+{/* Upload controls */}
+<div className="flex flex-wrap gap-2 items-center">
+  <input ref={galFileRef} type="file" accept="image/jpeg,image/jpg,image/png,image/webp" onChange={handleGalFile} className="hidden"/>
+  <button onClick={()=>galFileRef.current?.click()} className="btn-p text-[11px]">📷 Upload Image</button>
+  <div className="flex gap-2 flex-1 min-w-[200px]"><input value={gi} onChange={e=>sGi(e.target.value)} placeholder="Or paste image URL..." className="flex-1 px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-xs"/><button onClick={()=>{if(gi.trim()){sGal(p=>[...p,{id:`g${Date.now()}`,url:gi.trim(),cap:"Added"}]);sGi("");}}} className="btn-s text-[10px]">+ Add URL</button></div>
+</div>
+
+{/* Upload preview modal */}
+{galUpOpen&&galFile&&<div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={()=>{setGalUpOpen(false);setGalFile(null);}}>
+  <div className="bg-[var(--card)] rounded-2xl p-5 w-full max-w-sm border border-[var(--border)] space-y-3" onClick={e=>e.stopPropagation()}>
+    <h3 className="text-sm font-bold">Add to Gallery</h3>
+    <img src={galFile} alt="Preview" className="w-full h-40 object-cover rounded-xl border border-[var(--border)]"/>
+    <input value={galCap} onChange={e=>setGalCap(e.target.value)} placeholder="Add a caption..." className="w-full px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-xs"/>
+    <div className="flex gap-2"><button onClick={addGalFromFile} className="btn-p flex-1 text-[10px]">Add to Gallery</button><button onClick={()=>{setGalUpOpen(false);setGalFile(null);}} className="btn-s flex-1 text-[10px]">Cancel</button></div>
+  </div>
+</div>}
+
+{/* Image grid — responsive */}
+<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+  {gal.map(g=>(
+    <div key={g.id} className="relative rounded-xl overflow-hidden group shadow-md">
+      <img src={g.url} alt={g.cap} className="w-full h-36 sm:h-40 object-cover group-hover:scale-105 transition-transform duration-300"/>
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2.5">
+        <p className="text-white text-[11px] font-medium">{g.cap}</p>
+      </div>
+      <button onClick={()=>delGalConfirm(g.id)} className="absolute top-2 right-2 w-6 h-6 rounded-full bg-red-500/80 text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600">✕</button>
+    </div>
+  ))}
+</div>
+
+{/* Quotes */}
+<div className="space-y-2 pt-2 border-t border-[var(--border)]">
+  {["A family gallery is more than photos — it is the emotional memory of the household.","GharMind connects routines, people, and moments into one intelligent home story."].map((q,i)=>(
+    <p key={i} className="text-[11px] text-[var(--muted)] italic text-center">&ldquo;{q}&rdquo;</p>
+  ))}
+</div>
+</div>}
 
 {/* WHY */}
 {pg==="why"&&<div className="max-w-4xl mx-auto px-4 py-6 space-y-4"><h2 className="text-base font-bold mb-3">Why GharMind AI is Different</h2><div className="grid md:grid-cols-2 gap-4"><div className="card border-l-2 border-l-red-500/50"><p className="text-[9px] font-bold text-red-400 uppercase mb-2">Traditional Smart Home</p>{COMPARISON_DATA.traditional.map((t,i)=><p key={i} className="text-[9px] text-muted py-1 border-b border-[var(--border)] last:border-0">✗ {t.value}</p>)}</div><div className="card-glow border-l-2 border-l-emerald-500/50"><p className="text-[9px] font-bold text-emerald-400 uppercase mb-2">GharMind AI</p>{COMPARISON_DATA.gharmind.map((g,i)=><p key={i} className="text-[9px] text-emerald-300 py-1 border-b border-[var(--border)] last:border-0">✓ {g.value}</p>)}</div></div><div className="card mt-4"><p className="text-[9px] font-bold text-cyan-400 uppercase mb-2">Self-Learning Feedback</p><p className="text-[9px] text-muted">Every prediction can be accepted or rejected. GharMind learns from your feedback to improve future suggestions continuously.</p><div className="flex gap-2 mt-2"><button className="btn-p text-[8px] py-1 px-2">✓ Accept</button><button className="btn-s text-[8px] py-1 px-2">✗ Reject</button><span className="text-[8px] text-emerald-400 self-center ml-2">→ GharMind learned from this feedback.</span></div></div></div>}
 
 </main>
+
+{/* ═══ ALARM NOTIFICATION ═══ */}
+{alarm&&<div className="fixed top-16 left-1/2 -translate-x-1/2 z-[60] w-[90vw] max-w-sm af">
+  <div className="bg-[var(--card)] border border-amber-500/30 rounded-xl p-4 shadow-2xl shadow-amber-900/20">
+    <div className="flex items-start gap-3">
+      <span className="text-2xl">⏰</span>
+      <div className="flex-1">
+        <p className="text-xs font-bold text-amber-400 uppercase">Alarm Reminder</p>
+        <p className="text-sm font-semibold mt-1">{alarm.name}&apos;s {alarm.routine} — now</p>
+        <p className="text-xs text-[var(--muted)] mt-1">{alarm.action}</p>
+      </div>
+    </div>
+    <div className="flex gap-2 mt-3">
+      <button onClick={dismissAlarm} className="btn-p flex-1 text-[10px] py-1.5">Dismiss</button>
+      <button onClick={snoozeAlarm} className="btn-s flex-1 text-[10px] py-1.5">Snooze 5 min</button>
+    </div>
+  </div>
+</div>}
 
 {/* ═══ FLOATING CHAT ═══ */}
 {demoNote&&<div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-lg bg-[var(--card)] border border-cyan-800/40 shadow-lg text-xs text-cyan-400 font-medium af">{demoNote}</div>}
