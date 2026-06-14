@@ -145,11 +145,11 @@ useEffect(()=>{Promise.all([getMembers(),getTwinState(),getPredictions(),getRout
 const urg=tw?.urgency_score??0,tank=tw?.resources?.water?.tank_level_pct??50,pwr=tw?.resources?.power?.cut_probability??0;
 const hp=Math.min(100,Math.round((tank>60?25:15)+(pwr<.3?25:10)+(urg<30?25:15)+25));
 
-function nav(p:Pg){sP(p);sMn(false);sCo(false);setSubTab("");}
+function nav(p:Pg){sP(p);sMn(false);sCo(false);setSubTab("");window.scrollTo({top:0,left:0,behavior:"instant"});}
 // Demo
 function dStart(){sDm(true);sDi(0);setDemoNote("");}function dPause(){sDm(false);}function dRestart(){sDi(0);sDm(true);setDemoNote("");}
 const[demoNote,setDemoNote]=useState("");
-useEffect(()=>{if(!dm){if(dr.current)clearInterval(dr.current);return;}dr.current=setInterval(()=>{sDi(i=>{const n=i+1;if(n>=PG.length){sP("home");sDm(false);setDemoNote("Demo Complete — Returning to Home");setTimeout(()=>setDemoNote(""),3000);return 0;}sP(PG[n]);return n;});},2000);return()=>{if(dr.current)clearInterval(dr.current);};},[dm]);
+useEffect(()=>{if(!dm){if(dr.current)clearInterval(dr.current);return;}dr.current=setInterval(()=>{sDi(i=>{const n=i+1;if(n>=PG.length){sP("home");sDm(false);setDemoNote("Demo Complete — Returning to Home");setTimeout(()=>setDemoNote(""),3000);window.scrollTo({top:0,left:0,behavior:"instant"});return 0;}sP(PG[n]);window.scrollTo({top:0,left:0,behavior:"instant"});return n;});},2000);return()=>{if(dr.current)clearInterval(dr.current);};},[dm]);
 // Chat
 async function csend(){if(!ci.trim())return;sMsg(p=>[...p,{r:"u",t:ci.trim()}]);sCi("");sCl(true);const r=await sendChat(ci.trim());sMsg(p=>[...p,{r:"a",t:r.response||"Processing."}]);sCl(false);}
 function speak(t:string){if(sp){speechSynthesis.cancel();sSp(false);return;}const u=new SpeechSynthesisUtterance(t);u.lang="en-IN";u.rate=.95;u.onend=()=>sSp(false);speechSynthesis.speak(u);sSp(true);}
