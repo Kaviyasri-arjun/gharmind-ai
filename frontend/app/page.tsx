@@ -897,14 +897,26 @@ return(<div className="min-h-screen flex flex-col">
 </main>
 
 {/* ═══ FOOTER ═══ */}
-<footer className="border-t border-[var(--border)] mt-8 py-8 px-4">
-<div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-  <div><p className="text-sm font-bold text-grad">GHARMIND AI</p><p className="text-[10px] text-muted mt-1">India's First AI Household Operating System</p></div>
-  <div><p className="text-[9px] font-bold text-muted uppercase tracking-wide mb-1.5">Built For</p><p className="text-xs">Amazon HackOn 6.0</p></div>
-  <div><p className="text-[9px] font-bold text-muted uppercase tracking-wide mb-1.5">Powered By</p><div className="space-y-0.5 text-[11px]"><p>AWS Bedrock</p><p>FastAPI</p><p>Next.js</p><p>PostgreSQL</p><p>Digital Twin Architecture</p></div></div>
-  <div><p className="text-[9px] font-bold text-muted uppercase tracking-wide mb-1.5">Project Links</p><div className="space-y-0.5 text-[11px]"><p className="text-cyan-400">GitHub Repository</p><p className="text-cyan-400">Documentation</p><p className="text-cyan-400">Demo Video</p></div></div>
+<footer className="mt-12 py-12 px-6" style={{background:"linear-gradient(180deg,#06111f 0%,#081827 100%)",borderTop:"1px solid rgba(0,200,255,0.15)"}}>
+<div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+  <div>
+    <p className="text-base font-bold text-grad">GHARMIND AI</p>
+    <p className="text-sm text-white/80 mt-2 leading-relaxed">India's First AI Household Operating System</p>
+  </div>
+  <div>
+    <p className="text-xs font-bold uppercase tracking-wide mb-2" style={{color:"#18D8FF",letterSpacing:"0.5px"}}>Built For</p>
+    <p className="text-sm text-white/85">Amazon HackOn 6.0</p>
+  </div>
+  <div>
+    <p className="text-xs font-bold uppercase tracking-wide mb-2" style={{color:"#18D8FF",letterSpacing:"0.5px"}}>Powered By</p>
+    <div className="space-y-1 text-sm text-white/85"><p>AWS Bedrock</p><p>FastAPI</p><p>Next.js</p><p>PostgreSQL</p><p>Digital Twin Architecture</p></div>
+  </div>
+  <div>
+    <p className="text-xs font-bold uppercase tracking-wide mb-2" style={{color:"#18D8FF",letterSpacing:"0.5px"}}>Project Links</p>
+    <div className="space-y-1.5 text-sm"><p className="text-cyan-400 hover:text-cyan-300 cursor-pointer transition-colors hover:drop-shadow-[0_0_6px_rgba(34,211,238,0.4)]">GitHub Repository</p><p className="text-cyan-400 hover:text-cyan-300 cursor-pointer transition-colors hover:drop-shadow-[0_0_6px_rgba(34,211,238,0.4)]">Documentation</p><p className="text-cyan-400 hover:text-cyan-300 cursor-pointer transition-colors hover:drop-shadow-[0_0_6px_rgba(34,211,238,0.4)]">Demo Video</p></div>
+  </div>
 </div>
-<p className="text-center text-[9px] text-muted mt-6 pt-4 border-t border-[var(--border)]">© 2026 GharMind AI</p>
+<p className="text-center text-xs text-white/40 mt-8 pt-5" style={{borderTop:"1px solid rgba(0,200,255,0.08)"}}>© 2026 GharMind AI</p>
 </footer>
 
 {/* ═══ ALARM NOTIFICATION ═══ */}
