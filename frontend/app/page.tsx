@@ -190,7 +190,7 @@ return(<div className="min-h-screen flex flex-col">
     {PG.map(p=><button key={p} onClick={()=>nav(p)} className={cn("btn-g",pg===p&&"text-cyan-400 bg-cyan-500/10")}>{PL[p]}</button>)}
   </nav>
   {/* Demo */}
-  <div className="hidden md:flex items-center gap-2 ml-5">{dm?<><button onClick={dPause} className="btn-s text-[11px] py-2 px-3">⏸ Pause</button><button onClick={dRestart} className="btn-s text-[11px] py-2 px-3">🔄</button></>:<button onClick={dStart} className="inline-flex items-center gap-1.5 px-5 py-2 rounded-lg text-[11px] font-bold text-white bg-gradient-to-r from-cyan-500 to-blue-500 shadow-md shadow-cyan-500/20 hover:scale-105 transition-all animate-[pulse_4s_ease-in-out_infinite]">▶ Demo Tour</button>}</div>
+  <div className="hidden md:flex items-center gap-2 ml-5">{dm?<><button onClick={dPause} className="btn-s text-[11px] py-2 px-3">⏸ Pause</button><button onClick={dRestart} className="btn-s text-[11px] py-2 px-3">🔄 Restart</button></>:<button onClick={dStart} className="inline-flex items-center gap-1.5 px-5 py-2 rounded-lg text-[11px] font-bold text-white bg-gradient-to-r from-cyan-500 to-blue-500 shadow-md shadow-cyan-500/20 hover:scale-105 transition-all animate-[pulse_4s_ease-in-out_infinite]">▶ Demo Tour</button>}</div>
   {/* Hamburger */}
   <button onClick={()=>sMn(!mn)} className="lg:hidden ml-auto p-2 rounded hover:bg-white/5"><svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
 </div>
