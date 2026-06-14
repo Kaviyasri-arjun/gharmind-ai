@@ -6,11 +6,20 @@ import{ENERGY_INSIGHTS,SAFETY_ALERTS,CULTURAL_CONTEXT,ROUTINE_PROFILE,NEXT_HOUR_
 
 const HERO="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1400&q=80";
 const AV={m:"https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&q=80",f:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&q=80",s:"https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=80&q=80",p:"https://images.unsplash.com/photo-1566616213894-2d4e1baee5d8?w=80&q=80"};
-const GAL=["https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&q=80","https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400&q=80","https://images.unsplash.com/photo-1513694203232-719a280e022f?w=400&q=80","https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&q=80","https://images.unsplash.com/photo-1600607687644-aac4c3eac7f4?w=400&q=80","https://images.unsplash.com/photo-1581579438747-104c53d7fbb4?w=400&q=80","https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=400&q=80","https://images.unsplash.com/photo-1600566753086-00f18a6c3ef3?w=400&q=80","https://images.unsplash.com/photo-1600210492493-0946911123ea?w=400&q=80"];
-const GAL_CAPS=["Family home","Cozy living room","Kitchen warmth","Festival lights","Evening glow","Together time","Study corner","Pooja space","Morning light"];
-const PG=["home","dashboard","family","predictions","memory"]as const;
+const GAL_DATA=[
+  {url:"https://images.unsplash.com/photo-1609220136736-443140cffec6?w=400&q=80",cap:"Pongal Celebration",date:"Jan 14",members:"All Family",tag:"Festival",ai:"Remembered by GharMind"},
+  {url:"https://images.unsplash.com/photo-1574158622682-e40e69881006?w=400&q=80",cap:"Evening Family Dinner",date:"Weekly",members:"Lakshmi, Venkat, Arjun, Paati",tag:"Routine",ai:"Pattern detected over 90 days"},
+  {url:"https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=400&q=80",cap:"Arjun Exam Achievement",date:"Mar 2025",members:"Arjun",tag:"Achievement",ai:"Study routine linked"},
+  {url:"https://images.unsplash.com/photo-1542992015-4a0b729b1385?w=400&q=80",cap:"Morning Pooja",date:"Daily",members:"Lakshmi, Paati",tag:"Routine",ai:"Pattern detected over 340 days"},
+  {url:"https://images.unsplash.com/photo-1529543544006-1bd3fa44b178?w=400&q=80",cap:"Diwali Celebration",date:"Oct 2024",members:"All Family",tag:"Festival",ai:"Cultural event memory"},
+  {url:"https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400&q=80",cap:"Family Gathering",date:"Dec 2024",members:"Extended Family",tag:"Family",ai:"Guest pattern recorded"},
+  {url:"https://images.unsplash.com/photo-1606787366850-de6330128bfc?w=400&q=80",cap:"Evening Chai Time",date:"Daily 5 PM",members:"Lakshmi, Venkat",tag:"Routine",ai:"300+ occurrences detected"},
+  {url:"https://images.unsplash.com/photo-1588075592446-265fd1e6e76f?w=400&q=80",cap:"Study Session",date:"Weekdays",members:"Arjun",tag:"Routine",ai:"8-10 PM pattern confirmed"},
+  {url:"https://images.unsplash.com/photo-1464820453369-31d2c0b651af?w=400&q=80",cap:"Paati Birthday",date:"Jan 20",members:"All Family",tag:"Family",ai:"Annual reminder set"},
+];
+const PG=["home","dashboard","family","predictions","memory","howitworks"]as const;
 type Pg=typeof PG[number];
-const PL:Record<Pg,string>={home:"Home",dashboard:"Dashboard",family:"Family",predictions:"Predictions",memory:"Memory"};
+const PL:Record<Pg,string>={home:"Home",dashboard:"Dashboard",family:"Family",predictions:"Predictions",memory:"Memory",howitworks:"How It Works"};
 
 export default function App(){
 const[pg,sP]=useState<Pg>("home");const[mn,sMn]=useState(false);const[co,sCo]=useState(false);const[hsOpen,setHsOpen]=useState(false);
@@ -68,7 +77,7 @@ const memberData:Record<string,{tasks:string[];alarms:{time:string;label:string}
   "Arjun":{tasks:["Study Physics from 8:00 PM","Keep laptop charged before power cut","Follow quiet mode during exam preparation","Complete tuition assignments"],alarms:[{time:"05:30",label:"Wake up"},{time:"13:00",label:"Download study materials (power cut prep)"},{time:"19:00",label:"Revision reminder"},{time:"20:00",label:"Exam quiet mode active"}]},
   "Paati":{tasks:["Morning aarti at 5:30 AM","Temple visit on Tuesday and Friday","Afternoon rest period","Evening prayer"],alarms:[{time:"04:30",label:"Wake up"},{time:"05:30",label:"Morning aarti"},{time:"13:00",label:"Afternoon rest"},{time:"18:00",label:"Evening prayer"}]},
 };
-const[gal,sGal]=useState(GAL.map((u,i)=>({id:`g${i}`,url:u,cap:GAL_CAPS[i]||"Memory"})));const[gi,sGi]=useState("");
+const[gal,sGal]=useState(GAL_DATA.map((g,i)=>({id:`g${i}`,url:g.url,cap:g.cap,date:g.date,members:g.members,tag:g.tag,ai:g.ai})));const[gi,sGi]=useState("");const[galFilter,setGalFilter]=useState("All");
 const[galFile,setGalFile]=useState<string|null>(null);const[galCap,setGalCap]=useState("");const[galUpOpen,setGalUpOpen]=useState(false);
 const galFileRef=useRef<HTMLInputElement>(null);
 function handleGalFile(e:React.ChangeEvent<HTMLInputElement>){const f=e.target.files?.[0];if(f&&f.type.startsWith("image/")){const url=URL.createObjectURL(f);setGalFile(url);setGalUpOpen(true);}}
@@ -728,19 +737,162 @@ return(<div className="min-h-screen flex flex-col">
 <div className="card"><p className="text-[9px] font-bold text-purple-400 uppercase mb-2">AI Learning Summary</p><p className="text-[9px] text-muted leading-relaxed">Morning pooja completed on schedule. Water motor ran 25 min at 6:15 AM. Arjun studied from 8-10 PM (exam prep mode). Power stable throughout. Household mood: focused. Tomorrow prediction: Board exam at 10 AM — quiet morning expected.</p></div>
 
 {/* Gallery merged here */}
-<h3 className="text-sm font-bold mt-4">🖼️ Family Gallery</h3>
-<p className="text-xs text-[var(--muted)] italic">&ldquo;Every home has memories. GharMind helps protect the rhythm behind them.&rdquo;</p>
-<div className="flex flex-wrap gap-2 items-center">
-  <input ref={galFileRef} type="file" accept="image/jpeg,image/jpg,image/png,image/webp" onChange={handleGalFile} className="hidden"/>
-  <button onClick={()=>galFileRef.current?.click()} className="btn-p text-[11px]">📷 Upload</button>
-  <div className="flex gap-2 flex-1 min-w-[180px]"><input value={gi} onChange={e=>sGi(e.target.value)} placeholder="Paste image URL..." className="flex-1 px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-xs"/><button onClick={()=>{if(gi.trim()){sGal(p=>[...p,{id:`g${Date.now()}`,url:gi.trim(),cap:"Added"}]);sGi("");}}} className="btn-s text-[10px]">+ Add</button></div>
+<h3 className="text-sm font-bold mt-6">🧠 Family Memory Gallery</h3>
+<p className="text-xs text-[var(--muted)] italic mb-3">&ldquo;GharMind preserves the moments, routines, and memories that define a household.&rdquo;</p>
+
+{/* Category filters */}
+<div className="flex gap-1.5 flex-wrap mb-3">
+  {["All","Family","Festival","Routine","Achievement"].map(c=><button key={c} onClick={()=>setGalFilter(c)} className={cn("text-[9px] px-2.5 py-1 rounded-full border border-[var(--border)] transition-all",galFilter===c?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{c}</button>)}
 </div>
-{galUpOpen&&galFile&&<div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={()=>{setGalUpOpen(false);setGalFile(null);}}><div className="bg-[var(--card)] rounded-2xl p-5 w-full max-w-sm border border-[var(--border)] space-y-3" onClick={e=>e.stopPropagation()}><h3 className="text-sm font-bold">Add to Gallery</h3><img src={galFile} alt="Preview" className="w-full h-40 object-cover rounded-xl border border-[var(--border)]"/><input value={galCap} onChange={e=>setGalCap(e.target.value)} placeholder="Caption..." className="w-full px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-xs"/><div className="flex gap-2"><button onClick={addGalFromFile} className="btn-p flex-1 text-[10px]">Add</button><button onClick={()=>{setGalUpOpen(false);setGalFile(null);}} className="btn-s flex-1 text-[10px]">Cancel</button></div></div></div>}
-<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">{gal.map(g=>(<div key={g.id} className="relative rounded-xl overflow-hidden group shadow-md"><img src={g.url} alt={g.cap} onError={(e)=>{(e.target as HTMLImageElement).src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&q=80";}} className="w-full h-36 sm:h-40 object-cover group-hover:scale-105 transition-transform duration-300"/><div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2.5"><p className="text-white text-[11px] font-medium">{g.cap}</p></div><button onClick={()=>delGalConfirm(g.id)} className="absolute top-2 right-2 w-6 h-6 rounded-full bg-red-500/80 text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600">✕</button></div>))}</div>
+
+{/* Upload controls */}
+<div className="flex flex-wrap gap-2 items-center mb-3">
+  <input ref={galFileRef} type="file" accept="image/jpeg,image/jpg,image/png,image/webp" onChange={handleGalFile} className="hidden"/>
+  <button onClick={()=>galFileRef.current?.click()} className="btn-p text-[10px]">📷 Upload Memory</button>
+  <div className="flex gap-2 flex-1 min-w-[180px]"><input value={gi} onChange={e=>sGi(e.target.value)} placeholder="Paste image URL..." className="flex-1 px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-xs"/><button onClick={()=>{if(gi.trim()&&!gal.some(g=>g.url===gi.trim())){sGal(p=>[...p,{id:`g${Date.now()}`,url:gi.trim(),cap:"New Memory",date:"Today",members:"Family",tag:"Family",ai:"Manually added"}]);sGi("");}}} className="btn-s text-[10px]">+ Add</button></div>
+</div>
+
+{/* Upload modal */}
+{galUpOpen&&galFile&&<div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={()=>{setGalUpOpen(false);setGalFile(null);}}><div className="bg-[var(--card)] rounded-2xl p-5 w-full max-w-sm border border-[var(--border)] space-y-3" onClick={e=>e.stopPropagation()}><h3 className="text-sm font-bold">Add Memory</h3><img src={galFile} alt="Preview" className="w-full h-40 object-cover rounded-xl border border-[var(--border)]"/><input value={galCap} onChange={e=>setGalCap(e.target.value)} placeholder="Memory title..." className="w-full px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-xs"/><div className="flex gap-2"><button onClick={addGalFromFile} className="btn-p flex-1 text-[10px]">Save Memory</button><button onClick={()=>{setGalUpOpen(false);setGalFile(null);}} className="btn-s flex-1 text-[10px]">Cancel</button></div></div></div>}
+
+{/* Image grid — deduplicated and filtered */}
+<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+  {gal.filter((g,i,arr)=>arr.findIndex(x=>x.url===g.url)===i).filter(g=>galFilter==="All"||g.tag===galFilter).map(g=>(
+    <div key={g.id} className="card p-0 overflow-hidden group relative">
+      <img src={g.url} alt={g.cap} onError={(e)=>{(e.target as HTMLImageElement).src="https://images.unsplash.com/photo-1609220136736-443140cffec6?w=400&q=80";}} className="w-full h-36 object-cover group-hover:scale-105 transition-transform duration-300"/>
+      <div className="p-2.5">
+        <p className="text-xs font-semibold">{g.cap}</p>
+        <div className="flex items-center gap-2 mt-1">
+          <span className="text-[8px] px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-800/30">{g.tag}</span>
+          <span className="text-[8px] text-muted">{g.date}</span>
+        </div>
+        <p className="text-[8px] text-muted mt-1">👥 {g.members}</p>
+        <p className="text-[8px] text-emerald-400/70 mt-0.5">🧠 {g.ai}</p>
+      </div>
+      <button onClick={()=>delGalConfirm(g.id)} className="absolute top-2 right-2 w-5 h-5 rounded-full bg-red-500/80 text-white text-[8px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600">✕</button>
+    </div>
+  ))}
+</div>
 </div>}
 
 {/* Calendar and Gallery moved into Family and Memory pages */}
 
+{/* HOW IT WORKS */}
+{pg==="howitworks"&&<div className="max-w-4xl mx-auto px-4 py-6 space-y-8">
+
+{/* 1. Problem Statement */}
+<section>
+  <h2 className="text-lg font-bold mb-3">The Problem</h2>
+  <div className="grid md:grid-cols-3 gap-3">
+    <div className="card border-l-2 border-l-amber-500/40"><p className="text-xs font-semibold mb-1">Indian Households</p><p className="text-[10px] text-muted">Recurring routines, cultural rituals, school schedules, and infrastructure challenges define daily life.</p></div>
+    <div className="card border-l-2 border-l-red-500/40"><p className="text-xs font-semibold mb-1">Current Smart Homes</p><p className="text-[10px] text-muted">Wait for commands. React after problems occur. No understanding of household context.</p></div>
+    <div className="card-glow border-l-2 border-l-cyan-500/40"><p className="text-xs font-semibold mb-1">GharMind AI</p><p className="text-[10px] text-muted">Learns routines. Predicts needs. Acts proactively. Understands Indian cultural context.</p></div>
+  </div>
+</section>
+
+{/* 2. Solution Architecture */}
+<section>
+  <h2 className="text-lg font-bold mb-3">System Architecture</h2>
+  <div className="space-y-1">{[
+    {icon:"🖥️",label:"Frontend (Next.js 15)",sub:"Real-time dashboard, Digital Twin visualization, AI chat interface"},
+    {icon:"⚡",label:"FastAPI Backend",sub:"Async Python API, WebSocket streaming, Agent orchestration"},
+    {icon:"🧠",label:"AWS Bedrock (Claude Sonnet)",sub:"Natural language reasoning, prediction enrichment, What-If simulation"},
+    {icon:"📋",label:"Routine Learning Engine",sub:"Pattern detection across 180+ days of household behavior data"},
+    {icon:"🔮",label:"Prediction Engine",sub:"7-step pipeline: Scan → Match → Factor → Score → Enrich → Detect → Rank"},
+    {icon:"🪔",label:"Cultural Intelligence Layer",sub:"Festival awareness, pooja schedules, exam modes, regional adaptations"},
+    {icon:"🗄️",label:"PostgreSQL + pgvector",sub:"Semantic household memory with vector similarity search"},
+    {icon:"🏠",label:"Household Digital Twin",sub:"1-minute tick simulation of rooms, appliances, members, and resources"},
+  ].map((s,i)=>(
+    <div key={i} className="flex items-center gap-3 py-2.5 border-b border-[var(--border)] last:border-0 af" style={{animationDelay:`${i*0.06}s`}}>
+      <span className="w-9 h-9 rounded-lg bg-cyan-500/10 border border-cyan-800/30 flex items-center justify-center text-lg flex-shrink-0">{s.icon}</span>
+      <div className="flex-1"><p className="text-xs font-semibold">{s.label}</p><p className="text-[10px] text-muted">{s.sub}</p></div>
+      {i<7&&<span className="text-cyan-500/40 text-[10px]">↓</span>}
+    </div>
+  ))}</div>
+</section>
+
+{/* 3. AI Reasoning Visualization */}
+<section>
+  <h2 className="text-lg font-bold mb-3">Explainable AI Reasoning</h2>
+  <div className="card-glow">
+    <div className="flex items-center gap-3 mb-3"><span className="text-emerald-400 font-bold text-lg">96%</span><p className="text-sm font-semibold">Prediction: Run Water Motor</p></div>
+    <p className="text-[9px] font-bold text-cyan-400 uppercase mb-2">Reasoning Chain</p>
+    <div className="space-y-1.5">{[
+      {step:"Data Input",detail:"Tank sensor reads 42%. Municipal supply window: 6:00–6:45 AM."},
+      {step:"Pattern Match",detail:"Motor ran at 6:15 AM on 31 of last 35 weekdays (89% consistency)."},
+      {step:"Context Factor",detail:"School day confirmed. Morning rush requires water by 7:00 AM."},
+      {step:"Confidence Score",detail:"Bayesian update: prior 89% × evidence 0.94 × stability 0.97 = 96%."},
+      {step:"Action Generated",detail:"Recommend: Start motor now. Explain: Avoids shortage before noon."},
+    ].map((s,i)=><div key={i} className="flex gap-2 items-start"><span className="w-5 h-5 rounded-full bg-cyan-500/10 border border-cyan-800/30 flex items-center justify-center text-[8px] text-cyan-400 font-bold flex-shrink-0">{i+1}</span><div><p className="text-[10px] font-semibold">{s.step}</p><p className="text-[10px] text-muted">{s.detail}</p></div></div>)}</div>
+  </div>
+</section>
+
+{/* 4. Digital Twin */}
+<section>
+  <h2 className="text-lg font-bold mb-3">Household Digital Twin</h2>
+  <p className="text-xs text-muted mb-3">A real-time software simulation of the entire household — no IoT hardware required.</p>
+  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">{[
+    {icon:"👩",name:"Lakshmi",role:"Homemaker",insight:"Manages kitchen, pooja, water motor. Morning routine detected with 97% consistency."},
+    {icon:"👨",name:"Venkat",role:"Professional",insight:"Office commute 8:50 AM. WFH pattern Mon-Thu detected. Meeting readiness tracked."},
+    {icon:"🧑‍🎓",name:"Arjun",role:"Student",insight:"Study peak 8–10 PM. Exam prep mode active. Tuition schedule learned."},
+    {icon:"👵",name:"Paati",role:"Elderly",insight:"5:30 AM aarti. Temple Tue/Fri. Afternoon rest 1–2:30 PM. Early sleep pattern."},
+  ].map((m,i)=><div key={i} className="card text-center"><span className="text-2xl">{m.icon}</span><p className="text-xs font-semibold mt-1">{m.name}</p><p className="text-[9px] text-cyan-400">{m.role}</p><p className="text-[9px] text-muted mt-1">{m.insight}</p></div>)}</div>
+</section>
+
+{/* 5. Prediction Engine */}
+<section>
+  <h2 className="text-lg font-bold mb-3">Prediction Engine Pipeline</h2>
+  <div className="grid md:grid-cols-2 gap-4">
+    <div className="card"><p className="text-[9px] font-bold text-cyan-400 uppercase mb-2">Input Sources</p><div className="space-y-1">{["Family Activity Logs","Calendar & Exam Events","Cultural Festival Calendar","Utility Schedules (TNEB, CMWSSB)","180-Day Historical Memory"].map((s,i)=><p key={i} className="text-[10px] text-muted">→ {s}</p>)}</div></div>
+    <div className="card"><p className="text-[9px] font-bold text-emerald-400 uppercase mb-2">Generated Actions</p><div className="space-y-1">{["💧 Water Motor Scheduling","⚡ Power Cut Preparation","📚 Exam Quiet Mode Activation","🪔 Festival Preparation","☕ Routine Optimization"].map((s,i)=><p key={i} className="text-[10px]">{s}</p>)}</div></div>
+  </div>
+</section>
+
+{/* 6. Cultural Intelligence */}
+<section>
+  <h2 className="text-lg font-bold mb-3">Cultural Intelligence</h2>
+  <p className="text-xs text-muted mb-3">GharMind is the first AI system to treat Indian household culture as a first-class input.</p>
+  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">{[
+    {icon:"🪔",t:"Festival Awareness",d:"Pongal, Diwali, Navaratri preparation"},
+    {icon:"🙏",t:"Daily Pooja",d:"Morning aarti timing and quiet enforcement"},
+    {icon:"📚",t:"Exam Intelligence",d:"Board exam quiet mode and schedule protection"},
+    {icon:"💧",t:"Municipal Water",d:"CMWSSB supply windows aligned to motor usage"},
+    {icon:"⚡",t:"Power Grid",d:"TNEB outage pattern prediction by zone"},
+    {icon:"👨‍👩‍👧‍👦",t:"Family Events",d:"Birthdays, guests, gatherings detected"},
+  ].map((f,i)=><div key={i} className="card"><span className="text-lg">{f.icon}</span><p className="text-[10px] font-semibold mt-1">{f.t}</p><p className="text-[9px] text-muted mt-0.5">{f.d}</p></div>)}</div>
+</section>
+
+{/* 7. AWS Bedrock */}
+<section>
+  <h2 className="text-lg font-bold mb-3">Powered by AWS Bedrock</h2>
+  <div className="card-glow">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">{[
+      {icon:"💬",t:"Natural Language",d:"Claude Sonnet reasoning for household decisions"},
+      {icon:"🧠",t:"Context Awareness",d:"Full household state injected into every AI call"},
+      {icon:"🔮",t:"Prediction Enrichment",d:"Confidence scoring and action suggestions"},
+      {icon:"📊",t:"Titan Embeddings",d:"1536-dim vectors for semantic household memory"},
+    ].map((s,i)=><div key={i}><span className="text-xl">{s.icon}</span><p className="text-[10px] font-semibold mt-1">{s.t}</p><p className="text-[9px] text-muted mt-0.5">{s.d}</p></div>)}</div>
+  </div>
+</section>
+
+{/* 8. Judge Highlights */}
+<section>
+  <h2 className="text-lg font-bold mb-3">Why GharMind AI is Different</h2>
+  <div className="card-glow py-5">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">{[
+      "Predictive, not reactive",
+      "Learns household routines automatically",
+      "Builds a full Household Digital Twin",
+      "Understands Indian cultural context",
+      "Uses explainable AI reasoning",
+      "Generates proactive recommendations",
+      "Zero hardware requirement",
+      "Powered entirely by AWS Bedrock",
+    ].map((h,i)=><p key={i} className="text-xs text-emerald-400 af" style={{animationDelay:`${i*0.05}s`}}>✓ {h}</p>)}</div>
+  </div>
+</section>
+
+</div>}
 
 </main>
 
