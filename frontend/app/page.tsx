@@ -243,67 +243,98 @@ return(<div className="min-h-screen flex flex-col">
 </div>}
 
 {/* DASHBOARD */}
-{pg==="dashboard"&&<div className="max-w-6xl mx-auto px-4 py-6 space-y-4">
+{pg==="dashboard"&&<div className="max-w-5xl mx-auto px-5 py-8 space-y-6">
 
-{/* ── 6. EMERGENCY BANNER ── */}
-{pwr>.6&&<div className="rounded-xl border border-amber-500/30 bg-amber-500/5 px-4 py-3 flex items-center gap-3">
-  <span className="text-lg">⚠️</span>
-  <div className="flex-1"><p className="text-xs font-bold text-amber-400">HIGH IMPACT EVENT TODAY</p><p className="text-[10px] text-[var(--muted)]">Power outage expected at 2 PM. Recommended actions generated.</p></div>
+{/* ── HIGH IMPACT BANNER ── */}
+{pwr>.6&&<div className="rounded-2xl border border-amber-500/30 bg-amber-500/5 px-5 py-4 flex items-center gap-4 shadow-lg shadow-amber-900/10">
+  <span className="text-xl">⚠️</span>
+  <div className="flex-1"><p className="text-sm font-bold text-amber-400">HIGH IMPACT EVENT TODAY</p><p className="text-xs text-[var(--muted)] mt-0.5">Power outage expected at 2 PM. Recommended actions generated.</p></div>
   <span className="badge badge-a">Action Required</span>
 </div>}
 
-{/* ── 1. HARMONY SCORE + Existing Stats ── */}
-<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
-  <div className="card-glow text-center py-3 md:col-span-1"><p className="text-xl font-black text-cyan-400">92</p><p className="text-[8px] text-[var(--muted)] mt-0.5">Harmony Score</p></div>
-  {[{v:hp,l:"Health",c:"text-emerald-400"},{v:urg,l:"Urgency",c:urg>60?"text-red-400":"text-amber-400"},{v:`${tank}%`,l:"Water",c:tank<40?"text-red-400":"text-cyan-400"},{v:`${Math.round(pwr*100)}%`,l:"Power",c:pwr>.6?"text-amber-400":"text-emerald-400"},{v:"Tmrw",l:"Exam",c:"text-purple-400"}].map((s,i)=><div key={i} className="card text-center py-3"><p className={cn("text-lg font-bold",s.c)}>{s.v}</p><p className="text-[10px] text-muted mt-0.5">{s.l}</p></div>)}
+{/* ── TOP METRICS ── */}
+<div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+  <div className="card text-center py-6"><span className="text-2xl">❤️</span><p className="text-3xl font-black text-emerald-400 mt-2">{hp}</p><p className="text-xs text-[var(--muted)] mt-1">Health Score</p></div>
+  <div className="card text-center py-6"><span className="text-2xl">💧</span><p className="text-3xl font-black text-cyan-400 mt-2">{tank}%</p><p className="text-xs text-[var(--muted)] mt-1">Water Status</p></div>
+  <div className="card text-center py-6"><span className="text-2xl">⚡</span><p className={cn("text-3xl font-black mt-2",pwr>.6?"text-amber-400":"text-emerald-400")}>{Math.round(pwr*100)}%</p><p className="text-xs text-[var(--muted)] mt-1">Power Risk</p></div>
+  <div className="card text-center py-6"><span className="text-2xl">📅</span><p className="text-2xl font-black text-purple-400 mt-2">Board Exam</p><p className="text-xs text-[var(--muted)] mt-1">Tomorrow</p></div>
 </div>
 
-{/* ── 3-panel layout ── */}
-<div className="grid lg:grid-cols-[200px_1fr_220px] gap-4">
-  {/* Left - Roles */}
-  <aside className="hidden lg:block space-y-3">
-    <div className="card-glow"><p className="text-[9px] font-bold text-cyan-400 uppercase mb-2">Detected Roles</p>{FAMILY_ROLES.map((r,i)=><div key={i} className="py-1.5 border-b border-[var(--border)] last:border-0"><p className="text-[10px] font-medium">{r.icon} {r.name}</p><p className="text-[8px] text-emerald-400">{r.role}</p></div>)}</div>
-    <div className="card"><p className="text-[9px] font-bold text-amber-400 uppercase mb-1">Mood</p><p className="text-lg font-bold">{mood}</p><p className="text-[8px] text-muted">Based on activity patterns</p></div>
-    <div className="card"><p className="text-[9px] font-bold text-purple-400 uppercase mb-1">Energy Profile</p><p className="text-sm font-bold">{ePro}</p><p className="text-[8px] text-emerald-400">↓18% savings available</p></div>
-  </aside>
-  {/* Center */}
-  <div className="space-y-4">
-    {/* ── 9. AI DECISION CENTER ── */}
-    <div className="card-glow border-l-2 border-l-cyan-500/50">
-      <p className="text-[9px] font-bold text-cyan-400 uppercase mb-1">AI Decision Center</p>
-      <p className="text-xs font-semibold mt-1">Charge essential devices before 2 PM power cut.</p>
-      <p className="text-[10px] text-[var(--muted)] mt-1">Reason: Exam scheduled tomorrow. Outage probability: 76%.</p>
-      <p className="text-[10px] text-emerald-400 mt-1">Expected Impact: Avoid disruption to study schedule.</p>
-    </div>
-    {/* Next Actions with enhanced explanations (2) */}
-    <div className="card-glow"><p className="text-[10px] font-bold text-cyan-400 uppercase mb-2">Next Action Predictions</p>{NEXT_HOUR_PREDICTIONS.map((p,i)=><div key={i} className="py-2 border-b border-[var(--border)] last:border-0"><div className="flex items-start gap-2"><span className="text-emerald-400 font-bold text-sm w-9 flex-shrink-0 pt-0.5">{Math.round(p.confidence*100)}%</span><div className="flex-1"><p className="text-xs font-medium">{p.action}</p><p className="text-[10px] text-[var(--muted)] mt-0.5">{p.explanation}</p></div></div><details className="mt-1 ml-11"><summary className="text-[8px] text-cyan-400 cursor-pointer">Why this prediction?</summary><p className="text-[9px] text-[var(--muted)] mt-1 pl-2 border-l border-cyan-800/40">Confidence source: Historical routines • Context analysis • Household behavior patterns • {Math.round(p.confidence*100)}% match with past data.</p></details></div>)}</div>
-    {/* ── 3. ENHANCED TWIN ── */}
-    <div className="card"><div className="flex items-center gap-1.5 mb-2"><span className="w-1.5 h-1.5 bg-emerald-400 rounded-full ap"/><p className="text-[9px] font-bold">LIVE DIGITAL TWIN</p></div>
-      {[{name:"Lakshmi",loc:"Kitchen",status:"Active",color:"text-emerald-400",dot:"🟢"},{name:"Venkat",loc:"Bedroom",status:"Preparing for Work",color:"text-amber-400",dot:"🟡"},{name:"Arjun",loc:"Study Room",status:"Study Session",color:"text-emerald-400",dot:"🟢"},{name:"Paati",loc:"Pooja Room",status:"Morning Pooja",color:"text-blue-400",dot:"🔵"}].map((m,i)=><div key={i} className="flex items-center gap-2 py-1.5 border-b border-[var(--border)] last:border-0"><img src={fam[i]?.img||""} alt="" className="w-5 h-5 rounded-full object-cover"/><span className="text-[10px] flex-1 font-medium">{m.dot} {m.name}</span><span className={cn("text-[9px]",m.color)}>{m.loc} ({m.status})</span></div>)}
-    </div>
-    {/* Predictions with explanations (2) */}
-    <div className="card"><p className="text-[9px] font-bold uppercase mb-2">AI Predictions</p>{pr.slice(0,3).map((p:any,i:number)=><div key={i} className="py-1.5 border-b border-[var(--border)] last:border-0"><div className="flex gap-2"><div className="flex-1"><p className="text-[10px] font-medium">{p.title}</p><p className="text-[8px] text-muted">{p.action_suggestion}</p></div><span className={cn("badge",p.priority==="critical"?"badge-r":"badge-b")}>{Math.round(p.confidence*100)}%</span></div><details className="mt-1"><summary className="text-[8px] text-cyan-400 cursor-pointer">Why this prediction?</summary><p className="text-[9px] text-[var(--muted)] mt-1 pl-2 border-l border-cyan-800/40">{p.category==="water"?"• Tank at 42% • Supply window closes 6:45 AM • Pattern detected 14 times":p.category==="power"?"• TNEB Thu pattern • 5/7 weeks confirmed • Zone C2 data":"• Historical routine match • Calendar context • Behavioral consistency"}</p></details></div>)}</div>
-    {/* ── 4. TODAY'S TIMELINE ── */}
-    <div className="card"><p className="text-[9px] font-bold text-cyan-400 uppercase mb-2">Today's Household Timeline</p><div className="space-y-1">{[{t:"5:30 AM",e:"Pooja Started",c:"text-purple-400"},{t:"6:00 AM",e:"Breakfast Preparation",c:"text-emerald-400"},{t:"6:15 AM",e:"Water Motor Running",c:"text-cyan-400"},{t:"7:15 AM",e:"School Preparation",c:"text-amber-400"},{t:"8:00 AM",e:"School Departure",c:"text-emerald-400"},{t:"2:00 PM",e:"Power Cut Expected",c:"text-red-400"},{t:"5:00 PM",e:"Evening Coffee",c:"text-amber-400"},{t:"8:00 PM",e:"Exam Quiet Hours",c:"text-purple-400"}].map((ev,i)=><div key={i} className="flex items-center gap-2 py-1 border-b border-[var(--border)] last:border-0"><span className="text-[9px] font-mono text-[var(--muted)] w-14">{ev.t}</span><span className={cn("text-[10px] font-medium",ev.c)}>{ev.e}</span></div>)}</div></div>
+{/* ── AI RECOMMENDATION HERO CARD ── */}
+<div className="card-glow border-l-4 border-l-cyan-500/60 py-6 px-6 shadow-lg shadow-cyan-900/10">
+  <p className="text-xs font-bold text-cyan-400 uppercase tracking-wide mb-1">Today's AI Recommendation</p>
+  <h3 className="text-lg md:text-xl font-bold mt-2">Power Outage Expected at 2 PM</h3>
+  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-5">
+    <div><p className="text-[11px] text-[var(--muted)] uppercase tracking-wide font-medium">Recommended Action</p><p className="text-sm font-medium mt-1">Charge Arjun's laptop before 1:30 PM</p></div>
+    <div><p className="text-[11px] text-[var(--muted)] uppercase tracking-wide font-medium">Expected Impact</p><p className="text-sm font-medium mt-1 text-emerald-400">Avoid study disruption</p></div>
+    <div><p className="text-[11px] text-[var(--muted)] uppercase tracking-wide font-medium">Reason</p><p className="text-sm font-medium mt-1">76% outage probability from learned patterns</p></div>
+    <div><p className="text-[11px] text-[var(--muted)] uppercase tracking-wide font-medium">Confidence</p><p className="text-2xl font-black text-cyan-400 mt-1">96%</p></div>
   </div>
-  {/* Right - Intelligence */}
-  <aside className="hidden lg:block space-y-3">
-    <div className="card"><p className="text-[9px] font-bold text-cyan-400 uppercase mb-2">Power Intelligence</p><div className={cn("badge mb-1.5",POWER_CUT_INTEL.riskLevel==="high"?"badge-r":"badge-a")}>{POWER_CUT_INTEL.riskLevel} risk</div><p className="text-[9px]">{POWER_CUT_INTEL.probability}% at {POWER_CUT_INTEL.expectedTime}</p><div className="mt-2 space-y-0.5">{POWER_CUT_INTEL.recommendations.slice(0,3).map((r,i)=><p key={i} className="text-[8px] text-muted">• {r.action}</p>)}</div></div>
-    <div className="card"><p className="text-[9px] font-bold text-emerald-400 uppercase mb-2">Energy Optimizer</p><p className="text-xl font-bold text-emerald-400">↓{ENERGY_INSIGHTS.estimatedSavings}%</p><p className="text-[8px] text-muted">savings available</p></div>
-    {/* ── 7. CULTURAL EXPANDED ── */}
-    <div className="card"><p className="text-[9px] font-bold text-purple-400 uppercase mb-2">Cultural Intel</p><p className="text-[10px]">🎉 {CULTURAL_CONTEXT.festivalName}</p><p className="text-[8px] text-[var(--muted)]">{CULTURAL_CONTEXT.daysAway} days • Confidence: 89%</p><div className="mt-1.5 space-y-0.5"><p className="text-[8px] text-emerald-400">✓ Grocery planning</p><p className="text-[8px] text-emerald-400">✓ Family gathering reminder</p><p className="text-[8px] text-emerald-400">✓ Traditional cooking prep</p><p className="text-[8px] text-emerald-400">✓ Schedule adjustments</p></div></div>
-    <div className="card"><p className="text-[9px] font-bold text-amber-400 uppercase mb-2">Conflicts</p><p className="text-[9px] text-emerald-400">✓ No active conflicts</p><p className="text-[8px] text-muted">Schedule optimized</p></div>
-  </aside>
 </div>
 
-{/* ── 5. AI REASONING + 8. MEMORY INSIGHTS (bottom row) ── */}
-<div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-  <div className="card"><p className="text-[9px] font-bold text-cyan-400 uppercase mb-2">AI Reasoning Insights</p><div className="space-y-1"><p className="text-[10px] text-emerald-400">✓ 180 days of household learning</p><p className="text-[10px] text-emerald-400">✓ Similar pattern detected 42 times</p><p className="text-[10px] text-emerald-400">✓ Routine confidence verified</p><p className="text-[10px] text-emerald-400">✓ Behavioral consistency high</p></div></div>
-  <div className="card"><p className="text-[9px] font-bold text-purple-400 uppercase mb-2">Memory Insights</p><div className="space-y-1"><p className="text-[10px]">✓ Arjun studies most effectively 8–10 PM</p><p className="text-[10px]">✓ Lakshmi runs water motor at 6:15 AM</p><p className="text-[10px]">✓ Paati performs pooja daily at 5:45 AM</p><p className="text-[10px]">✓ Household energy peaks at 8 PM</p></div></div>
+{/* ── THREE-COLUMN INTELLIGENCE ── */}
+<div className="grid lg:grid-cols-3 gap-5">
+  {/* LEFT — Next Actions */}
+  <div className="card">
+    <p className="text-xs font-bold text-cyan-400 uppercase tracking-wide mb-4">Next Action Predictions</p>
+    <div className="space-y-3">
+      {NEXT_HOUR_PREDICTIONS.slice(0,3).map((p,i)=><div key={i} className="flex items-start gap-3 py-2 border-b border-[var(--border)] last:border-0">
+        <span className="text-emerald-400 font-bold text-sm w-10 flex-shrink-0 pt-0.5">{Math.round(p.confidence*100)}%</span>
+        <div className="flex-1"><p className="text-sm font-medium">{p.action}</p><p className="text-xs text-[var(--muted)] mt-0.5">{p.explanation}</p></div>
+      </div>)}
+    </div>
+    <button onClick={()=>nav("predictions")} className="text-xs text-cyan-400 font-medium mt-4 hover:underline">View All Predictions →</button>
+  </div>
+
+  {/* CENTER — Live Digital Twin */}
+  <div className="card">
+    <div className="flex items-center gap-2 mb-4"><span className="w-2 h-2 bg-emerald-400 rounded-full ap"/><p className="text-xs font-bold uppercase tracking-wide">Live Digital Twin</p></div>
+    <div className="space-y-3">
+      {[{name:"Lakshmi",loc:"Kitchen",color:"bg-emerald-400",dot:"🟢"},{name:"Venkat",loc:"Bedroom",color:"bg-amber-400",dot:"🟡"},{name:"Arjun",loc:"Study Room",color:"bg-emerald-400",dot:"🟢"},{name:"Paati",loc:"Pooja Room",color:"bg-blue-400",dot:"🔵"}].map((m,i)=><div key={i} className="flex items-center gap-3 py-2.5 border-b border-[var(--border)] last:border-0">
+        <img src={fam[i]?.img||""} alt="" className="w-8 h-8 rounded-full object-cover border border-[var(--border)]"/>
+        <div className="flex-1"><p className="text-sm font-medium">{m.name}</p></div>
+        <div className="flex items-center gap-1.5"><span className={cn("w-2 h-2 rounded-full",m.color)}/><span className="text-xs text-[var(--muted)]">{m.loc}</span></div>
+      </div>)}
+    </div>
+  </div>
+
+  {/* RIGHT — Household Context */}
+  <div className="card">
+    <p className="text-xs font-bold text-cyan-400 uppercase tracking-wide mb-4">Household Context</p>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between"><span className="text-sm">⚡ Power Risk</span><span className={cn("text-sm font-bold",pwr>.6?"text-amber-400":"text-emerald-400")}>{POWER_CUT_INTEL.probability}% at {POWER_CUT_INTEL.expectedTime}</span></div>
+      <div className="flex items-center justify-between"><span className="text-sm">💡 Savings Opportunity</span><span className="text-sm font-bold text-emerald-400">↓{ENERGY_INSIGHTS.estimatedSavings}%</span></div>
+      <div className="pt-3 border-t border-[var(--border)]">
+        <p className="text-sm font-medium">🪔 {CULTURAL_CONTEXT.festivalName}</p>
+        <p className="text-xs text-[var(--muted)] mt-0.5">{CULTURAL_CONTEXT.daysAway} days away</p>
+        <div className="mt-2 space-y-1">
+          <p className="text-xs text-emerald-400">✓ Family gathering reminder</p>
+          <p className="text-xs text-emerald-400">✓ Traditional cooking preparation</p>
+          <p className="text-xs text-emerald-400">✓ Schedule adjustments</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
-{/* Energy & Safety (merged into Dashboard) */}
-<div className="grid md:grid-cols-2 gap-3"><div className="card-glow text-center"><p className="text-[9px] font-bold text-emerald-400 uppercase mb-1">Energy Optimizer</p><p className="text-2xl font-bold text-emerald-400">↓{ENERGY_INSIGHTS.estimatedSavings}%</p><p className="text-[8px] text-muted">savings identified</p><div className="mt-2 text-left">{ENERGY_INSIGHTS.topConsumers.slice(0,3).map((c,i)=><p key={i} className="text-[9px] py-1 border-b border-[var(--border)] last:border-0 flex justify-between"><span>{c.appliance}</span><span className="text-muted">{c.usage}</span></p>)}</div></div><div className="card"><p className="text-[9px] font-bold text-amber-400 uppercase mb-2">Safety Monitoring</p>{SAFETY_ALERTS.map(a=><div key={a.id} className="py-1.5 border-b border-[var(--border)] last:border-0"><p className="text-[9px] font-medium">{a.appliance}</p><p className="text-[8px] text-muted">{a.reason}</p><p className="text-[8px] text-emerald-400">→ {a.action}</p></div>)}</div></div>
+{/* ── HOUSEHOLD TIMELINE ── */}
+<div className="card">
+  <p className="text-xs font-bold text-cyan-400 uppercase tracking-wide mb-4">Today's Household Timeline</p>
+  <div className="flex flex-wrap gap-0">
+    {[{t:"5:30 AM",e:"Pooja Started",i:"🙏",c:"text-purple-400"},{t:"6:00 AM",e:"Breakfast Prep",i:"🍳",c:"text-emerald-400"},{t:"6:15 AM",e:"Water Motor",i:"💧",c:"text-cyan-400"},{t:"7:15 AM",e:"School Prep",i:"📚",c:"text-amber-400"},{t:"2:00 PM",e:"Power Cut",i:"⚡",c:"text-red-400"},{t:"5:00 PM",e:"Evening Coffee",i:"☕",c:"text-amber-400"},{t:"8:00 PM",e:"Quiet Hours",i:"🤫",c:"text-purple-400"}].map((ev,i)=><div key={i} className="flex-1 min-w-[100px] text-center py-3 border-r border-[var(--border)] last:border-r-0">
+      <span className="text-lg">{ev.i}</span>
+      <p className={cn("text-xs font-medium mt-1",ev.c)}>{ev.e}</p>
+      <p className="text-[11px] text-[var(--muted)] mt-0.5">{ev.t}</p>
+    </div>)}
+  </div>
+</div>
+
+{/* ── SAFETY MONITORING ── */}
+<div className="card">
+  <p className="text-xs font-bold text-amber-400 uppercase tracking-wide mb-3">Safety Monitoring</p>
+  <div className="grid md:grid-cols-3 gap-3">{SAFETY_ALERTS.map(a=><div key={a.id} className="flex flex-col gap-1 py-2 px-3 rounded-lg bg-[var(--bg)]"><p className="text-sm font-medium">{a.appliance}</p><p className="text-xs text-[var(--muted)]">{a.reason}</p><p className="text-xs text-emerald-400 font-medium">→ {a.action}</p></div>)}</div>
+</div>
+
 </div>}
 
 {/* FAMILY */}
