@@ -170,8 +170,8 @@ return(<div className="min-h-screen flex flex-col">
 <h2 className="text-lg md:text-xl font-bold text-center mb-2">Why GharMind is Different</h2>
 <p className="text-xs text-[var(--muted)] text-center mb-8">Not another smart home. A household intelligence system built for Indian families.</p>
 <div className="grid md:grid-cols-2 gap-4">
-  <div className="card border-l-2 border-l-red-500/40"><p className="text-[10px] font-bold text-red-400 uppercase mb-3">Traditional Smart Home</p>{["Waits for voice commands","Device focused only","Reactive — acts after the fact","No cultural awareness","Treats every home the same","No learning capability"].map((t,i)=><p key={i} className="text-xs text-[var(--muted)] py-1.5 border-b border-[var(--border)] last:border-0">✗ {t}</p>)}</div>
   <div className="card-glow border-l-2 border-l-emerald-500/40"><p className="text-[10px] font-bold text-emerald-400 uppercase mb-3">GharMind AI</p>{["Learns family behavior automatically","Household focused — whole family view","Predictive — acts before you ask","Indian cultural intelligence (festivals, pooja)","Adapts to your unique household","Improves from every interaction"].map((t,i)=><p key={i} className="text-xs text-emerald-300/80 py-1.5 border-b border-[var(--border)] last:border-0">✓ {t}</p>)}</div>
+  <div className="card border-l-2 border-l-red-500/40"><p className="text-[10px] font-bold text-red-400 uppercase mb-3">Traditional Smart Home</p>{["Waits for voice commands","Device focused only","Reactive — acts after the fact","No cultural awareness","Treats every home the same","No learning capability"].map((t,i)=><p key={i} className="text-xs text-[var(--muted)] py-1.5 border-b border-[var(--border)] last:border-0">✗ {t}</p>)}</div>
 </div>
 </section>
 
