@@ -338,13 +338,38 @@ return(<div className="min-h-screen flex flex-col">
 </div>}
 
 {/* FAMILY */}
-{pg==="family"&&<div className="max-w-4xl mx-auto px-4 py-6 space-y-4"><div className="flex justify-between items-center"><h2 className="text-base font-bold">Family Members</h2><button onClick={()=>sFm(true)} className="btn-p text-[10px]">+ Add</button></div>
-<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">{fam.map((m:any,i:number)=><div key={m.id||i} onClick={()=>sFamDet(m)} className="card text-center relative group cursor-pointer hover:border-cyan-800/50 transition-all"><img src={m.img||""} alt="" className="w-12 h-12 mx-auto rounded-full object-cover border border-cyan-900/40"/><p className="text-xs font-semibold mt-2">{m.name}</p><p className="text-[10px] text-muted">{m.role}{m.age?` • Age ${m.age}`:""}</p>{m.birthday&&<p className="text-[10px] text-cyan-400 mt-0.5">🎂 {m.birthday}</p>}<button onClick={(e)=>{e.stopPropagation();delF(m.id);}} className="absolute top-2 right-2 w-5 h-5 rounded bg-red-500/20 text-red-400 text-[10px] opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">✕</button></div>)}</div>
-<p className="text-[11px] text-muted text-center">Click a member to view their Personal Digital Twin.</p>
+{pg==="family"&&<div className="max-w-5xl mx-auto px-5 py-8 space-y-6">
+
+{/* ── PAGE HEADER ── */}
+<div className="flex justify-between items-start">
+  <div><h2 className="text-2xl md:text-[32px] font-bold">Family</h2><p className="text-sm text-[var(--muted)] mt-1">Manage your family members, important events and household routines.</p></div>
+  <button onClick={()=>sFm(true)} className="btn-p text-sm">+ Add Member</button>
+</div>
+
+{/* ── FAMILY MEMBER CARDS ── */}
+<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
+  {fam.map((m:any,i:number)=>{
+    const roleIcon=m.name==="Lakshmi"?"👩":m.name==="Venkat"?"💼":m.name==="Arjun"?"📖":"👵";
+    const roleLabel=m.name==="Lakshmi"?"Homemaker":m.name==="Venkat"?"Working Professional":m.name==="Arjun"?"Student":"Elder";
+    const roleColor=m.name==="Lakshmi"?"text-emerald-400":m.name==="Venkat"?"text-blue-400":m.name==="Arjun"?"text-purple-400":"text-amber-400";
+    const gen=m.name==="Paati"?"Grandparent":m.name==="Arjun"?"Child":"Parent";
+    return(<div key={m.id||i} onClick={()=>sFamDet(m)} className="card text-center relative group cursor-pointer hover:border-cyan-800/50 hover:-translate-y-1 transition-all duration-200">
+      <div className="relative mx-auto w-20 h-20">
+        <img src={m.img||""} alt="" className="w-20 h-20 rounded-full object-cover border-2 border-cyan-800/40 shadow-lg shadow-cyan-900/20"/>
+        <span className="absolute bottom-0 right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-[var(--card)]"/>
+      </div>
+      <p className="text-lg font-bold mt-3">{m.name}</p>
+      <p className={cn("text-xs font-medium mt-1",roleColor)}>{roleIcon} {roleLabel}</p>
+      <p className="text-xs text-[var(--muted)] mt-0.5">{gen}{m.age?` • Age ${m.age}`:""}</p>
+      {m.birthday&&<p className="text-xs text-cyan-400 mt-1">🎂 {m.birthday}</p>}
+      <button onClick={(e)=>{e.stopPropagation();delF(m.id);}} className="absolute top-3 right-3 w-6 h-6 rounded-full bg-red-500/20 text-red-400 text-xs opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">✕</button>
+    </div>);
+  })}
+</div>
+<p className="text-sm text-[var(--muted)] text-center">Click on a member to view their Personal Digital Twin →</p>
 
 {/* ── PERSONAL DIGITAL TWIN PANEL ── */}
 {famDet&&<div className="card-glow af space-y-4 mt-2">
-  {/* Header */}
   <div className="flex items-center gap-3 pb-3 border-b border-[var(--border)]">
     <img src={famDet.img||""} alt="" className="w-14 h-14 rounded-full object-cover border-2 border-cyan-800/40"/>
     <div className="flex-1">
@@ -354,74 +379,124 @@ return(<div className="min-h-screen flex flex-col">
     </div>
     <button onClick={()=>sFamDet(null)} className="btn-s text-[9px] py-1 px-2">Close</button>
   </div>
-
-  {/* Current Status */}
   <div className="card"><p className="text-[9px] font-bold text-cyan-400 uppercase mb-1.5">Current Status</p>
     <p className="text-sm font-medium">{famDet.name==="Lakshmi"?"🟢 Cooking Preparation Active":famDet.name==="Venkat"?"🟡 Leaving for Office Soon":famDet.name==="Arjun"?"📚 Study Session Expected":famDet.name==="Paati"?"🙏 Morning Prayer Routine Active":"🟢 At Home"}</p>
   </div>
-
   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-    {/* AI Insights */}
     <div className="card"><p className="text-[9px] font-bold text-purple-400 uppercase mb-2">AI Insights</p><div className="space-y-1">
       {(famDet.name==="Arjun"?["Most productive study hours: 8 PM – 10 PM","Average sleep time: 11:15 PM","Exam preparation mode detected","Frequently uses laptop before exams"]:famDet.name==="Lakshmi"?["Breakfast preparation starts around 6 AM","Water motor monitoring routine detected","Grocery planning behavior observed","Evening cooking peaks at 6:30 PM"]:famDet.name==="Venkat"?["Office departure typically at 8:50 AM","Laptop usage peaks during work hours","Meeting readiness pattern detected","Weekend relaxation mode observed"]:["Morning prayer routine at 5:45 AM","Afternoon rest period consistent","Temple visits on Tuesday and Friday","Early sleep pattern maintained"]).map((ins,i)=><p key={i} className="text-[10px] text-emerald-400">✓ {ins}</p>)}
     </div></div>
-
-    {/* Mood Detection */}
     <div className="card"><p className="text-[9px] font-bold text-amber-400 uppercase mb-2">Mood Detection</p>
       <p className="text-lg">{famDet.name==="Arjun"?"📚 Focused":famDet.name==="Lakshmi"?"💼 Busy":famDet.name==="Venkat"?"😊 Calm":"🙏 Peaceful"}</p>
       <p className="text-[10px] text-muted mt-1">Reason: {famDet.name==="Arjun"?"Exam scheduled tomorrow and study activity increased by 35%.":famDet.name==="Lakshmi"?"Multiple household tasks active simultaneously.":famDet.name==="Venkat"?"Regular schedule maintained, no anomalies.":"Daily prayer routine completed on time."}</p>
     </div>
   </div>
-
   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-    {/* Today's Tasks */}
     <div className="card"><p className="text-[9px] font-bold text-emerald-400 uppercase mb-2">Today's Tasks</p><div className="space-y-1.5">
       {(memberData[famDet.name]?.tasks||["No tasks assigned"]).map((t:string,i:number)=><label key={i} className="flex items-center gap-2 cursor-pointer"><input type="checkbox" className="rounded border-[var(--border)] accent-cyan-500 w-3.5 h-3.5"/><span className="text-[10px]">{t}</span></label>)}
     </div></div>
-
-    {/* Upcoming Alarms */}
     <div className="card"><p className="text-[9px] font-bold text-amber-400 uppercase mb-2">Upcoming Alarms</p><div className="space-y-1.5">
       {(memberData[famDet.name]?.alarms||[{time:"--:--",label:"No alarms"}]).map((a:{time:string;label:string},i:number)=><div key={i} className="flex items-center gap-2 py-1 border-b border-[var(--border)] last:border-0"><span className="text-amber-400 text-[10px]">🔔</span><span className="text-[10px] font-mono text-amber-400 w-12">{a.time}</span><span className="text-[10px] flex-1">{a.label}</span></div>)}
     </div></div>
   </div>
-
   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-    {/* Routine Adherence */}
     <div className="card text-center"><p className="text-[9px] font-bold text-cyan-400 uppercase mb-2">Routine Adherence</p>
       <p className="text-2xl font-black text-cyan-400">{famDet.name==="Lakshmi"?"92%":famDet.name==="Venkat"?"87%":famDet.name==="Arjun"?"89%":"95%"}</p>
       <p className="text-[9px] text-muted mt-1">Following regular schedule for the past 7 days.</p>
     </div>
-
-    {/* Next Action Predictions */}
     <div className="card"><p className="text-[9px] font-bold text-cyan-400 uppercase mb-2">Predicted Next Actions</p><div className="space-y-1.5">
       {(famDet.name==="Arjun"?[{c:91,a:"Start Study Session",r:"Exam tomorrow, pattern detected on 42 similar days"},{c:85,a:"Prepare School Bag",r:"Usually occurs 20 min before bedtime"}]:famDet.name==="Lakshmi"?[{c:96,a:"Run Water Motor",r:"Tank at 42%, CMWSSB supply window active"},{c:88,a:"Begin Cooking",r:"Evening meal preparation pattern"}]:famDet.name==="Venkat"?[{c:94,a:"Leave for Office",r:"Weekday commute pattern, 8:50 AM avg"},{c:82,a:"Charge Laptop",r:"Low battery detected in similar past scenarios"}]:[{c:97,a:"Morning Aarti",r:"Daily at 5:45 AM, 97% consistency"},{c:90,a:"Afternoon Rest",r:"13:00 rest pattern confirmed"}]).map((p,i)=><div key={i} className="py-1 border-b border-[var(--border)] last:border-0"><div className="flex gap-2"><span className="text-emerald-400 font-bold text-[10px]">{p.c}%</span><span className="text-[10px] font-medium">{p.a}</span></div><p className="text-[9px] text-muted ml-8">{p.r}</p></div>)}
     </div></div>
   </div>
-
   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-    {/* Memory Insights */}
     <div className="card"><p className="text-[9px] font-bold text-purple-400 uppercase mb-2">30-Day Memory Insights</p><div className="space-y-1">
       {(famDet.name==="Arjun"?["Studies most effectively between 8 PM and 10 PM","Screen time increases before exams","Sleep delay averages 14 min during exam weeks","Prefers quiet environment for revision"]:famDet.name==="Lakshmi"?["Starts breakfast preparation at 6 AM on 92% of days","Water motor usage peaks on weekdays","Grocery planning happens every Sunday","Evening cooking starts at 6:30 PM consistently"]:famDet.name==="Venkat"?["Leaves for work at approximately 8:50 AM","Laptop usage peaks during morning hours","Weekend activity significantly different","Prefers chai at 5 PM daily"]:["Performs pooja daily around 5:45 AM","Afternoon nap from 1 PM to 2:30 PM","Temple visits on Tuesday and Friday","Sleeps by 9 PM consistently"]).map((m,i)=><p key={i} className="text-[10px] text-muted">✓ {m}</p>)}
     </div></div>
-
-    {/* Daily Timeline */}
     <div className="card"><p className="text-[9px] font-bold text-cyan-400 uppercase mb-2">Today's Personal Timeline</p><div className="space-y-1">
       {(famDet.name==="Arjun"?[{t:"6:30 AM",e:"Wake Up"},{t:"7:15 AM",e:"School Prep"},{t:"8:00 AM",e:"School"},{t:"3:30 PM",e:"Return"},{t:"5:00 PM",e:"Tuition"},{t:"8:00 PM",e:"Study Session"},{t:"10:30 PM",e:"Sleep"}]:famDet.name==="Lakshmi"?[{t:"5:45 AM",e:"Wake Up"},{t:"6:00 AM",e:"Pooja"},{t:"6:15 AM",e:"Water Motor"},{t:"6:30 AM",e:"Breakfast"},{t:"11:30 AM",e:"Lunch Prep"},{t:"5:00 PM",e:"Coffee"},{t:"6:30 PM",e:"Dinner Prep"}]:famDet.name==="Venkat"?[{t:"6:30 AM",e:"Wake Up"},{t:"7:30 AM",e:"Ready"},{t:"8:50 AM",e:"Office"},{t:"6:00 PM",e:"Return"},{t:"8:00 PM",e:"Dinner"},{t:"10:00 PM",e:"Relax"},{t:"11:00 PM",e:"Sleep"}]:[{t:"4:30 AM",e:"Wake Up"},{t:"5:30 AM",e:"Aarti"},{t:"7:00 AM",e:"Breakfast"},{t:"10:00 AM",e:"Rest"},{t:"1:00 PM",e:"Nap"},{t:"5:00 PM",e:"Evening Prayer"},{t:"9:00 PM",e:"Sleep"}]).map((ev,i)=><div key={i} className="flex gap-2 py-0.5"><span className="text-[9px] font-mono text-cyan-400 w-14">{ev.t}</span><span className="text-[10px]">{ev.e}</span></div>)}
     </div></div>
   </div>
-
-  {/* Household Contribution */}
   <div className="card"><p className="text-[9px] font-bold text-emerald-400 uppercase mb-2">Household Contribution</p>
     <div className="space-y-1.5">{[{n:"Lakshmi",p:35},{n:"Venkat",p:25},{n:"Arjun",p:20},{n:"Paati",p:20}].map((c,i)=><div key={i} className="flex items-center gap-2"><span className="text-[10px] w-16">{c.n}</span><div className="flex-1 h-2 rounded-full bg-[var(--border)] overflow-hidden"><div className={cn("h-full rounded-full",c.n===famDet.name?"bg-cyan-500":"bg-cyan-500/30")} style={{width:`${c.p}%`}}/></div><span className="text-[9px] text-muted w-8 text-right">{c.p}%</span></div>)}</div>
   </div>
 </div>}
 
-{/* Add Member Modal */}
-{fm&&<div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={()=>sFm(false)}><div className="bg-[var(--card)] rounded-2xl p-5 w-full max-w-xs md:max-w-sm border border-[var(--border)] space-y-2.5 max-h-[90vh] overflow-y-auto" onClick={e=>e.stopPropagation()}><h3 className="text-sm font-bold">Add Member</h3><input placeholder="Name" value={ff.name} onChange={e=>sff(f=>({...f,name:e.target.value}))} className="w-full px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-xs"/><select value={ff.role} onChange={e=>sff(f=>({...f,role:e.target.value}))} className="w-full px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-xs">{["Student","Professional","Homemaker","Elderly","Child"].map(r=><option key={r}>{r}</option>)}</select><div className="grid grid-cols-2 gap-2"><input placeholder="Age" type="number" value={ff.age} onChange={e=>sff(f=>({...f,age:e.target.value}))} className="px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-xs"/><input type="date" value={ff.bday} onChange={e=>sff(f=>({...f,bday:e.target.value}))} className="px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-xs"/></div><input placeholder="Image URL" value={ff.img} onChange={e=>sff(f=>({...f,img:e.target.value}))} className="w-full px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-xs"/><div className="flex gap-2"><button onClick={addF} className="btn-p flex-1 text-[10px]">Save</button><button onClick={()=>sFm(false)} className="btn-s flex-1 text-[10px]">Cancel</button></div></div></div>}
+{/* ── HOUSEHOLD STRUCTURE ── */}
+<div className="grid md:grid-cols-2 gap-5">
+  <div className="card">
+    <p className="text-xs font-bold text-cyan-400 uppercase tracking-wide mb-4">Household Overview</p>
+    <div className="grid grid-cols-3 gap-4 text-center">
+      <div><p className="text-2xl font-black text-cyan-400">4</p><p className="text-xs text-[var(--muted)]">Members</p></div>
+      <div><p className="text-2xl font-black text-purple-400">2</p><p className="text-xs text-[var(--muted)]">Generations</p></div>
+      <div><p className="text-2xl font-black text-emerald-400">1</p><p className="text-xs text-[var(--muted)]">Household</p></div>
+    </div>
+  </div>
+  <div className="card">
+    <p className="text-xs font-bold text-cyan-400 uppercase tracking-wide mb-4">Family Structure</p>
+    <div className="flex items-center justify-center gap-6">
+      <div className="text-center"><div className="w-10 h-10 rounded-full border-2 border-emerald-500/50 mx-auto overflow-hidden"><img src={fam[0]?.img||""} alt="" className="w-full h-full object-cover"/></div><p className="text-[10px] mt-1">Lakshmi</p></div>
+      <span className="text-[var(--muted)] text-xs">───</span>
+      <div className="text-center"><div className="w-10 h-10 rounded-full border-2 border-blue-500/50 mx-auto overflow-hidden"><img src={fam[1]?.img||""} alt="" className="w-full h-full object-cover"/></div><p className="text-[10px] mt-1">Venkat</p></div>
+    </div>
+    <div className="flex items-center justify-center gap-8 mt-3">
+      <div className="text-center"><div className="w-9 h-9 rounded-full border-2 border-purple-500/50 mx-auto overflow-hidden"><img src={fam[2]?.img||""} alt="" className="w-full h-full object-cover"/></div><p className="text-[10px] mt-1">Arjun</p></div>
+      <div className="text-center"><div className="w-9 h-9 rounded-full border-2 border-amber-500/50 mx-auto overflow-hidden"><img src={fam[3]?.img||""} alt="" className="w-full h-full object-cover"/></div><p className="text-[10px] mt-1">Paati</p></div>
+    </div>
+  </div>
+</div>
 
-{/* Calendar merged into Family */}
-<h3 className="text-sm font-bold mt-4">📅 Family Events & Calendar</h3>
-<div className="space-y-2">{cal.map((e,i)=><div key={i} className="card flex items-center gap-3"><span className="text-lg">{e.i}</span><div className="flex-1"><p className="text-xs font-medium">{e.t}</p><p className="text-[10px] text-muted">{e.d}</p></div><span className="text-[9px] text-cyan-400 font-medium">{getDaysLeft(e.d)}</span><button onClick={()=>sCalEdit({idx:i,t:e.t,d:e.d})} className="text-[10px] px-2 py-1 rounded bg-white/5 border border-[var(--border)] hover:bg-white/10 transition-all">✏️</button></div>)}</div>
+{/* ── UPCOMING EVENTS & ROUTINES ── */}
+<div className="grid md:grid-cols-2 gap-5">
+  {/* Upcoming Events */}
+  <div className="card">
+    <p className="text-xs font-bold text-cyan-400 uppercase tracking-wide mb-4">Upcoming Family Events</p>
+    <div className="space-y-3">
+      {cal.map((e,i)=><div key={i} className="flex items-center gap-3 py-2 border-b border-[var(--border)] last:border-0">
+        <span className="text-xl">{e.i}</span>
+        <div className="flex-1"><p className="text-sm font-medium">{e.t}</p><p className="text-xs text-[var(--muted)]">{e.d}</p></div>
+        <span className="text-xs text-cyan-400 font-medium">{getDaysLeft(e.d)}</span>
+        <button onClick={()=>sCalEdit({idx:i,t:e.t,d:e.d})} className="text-xs px-2 py-1 rounded bg-white/5 border border-[var(--border)] hover:bg-white/10 transition-all">✏️</button>
+      </div>)}
+    </div>
+    <p className="text-xs text-cyan-400 font-medium mt-4 cursor-pointer hover:underline">View All Events →</p>
+  </div>
+
+  {/* Recurring Routines */}
+  <div className="card">
+    <p className="text-xs font-bold text-cyan-400 uppercase tracking-wide mb-4">Recurring Household Routines</p>
+    <div className="space-y-3">
+      {[{i:"💧",t:"Water Motor",f:"Daily • 6:15 AM"},{i:"☕",t:"Evening Coffee",f:"Daily • 5:00 PM"},{i:"⚡",t:"Power Cut Window",f:"Daily • 2:00 PM"},{i:"🪔",t:"Morning Pooja",f:"Daily • 5:45 AM"},{i:"📚",t:"Study Session",f:"Weekdays • 8:00 PM"}].map((r,i)=><div key={i} className="flex items-center gap-3 py-2 border-b border-[var(--border)] last:border-0">
+        <span className="text-lg">{r.i}</span>
+        <div className="flex-1"><p className="text-sm font-medium">{r.t}</p></div>
+        <span className="badge badge-b">{r.f}</span>
+      </div>)}
+    </div>
+    <p className="text-xs text-cyan-400 font-medium mt-4 cursor-pointer hover:underline">Manage Routines →</p>
+  </div>
+</div>
+
+{/* ── CULTURAL INTELLIGENCE ── */}
+<div className="card-glow">
+  <p className="text-xs font-bold text-purple-400 uppercase tracking-wide mb-3">Cultural Intelligence</p>
+  <div className="flex items-start gap-4">
+    <span className="text-4xl">🪔</span>
+    <div className="flex-1">
+      <p className="text-lg font-bold">{CULTURAL_CONTEXT.festivalName}</p>
+      <p className="text-sm text-[var(--muted)] mt-0.5">In {CULTURAL_CONTEXT.daysAway} days • 2025-01-14</p>
+      <div className="mt-3 space-y-1.5">
+        <p className="text-sm text-emerald-400">✓ Grocery reminder scheduled</p>
+        <p className="text-sm text-emerald-400">✓ Family gathering reminder</p>
+        <p className="text-sm text-emerald-400">✓ Traditional cooking preparation</p>
+      </div>
+      <p className="text-xs text-cyan-400 font-medium mt-4 cursor-pointer hover:underline">View Cultural Calendar →</p>
+    </div>
+  </div>
+</div>
+
+{/* Add Member Modal */}
+{fm&&<div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={()=>sFm(false)}><div className="bg-[var(--card)] rounded-2xl p-6 w-full max-w-sm border border-[var(--border)] space-y-3 max-h-[90vh] overflow-y-auto" onClick={e=>e.stopPropagation()}><h3 className="text-lg font-bold">Add Family Member</h3><input placeholder="Name" value={ff.name} onChange={e=>sff(f=>({...f,name:e.target.value}))} className="w-full px-3 py-2.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-sm"/><select value={ff.role} onChange={e=>sff(f=>({...f,role:e.target.value}))} className="w-full px-3 py-2.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-sm">{["Student","Professional","Homemaker","Elderly","Child"].map(r=><option key={r}>{r}</option>)}</select><div className="grid grid-cols-2 gap-2"><input placeholder="Age" type="number" value={ff.age} onChange={e=>sff(f=>({...f,age:e.target.value}))} className="px-3 py-2.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-sm"/><input type="date" value={ff.bday} onChange={e=>sff(f=>({...f,bday:e.target.value}))} className="px-3 py-2.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-sm"/></div><input placeholder="Image URL" value={ff.img} onChange={e=>sff(f=>({...f,img:e.target.value}))} className="w-full px-3 py-2.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-sm"/><div className="flex gap-2 pt-1"><button onClick={addF} className="btn-p flex-1">Save</button><button onClick={()=>sFm(false)} className="btn-s flex-1">Cancel</button></div></div></div>}
+
+{/* Calendar Edit Modal */}
 {calEdit&&<div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={()=>sCalEdit(null)}><div className="bg-[var(--card)] rounded-2xl p-5 w-full max-w-xs border border-[var(--border)] space-y-3" onClick={ev=>ev.stopPropagation()}><h3 className="text-sm font-bold">Edit Event</h3><div><label className="text-[9px] text-muted">Title</label><input value={calEdit.t} onChange={ev=>sCalEdit({...calEdit,t:ev.target.value})} className="w-full px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-xs mt-0.5"/></div><div><label className="text-[9px] text-muted">Date / Frequency</label><input value={calEdit.d} onChange={ev=>sCalEdit({...calEdit,d:ev.target.value})} className="w-full px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-xs mt-0.5" placeholder="2025-01-20 or Daily 6:15"/></div><p className="text-[9px] text-cyan-400">{getDaysLeft(calEdit.d)}</p><div className="flex gap-2"><button onClick={saveCalEdit} className="btn-p flex-1 text-[10px]">Save</button><button onClick={()=>sCalEdit(null)} className="btn-s flex-1 text-[10px]">Cancel</button></div></div></div>}
 </div>}
 
