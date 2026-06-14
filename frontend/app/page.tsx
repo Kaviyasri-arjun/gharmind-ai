@@ -916,118 +916,87 @@ return(<div className="min-h-screen flex flex-col">
 {/* Energy merged into dashboard below */}
 
 {/* MEMORY */}
-{pg==="memory"&&<div className="max-w-5xl mx-auto px-5 py-8 space-y-6">
-<div className="mb-2">
-  <h2 className="text-2xl md:text-[32px] font-bold">Memory</h2>
-  <p className="text-sm text-[var(--muted)] mt-1">AI that learns. Memories that matter.</p>
-</div>
+{pg==="memory"&&<div className="max-w-6xl mx-auto px-5 py-8 space-y-6">
 
-{/* ── MEMORY INSIGHTS HEADER ── */}
-<div className="card-glow py-6 px-6">
-  <div className="flex items-center gap-2 mb-4"><span className="text-xl">🧠</span><p className="text-lg font-bold">What GharMind Learned This Week</p></div>
-  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-    {["Arjun studies best between 8–10 PM","Lakshmi starts breakfast after pooja","Family power usage peaks around 7 PM","Water motor usually runs at 6:15 AM"].map((insight,i)=>(
-      <p key={i} className="text-sm text-emerald-400 py-1">✓ {insight}</p>
-    ))}
+{/* ── DETAIL VIEW ── */}
+{typeof window!=="undefined"&&gal.find(g=>g.id===(window as any).__memDetail)?<div className="af">
+{(()=>{const mem=gal.find(g=>g.id===(window as any).__memDetail)!;const details:{[k:string]:{type:string;location:string;duration:string;insight:string;patterns:string[]}}={
+  "Pongal Celebration":{type:"Festival",location:"Home",duration:"Full Day",insight:"Festival routines help GharMind anticipate grocery reminders, family gathering schedules, traditional cooking preparation.",patterns:["Kitchen Activity","Family Presence","Festival Preparation"]},
+  "Evening Family Dinner":{type:"Routine",location:"Dining Room",duration:"1.5 Hours",insight:"Evening dinner patterns help predict kitchen load, energy usage, and family coordination timing.",patterns:["Kitchen Activity","Family Presence","Evening Routine"]},
+  "Arjun Exam Achievement":{type:"Achievement",location:"Study Room",duration:"3 Months",insight:"Exam preparation patterns help GharMind enforce quiet hours and optimize study environment.",patterns:["Study Activity","Quiet Mode","Device Usage"]},
+  "Morning Pooja":{type:"Routine",location:"Pooja Room",duration:"30 Minutes",insight:"Daily pooja patterns enable automatic quiet mode enforcement and lighting adjustments.",patterns:["Morning Routine","Quiet Mode","Cultural Practice"]},
+  "Diwali Celebration":{type:"Festival",location:"Home & Outdoors",duration:"2 Days",insight:"Diwali patterns help anticipate power spikes, guest visits, and festival preparation needs.",patterns:["Festival Activity","Guest Patterns","Power Usage"]},
+  "Family Gathering":{type:"Family",location:"Living Room",duration:"4 Hours",insight:"Guest visit patterns help predict meal preparation, seating needs, and activity changes.",patterns:["Guest Presence","Kitchen Load","Social Activity"]},
+  "Evening Chai Time":{type:"Routine",location:"Kitchen",duration:"20 Minutes",insight:"Daily chai routine helps predict kitchen occupancy and family availability windows.",patterns:["Kitchen Activity","Family Coordination","Daily Routine"]},
+  "Study Session":{type:"Routine",location:"Study Room",duration:"2 Hours",insight:"Study patterns enable quiet hour enforcement and device charging predictions.",patterns:["Study Activity","Quiet Mode","Evening Routine"]},
+  "Paati Birthday":{type:"Family",location:"Home",duration:"Full Day",insight:"Birthday patterns help schedule celebrations and anticipate household activity peaks.",patterns:["Family Gathering","Kitchen Activity","Celebration"]},
+};const d=details[mem.cap]||{type:mem.tag,location:"Home",duration:"Variable",insight:"GharMind learns from this memory to improve household predictions.",patterns:["Household Activity","Family Routine"]};
+return(<>
+<button onClick={()=>{(window as any).__memDetail=null;sGi(gi+"");}} className="btn-s text-sm mb-4">← Back to Gallery</button>
+<div className="grid lg:grid-cols-[55%_25%_20%] gap-6">
+  {/* Left — Image */}
+  <div>
+    <img src={mem.url} alt={mem.cap} className="w-full h-[350px] object-cover rounded-2xl border border-[var(--border)]"/>
+    <div className="flex gap-2 mt-3 overflow-x-auto">{gal.filter(g=>g.tag===mem.tag&&g.id!==mem.id).slice(0,4).map(g=><img key={g.id} src={g.url} alt="" className="w-16 h-16 rounded-lg object-cover border border-[var(--border)] cursor-pointer hover:border-cyan-500/50 transition-all" onClick={()=>{(window as any).__memDetail=g.id;sGi(gi+"");}}/>)}</div>
+  </div>
+  {/* Center — Details */}
+  <div className="space-y-4">
+    <div><h2 className="text-xl font-bold">{mem.cap}</h2><span className="badge badge-b mt-2">{mem.tag}</span></div>
+    <div className="space-y-2"><p className="text-sm text-[var(--muted)]">📅 {mem.date}</p><p className="text-sm text-[var(--muted)]">👥 {mem.members}</p><p className="text-sm text-emerald-400">🧠 {mem.ai}</p></div>
+    <div className="card"><p className="text-xs font-bold text-cyan-400 uppercase mb-2">AI Insight</p><p className="text-sm text-[var(--fg)]/80 leading-[1.6]">{d.insight}</p></div>
+  </div>
+  {/* Right — Metadata */}
+  <div className="card space-y-3">
+    <p className="text-xs font-bold text-cyan-400 uppercase">Memory Details</p>
+    {[{l:"Type",v:d.type},{l:"Location",v:d.location},{l:"Duration",v:d.duration},{l:"Captured On",v:mem.date},{l:"Added By",v:"GharMind AI"},{l:"Source",v:"Household Memory"}].map((m,i)=><div key={i} className="flex justify-between py-1 border-b border-[var(--border)] last:border-0"><span className="text-xs text-[var(--muted)]">{m.l}</span><span className="text-xs font-medium">{m.v}</span></div>)}
+    <div className="pt-2"><p className="text-xs font-bold text-purple-400 uppercase mb-2">Related Patterns</p>{d.patterns.map((p,i)=><p key={i} className="text-xs text-emerald-400 py-0.5">↗ {p}</p>)}</div>
   </div>
 </div>
+</>);})()}
+</div>:
 
-{/* ── MEMORY METRICS ── */}
-<div className="grid grid-cols-3 gap-4">
-  <div className="card text-center py-5"><p className="text-2xl md:text-3xl font-black text-cyan-400">92%</p><p className="text-xs text-[var(--muted)] mt-1">Memory Confidence</p></div>
-  <div className="card text-center py-5"><p className="text-2xl md:text-3xl font-black text-emerald-400">12</p><p className="text-xs text-[var(--muted)] mt-1">Patterns Learned</p></div>
-  <div className="card text-center py-5"><p className="text-2xl md:text-3xl font-black text-purple-400">89%</p><p className="text-xs text-[var(--muted)] mt-1">Successful Predictions</p></div>
+<>
+{/* ── GALLERY STATE ── */}
+<div className="flex justify-between items-start">
+  <div><h2 className="text-2xl md:text-[32px] font-bold">Memory Gallery</h2><p className="text-sm text-[var(--muted)] mt-1">GharMind preserves the moments, routines, and memories that define a household.</p></div>
 </div>
-
-{/* ── MEMORY TIMELINE ── */}
-<div>
-  <h3 className="text-lg font-bold mb-4">Memory Timeline</h3>
-  <div className="relative pl-7 border-l-2 border-cyan-800/40 space-y-5">
-    {/* Today */}
-    <div className="relative af">
-      <span className="absolute -left-[25px] top-2 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-emerald-400"/>
-      <div className="card-glow py-4 px-5">
-        <div className="flex items-center justify-between mb-3"><p className="text-base font-bold text-emerald-400">🟢 Today</p><span className="badge badge-g">High Activity</span></div>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {[{i:"💧",e:"Water Motor"},{i:"🪔",e:"Pooja"},{i:"⚡",e:"Power Cut Expected"},{i:"☕",e:"Evening Coffee"}].map((ev,j)=><div key={j} className="flex items-center gap-2"><span className="text-lg">{ev.i}</span><span className="text-sm">{ev.e}</span></div>)}
-        </div>
-        <div className="flex items-center gap-2 mt-3"><span className="text-xs text-[var(--muted)]">Accuracy:</span><div className="flex-1 h-1.5 rounded-full bg-[var(--border)] max-w-[120px]"><div className="h-full rounded-full bg-emerald-500" style={{width:"94%"}}/></div><span className="text-xs font-bold text-emerald-400">94%</span></div>
-      </div>
-    </div>
-    {/* Yesterday */}
-    <div className="relative af" style={{animationDelay:"0.08s"}}>
-      <span className="absolute -left-[25px] top-2 w-3.5 h-3.5 rounded-full bg-blue-500/60 border-2 border-blue-400"/>
-      <div className="card py-4 px-5">
-        <div className="flex items-center justify-between mb-3"><p className="text-base font-bold text-blue-400">🔵 Yesterday</p><span className="badge badge-b">Normal Weekday</span></div>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {[{i:"💧",e:"Water Motor"},{i:"🪔",e:"Pooja"},{i:"📚",e:"Tuition"},{i:"📖",e:"Study Session"}].map((ev,j)=><div key={j} className="flex items-center gap-2"><span className="text-lg">{ev.i}</span><span className="text-sm">{ev.e}</span></div>)}
-        </div>
-        <div className="flex items-center gap-2 mt-3"><span className="text-xs text-[var(--muted)]">Accuracy:</span><div className="flex-1 h-1.5 rounded-full bg-[var(--border)] max-w-[120px]"><div className="h-full rounded-full bg-blue-500" style={{width:"91%"}}/></div><span className="text-xs font-bold text-blue-400">91%</span></div>
-      </div>
-    </div>
-    {/* 3 Days Ago */}
-    <div className="relative af" style={{animationDelay:"0.16s"}}>
-      <span className="absolute -left-[25px] top-2 w-3.5 h-3.5 rounded-full bg-purple-500/50 border-2 border-purple-400/60"/>
-      <div className="card py-4 px-5 opacity-90">
-        <div className="flex items-center justify-between mb-3"><p className="text-base font-bold text-purple-400">🟣 3 Days Ago</p><span className="badge badge-b">Normal Weekday</span></div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          {[{i:"💧",e:"Water Motor"},{i:"☕",e:"Coffee"},{i:"📖",e:"Study Session"}].map((ev,j)=><div key={j} className="flex items-center gap-2"><span className="text-lg">{ev.i}</span><span className="text-sm">{ev.e}</span></div>)}
-        </div>
-        <div className="flex items-center gap-2 mt-3"><span className="text-xs text-[var(--muted)]">Accuracy:</span><div className="flex-1 h-1.5 rounded-full bg-[var(--border)] max-w-[120px]"><div className="h-full rounded-full bg-purple-500" style={{width:"88%"}}/></div><span className="text-xs font-bold text-purple-400">88%</span></div>
-      </div>
-    </div>
-    {/* 1 Week Ago */}
-    <div className="relative af" style={{animationDelay:"0.24s"}}>
-      <span className="absolute -left-[25px] top-2 w-3.5 h-3.5 rounded-full bg-amber-500/40 border-2 border-amber-400/50"/>
-      <div className="card py-4 px-5 opacity-80">
-        <div className="flex items-center justify-between mb-3"><p className="text-base font-bold text-amber-400">🟠 1 Week Ago</p><span className="badge badge-a">Special Day</span></div>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {[{i:"👥",e:"Guest Visit"},{i:"☕",e:"Coffee"},{i:"🍽",e:"Family Dinner"},{i:"💧",e:"Water Motor"}].map((ev,j)=><div key={j} className="flex items-center gap-2"><span className="text-lg">{ev.i}</span><span className="text-sm">{ev.e}</span></div>)}
-        </div>
-        <div className="flex items-center gap-2 mt-3"><span className="text-xs text-[var(--muted)]">Accuracy:</span><div className="flex-1 h-1.5 rounded-full bg-[var(--border)] max-w-[120px]"><div className="h-full rounded-full bg-amber-500" style={{width:"85%"}}/></div><span className="text-xs font-bold text-amber-400">85%</span></div>
-      </div>
-    </div>
-  </div>
-  <p className="text-xs text-cyan-400 font-medium mt-4 ml-7 cursor-pointer hover:underline">View Complete Timeline →</p>
-</div>
-
-{/* Gallery merged here */}
-<h3 className="text-sm font-bold mt-6">🧠 Family Memory Gallery</h3>
-<p className="text-xs text-[var(--muted)] italic mb-3">&ldquo;GharMind preserves the moments, routines, and memories that define a household.&rdquo;</p>
 
 {/* Category filters */}
-<div className="flex gap-1.5 flex-wrap mb-3">
-  {["All","Family","Festival","Routine","Achievement"].map(c=><button key={c} onClick={()=>setGalFilter(c)} className={cn("text-[9px] px-2.5 py-1 rounded-full border border-[var(--border)] transition-all",galFilter===c?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{c}</button>)}
+<div className="flex gap-2 flex-wrap">
+  {["All","Family","Festival","Routine","Achievement"].map(c=><button key={c} onClick={()=>setGalFilter(c)} className={cn("text-sm px-4 py-1.5 rounded-full border transition-all",galFilter===c?"bg-cyan-500/10 text-cyan-400 border-cyan-500/50":"border-[var(--border)] text-[var(--muted)] hover:bg-white/5")}>{c}</button>)}
 </div>
 
 {/* Upload controls */}
-<div className="flex flex-wrap gap-2 items-center mb-3">
+<div className="flex flex-wrap gap-3 items-center">
   <input ref={galFileRef} type="file" accept="image/jpeg,image/jpg,image/png,image/webp" onChange={handleGalFile} className="hidden"/>
-  <button onClick={()=>galFileRef.current?.click()} className="btn-p text-[10px]">📷 Upload Memory</button>
-  <div className="flex gap-2 flex-1 min-w-[180px]"><input value={gi} onChange={e=>sGi(e.target.value)} placeholder="Paste image URL..." className="flex-1 px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-xs"/><button onClick={()=>{if(gi.trim()&&!gal.some(g=>g.url===gi.trim())){sGal(p=>[...p,{id:`g${Date.now()}`,url:gi.trim(),cap:"New Memory",date:"Today",members:"Family",tag:"Family",ai:"Manually added"}]);sGi("");}}} className="btn-s text-[10px]">+ Add</button></div>
+  <button onClick={()=>galFileRef.current?.click()} className="btn-p text-sm">📷 Upload Memory</button>
+  <div className="flex gap-2 flex-1 min-w-[200px]"><input value={gi} onChange={e=>sGi(e.target.value)} placeholder="Paste image URL..." className="flex-1 px-3 py-2.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-sm"/><button onClick={()=>{if(gi.trim()&&!gal.some(g=>g.url===gi.trim())){sGal(p=>[...p,{id:`g${Date.now()}`,url:gi.trim(),cap:"New Memory",date:"Today",members:"Family",tag:"Family",ai:"Manually added"}]);sGi("");}}} className="btn-s text-sm">+ Add</button></div>
 </div>
 
 {/* Upload modal */}
-{galUpOpen&&galFile&&<div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={()=>{setGalUpOpen(false);setGalFile(null);}}><div className="bg-[var(--card)] rounded-2xl p-5 w-full max-w-sm border border-[var(--border)] space-y-3" onClick={e=>e.stopPropagation()}><h3 className="text-sm font-bold">Add Memory</h3><img src={galFile} alt="Preview" className="w-full h-40 object-cover rounded-xl border border-[var(--border)]"/><input value={galCap} onChange={e=>setGalCap(e.target.value)} placeholder="Memory title..." className="w-full px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-xs"/><div className="flex gap-2"><button onClick={addGalFromFile} className="btn-p flex-1 text-[10px]">Save Memory</button><button onClick={()=>{setGalUpOpen(false);setGalFile(null);}} className="btn-s flex-1 text-[10px]">Cancel</button></div></div></div>}
+{galUpOpen&&galFile&&<div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={()=>{setGalUpOpen(false);setGalFile(null);}}><div className="bg-[var(--card)] rounded-2xl p-5 w-full max-w-sm border border-[var(--border)] space-y-3" onClick={e=>e.stopPropagation()}><h3 className="text-sm font-bold">Add Memory</h3><img src={galFile} alt="Preview" className="w-full h-40 object-cover rounded-xl border border-[var(--border)]"/><input value={galCap} onChange={e=>setGalCap(e.target.value)} placeholder="Memory title..." className="w-full px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-sm"/><div className="flex gap-2"><button onClick={addGalFromFile} className="btn-p flex-1 text-sm">Save Memory</button><button onClick={()=>{setGalUpOpen(false);setGalFile(null);}} className="btn-s flex-1 text-sm">Cancel</button></div></div></div>}
 
-{/* Image grid — deduplicated and filtered */}
-<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+{/* Memory Grid */}
+<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
   {gal.filter((g,i,arr)=>arr.findIndex(x=>x.url===g.url)===i).filter(g=>galFilter==="All"||g.tag===galFilter).map(g=>(
-    <div key={g.id} className="card p-0 overflow-hidden group relative">
-      <img src={g.url} alt={g.cap} onError={(e)=>{(e.target as HTMLImageElement).src="https://images.unsplash.com/photo-1609220136736-443140cffec6?w=400&q=80";}} className="w-full h-36 object-cover group-hover:scale-105 transition-transform duration-300"/>
-      <div className="p-2.5">
-        <p className="text-xs font-semibold">{g.cap}</p>
-        <div className="flex items-center gap-2 mt-1">
-          <span className="text-[8px] px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-800/30">{g.tag}</span>
-          <span className="text-[8px] text-muted">{g.date}</span>
+    <div key={g.id} className="card p-0 overflow-hidden group relative cursor-pointer hover:border-cyan-800/60 transition-all" onClick={()=>{(window as any).__memDetail=g.id;sGi(gi+"");}}>
+      <div className="relative overflow-hidden">
+        <img src={g.url} alt={g.cap} onError={(e)=>{(e.target as HTMLImageElement).src="https://images.unsplash.com/photo-1609220136736-443140cffec6?w=400&q=80";}} className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"/>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"/>
+        <div className="absolute bottom-3 left-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-cyan-500/20 backdrop-blur-sm border border-cyan-500/30 text-cyan-300 text-xs font-medium">👁 View Memory</span>
         </div>
-        <p className="text-[8px] text-muted mt-1">👥 {g.members}</p>
-        <p className="text-[8px] text-emerald-400/70 mt-0.5">🧠 {g.ai}</p>
       </div>
-      <button onClick={()=>delGalConfirm(g.id)} className="absolute top-2 right-2 w-5 h-5 rounded-full bg-red-500/80 text-white text-[8px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600">✕</button>
+      <div className="p-4">
+        <div className="flex items-center justify-between"><p className="text-sm font-bold">{g.cap}</p><span className="text-[11px] px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-800/30">{g.tag}</span></div>
+        <p className="text-xs text-[var(--muted)] mt-1.5">📅 {g.date} • 👥 {g.members}</p>
+        <p className="text-xs text-emerald-400/80 mt-1">🧠 {g.ai}</p>
+      </div>
+      <button onClick={(e)=>{e.stopPropagation();delGalConfirm(g.id);}} className="absolute top-3 right-3 w-6 h-6 rounded-full bg-red-500/80 text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600">✕</button>
     </div>
   ))}
 </div>
+</>}
 </div>}
 
 {/* Calendar and Gallery moved into Family and Memory pages */}
