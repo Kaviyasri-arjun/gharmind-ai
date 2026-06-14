@@ -701,35 +701,49 @@ return(<div className="min-h-screen flex flex-col">
 </div>}
 
 {/* WHAT-IF (merged into predictions page via tab) */}
-{pg==="predictions"&&subTab==="whatif"&&<div className="max-w-4xl mx-auto px-4 py-6 space-y-4">
+{pg==="predictions"&&subTab==="whatif"&&<div className="max-w-5xl mx-auto px-5 py-8 space-y-8">
 
 {/* Tabs */}
-<div className="flex gap-2 mb-2">{[{k:"predictions",l:"🔮 Predictions"},{k:"whatif",l:"🧪 What-If Simulator"}].map(t=><button key={t.k} onClick={()=>setSubTab(t.k==="predictions"?"":t.k)} className={cn("btn-g px-3 py-1.5",subTab===t.k?"text-cyan-400 bg-cyan-500/10":"")}>{t.l}</button>)}</div>
+<div className="flex gap-2 mb-2">{[{k:"predictions",l:"🔮 Predictions"},{k:"whatif",l:"🧪 What-If Simulator"}].map(t=><button key={t.k} onClick={()=>setSubTab(t.k==="predictions"?"":t.k)} className={cn("btn-g px-4 py-2",subTab===t.k?"text-cyan-400 bg-cyan-500/10":"")}>{t.l}</button>)}</div>
 
-{/* ── 12. AI BUTLER SUMMARY ── */}
-<div className="card-glow border-l-2 border-l-cyan-500/50 py-3">
-  <p className="text-[10px] text-cyan-400 font-medium">Household Butler AI</p>
-  <p className="text-xs mt-1">A 2 PM power outage is expected. If preventive actions are taken, disruption can be reduced by 58%. The most affected activity will be Arjun's study session. Recommended actions have been generated.</p>
+{/* ── AI BUTLER BRIEFING ── */}
+<div className="card-glow py-6 px-6">
+  <div className="grid md:grid-cols-[1fr_auto_1fr] gap-6 items-center">
+    <div className="flex gap-4 items-start">
+      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border border-cyan-800/40 flex items-center justify-center text-2xl flex-shrink-0">🧠</div>
+      <div>
+        <p className="text-xs font-bold text-cyan-400 uppercase tracking-wide">Household Butler AI</p>
+        <p className="text-sm text-[var(--fg)]/80 mt-2 leading-[1.6]">A 2 PM power outage is expected. If preventive actions are taken, disruption can be reduced by 58%. The most affected activity will be Arjun's study session. Recommended actions generated.</p>
+      </div>
+    </div>
+    <div className="hidden md:block w-px h-20 bg-[var(--border)]"/>
+    <div>
+      <p className="text-xs font-bold text-amber-400 uppercase tracking-wide mb-2">⚡ Key Insight</p>
+      <p className="text-base font-bold">Preparing now ensures minimal disruption and protects important study time.</p>
+    </div>
+  </div>
 </div>
 
-<h2 className="text-base font-bold">What-If Simulator</h2>
-
-{/* ── SCENARIO CARDS (existing + expanded) ── */}
-<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-  {[{k:"power",i:"⚡",l:"Power Cut"},{k:"exam",i:"📚",l:"Exam"},{k:"guests",i:"👥",l:"Guests"},{k:"power",i:"🪔",l:"Festival"},{k:"power",i:"💧",l:"Water Shortage"},{k:"guests",i:"🌧️",l:"Heavy Rain"},{k:"exam",i:"🏠",l:"Work From Home"},{k:"power",i:"🌡️",l:"Heat Wave"}].map(s=>
-    <button key={s.l} onClick={()=>{setSimSc(s.l);doSim(s.k);}} className="card-glow text-center py-4 hover:border-cyan-700/60 transition-all"><span className="text-xl">{s.i}</span><p className="text-[9px] mt-1">{s.l}</p></button>
+{/* ── STEP 1: SCENARIO SELECTION ── */}
+<div>
+<p className="text-sm font-bold text-[var(--muted)] uppercase tracking-wide mb-4">1. Select a Scenario to Simulate</p>
+<div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-3">
+  {[{k:"power",i:"⚡",l:"Power Cut"},{k:"exam",i:"📖",l:"Exam"},{k:"guests",i:"👥",l:"Guests"},{k:"Festival",i:"🪔",l:"Festival"},{k:"Water Shortage",i:"💧",l:"Water"},{k:"Heavy Rain",i:"🌧️",l:"Rain"},{k:"Work From Home",i:"🏠",l:"WFH"},{k:"Heat Wave",i:"🌡️",l:"Heat Wave"}].map(s=>
+    <button key={s.l} onClick={()=>{setSimSc(s.l);doSim(s.k);}} className={cn("card text-center py-5 hover:-translate-y-1 transition-all duration-200",simSc===s.l?"border-cyan-500/60 shadow-lg shadow-cyan-900/20":"hover:border-cyan-800/50")}><span className="text-2xl block">{s.i}</span><p className="text-xs font-medium mt-2">{s.l}</p></button>
   )}
 </div>
+</div>
 
-{/* ── 9. DYNAMIC SCENARIO PARAMETERS ── */}
-<div className="card"><p className="text-[9px] font-bold text-cyan-400 uppercase mb-2">AI Simulation Inputs {simSc&&<span className="text-muted normal-case">— {simSc.charAt(0).toUpperCase()+simSc.slice(1)}</span>}</p>
+{/* ── STEP 2: SIMULATION INPUTS ── */}
+<div>
+<p className="text-sm font-bold text-[var(--muted)] uppercase tracking-wide mb-4">2. Set Simulation Inputs</p>
 
 {/* Power Cut */}
-{(simSc==="power"||!simSc)&&<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
-  <div><p className="text-[9px] text-muted mb-1">Outage Duration</p><div className="flex gap-1 flex-wrap">{["1 hr","2 hr","4 hr","8 hr"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,dur:d}))} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",(simP.dur||"2 hr")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
-  <div><p className="text-[9px] text-muted mb-1">Time of Outage</p><div className="flex gap-1 flex-wrap">{["10 AM","2 PM","6 PM","10 PM"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,time:d}))} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",(simP.time||"2 PM")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
-  <div><p className="text-[9px] text-muted mb-1">Battery Backup</p><div className="flex gap-1">{["Yes","No"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,backup:d}))} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",(simP.backup||"Yes")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
-  <div><p className="text-[9px] text-muted mb-1">Members at Home</p><div className="flex gap-1">{["2","3","4","5"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,members:d}))} className={cn("text-[9px] px-2 py-1 rounded border border-[var(--border)]",(simP.members||"4")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-800":"text-muted hover:bg-white/5")}>{d}</button>)}</div></div>
+{(simSc==="power"||simSc==="Power Cut"||!simSc)&&<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+  <div className="card py-5"><p className="text-xs font-bold text-cyan-400 uppercase mb-3">Outage Duration</p><div className="flex flex-wrap gap-2">{["1 hr","2 hr","4 hr","8 hr"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,dur:d}))} className={cn("text-xs px-3 py-1.5 rounded-lg border transition-all",(simP.dur||"2 hr")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-500/50":"border-[var(--border)] text-[var(--muted)] hover:bg-white/5")}>{d}</button>)}</div></div>
+  <div className="card py-5"><p className="text-xs font-bold text-cyan-400 uppercase mb-3">Time of Outage</p><div className="flex flex-wrap gap-2">{["10 AM","2 PM","6 PM","10 PM"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,time:d}))} className={cn("text-xs px-3 py-1.5 rounded-lg border transition-all",(simP.time||"2 PM")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-500/50":"border-[var(--border)] text-[var(--muted)] hover:bg-white/5")}>{d}</button>)}</div></div>
+  <div className="card py-5"><p className="text-xs font-bold text-cyan-400 uppercase mb-3">Battery Backup</p><div className="flex flex-wrap gap-2">{["Yes","No"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,backup:d}))} className={cn("text-xs px-3 py-1.5 rounded-lg border transition-all",(simP.backup||"Yes")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-500/50":"border-[var(--border)] text-[var(--muted)] hover:bg-white/5")}>{d}</button>)}</div></div>
+  <div className="card py-5"><p className="text-xs font-bold text-cyan-400 uppercase mb-3">Members at Home</p><div className="flex flex-wrap gap-2">{["2","3","4","5"].map((d,i)=><button key={i} onClick={()=>setSimP(p=>({...p,members:d}))} className={cn("text-xs px-3 py-1.5 rounded-lg border transition-all",(simP.members||"4")===d?"bg-cyan-500/10 text-cyan-400 border-cyan-500/50":"border-[var(--border)] text-[var(--muted)] hover:bg-white/5")}>{d}</button>)}</div></div>
 </div>}
 
 {/* Exam */}
@@ -790,7 +804,53 @@ return(<div className="min-h-screen flex flex-col">
 
 </div>
 
-{sl&&<p className="text-xs text-muted text-center ap py-4">Running Digital Twin simulation...</p>}
+{sl&&<div className="text-center py-8"><div className="w-8 h-8 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin mx-auto"/><p className="text-sm text-[var(--muted)] mt-3 ap">Running Digital Twin simulation...</p></div>}
+
+{/* ── STEP 3: RESULTS ── */}
+{!sl&&<div>
+<p className="text-sm font-bold text-[var(--muted)] uppercase tracking-wide mb-4">3. Simulation Results</p>
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+  <div className="card py-6 text-center">
+    <p className="text-xs font-bold text-cyan-400 uppercase mb-3">Impact Overview</p>
+    <div className="relative w-24 h-12 mx-auto mb-2"><svg viewBox="0 0 100 50" className="w-full h-full"><path d="M5 50 A45 45 0 0 1 95 50" fill="none" stroke="#1e293b" strokeWidth="8" strokeLinecap="round"/><path d="M5 50 A45 45 0 0 1 95 50" fill="none" stroke="url(#simG2)" strokeWidth="8" strokeLinecap="round" strokeDasharray="141" strokeDashoffset="56"/><defs><linearGradient id="simG2" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stopColor="#10b981"/><stop offset="50%" stopColor="#f59e0b"/><stop offset="100%" stopColor="#ef4444"/></linearGradient></defs></svg></div>
+    <p className="text-lg font-black text-amber-400">{sr?.overall_severity==="critical"?"High":"Medium"} Impact</p>
+    <p className="text-xs text-[var(--muted)] mt-1">Moderate impact on routines</p>
+  </div>
+  <div className="card py-6">
+    <p className="text-xs font-bold text-purple-400 uppercase mb-3">Most Affected</p>
+    <div className="space-y-3">
+      {[{n:"Arjun",d:"Study Session (8–10 PM)",c:"text-red-400"},{n:"Lakshmi",d:"Evening Coffee",c:"text-amber-400"},{n:"Paati",d:"Rest Routine Delayed",c:"text-amber-400"}].map((m,i)=><div key={i} className="flex items-center gap-2"><img src={fam[i===0?2:i===1?0:3]?.img||""} alt="" className="w-7 h-7 rounded-full object-cover border border-[var(--border)]"/><div><p className="text-sm font-medium">{m.n}</p><p className={cn("text-xs",m.c)}>{m.d}</p></div></div>)}
+    </div>
+  </div>
+  <div className="card py-6">
+    <p className="text-xs font-bold text-emerald-400 uppercase mb-3">AI Actions</p>
+    <div className="space-y-2">{["Charge laptops before 2 PM","Fill water tank completely","Shift study to 5 PM","Complete tasks before outage"].map((a,i)=><p key={i} className="text-sm text-emerald-400">✓ {a}</p>)}</div>
+    <p className="text-xs text-cyan-400 font-medium mt-3 cursor-pointer hover:underline">View Full Action Plan →</p>
+  </div>
+  <div className="card py-6 text-center border-emerald-800/30 bg-emerald-500/5">
+    <p className="text-xs font-bold text-emerald-400 uppercase mb-3">Disruption Reduced</p>
+    <p className="text-xs text-[var(--muted)]">Without AI: <span className="text-red-400 font-bold">80%</span></p>
+    <p className="text-xs text-[var(--muted)]">With AI: <span className="text-emerald-400 font-bold">22%</span></p>
+    <p className="text-4xl font-black text-emerald-400 mt-2">58%</p>
+    <p className="text-sm text-emerald-400/80 font-medium mt-1">Disruption Reduced</p>
+  </div>
+</div>
+</div>}
+
+{/* ── BOTTOM METRICS ── */}
+<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+  {[{i:"📅",v:simP.dur||"2 Hours",l:"Duration"},{i:"🕒",v:simP.time||"2:00 PM",l:"Outage Time"},{i:"👥",v:`${simP.members||"4"} of 4`,l:"Members Affected"},{i:"🛡",v:"92%",l:"Confidence"},{i:"🎯",v:"High",l:"Preparedness"}].map((m,i)=>(
+    <div key={i} className="card text-center py-4"><span className="text-lg">{m.i}</span><p className="text-base font-bold mt-1">{m.v}</p><p className="text-xs text-[var(--muted)] mt-0.5">{m.l}</p></div>
+  ))}
+</div>
+
+{/* ── BOTTOM ACTION ── */}
+<div className="card-glow py-6 px-6">
+  <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+    <p className="text-sm text-[var(--fg)]/80"><span className="text-cyan-400">✨</span> GharMind AI simulates real-world scenarios to help your family stay prepared and stress-free.</p>
+    <button onClick={()=>{if(simSc)doSim(simSc==="Power Cut"||simSc==="power"?"power":simSc==="Exam"||simSc==="exam"?"exam":"guests");}} className="btn-p text-sm whitespace-nowrap">▶ Run Simulation</button>
+  </div>
+</div>
 
 {/* ── SIMULATION RESULTS (when available) ── */}
 {sr&&<div className="space-y-4 af">
