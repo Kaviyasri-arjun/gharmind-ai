@@ -89,6 +89,53 @@ const[cal,sCal]=useState([{i:"🎂",t:"Paati Birthday",d:"2025-01-20"},{i:"🪔"
 const[calEdit,sCalEdit]=useState<{idx:number;t:string;d:string}|null>(null);
 function getDaysLeft(d:string):string{if(d.startsWith("Daily")||d.startsWith("Thu"))return"Recurring";try{const diff=Math.ceil((new Date(d).getTime()-Date.now())/(86400000));if(diff<0)return"Passed";if(diff===0)return"Today";if(diff===1)return"Tomorrow";return`${diff} days left`;}catch{return"";}}
 function saveCalEdit(){if(calEdit){sCal(p=>p.map((e,i)=>i===calEdit.idx?{...e,t:calEdit.t,d:calEdit.d}:e));sCalEdit(null);}}
+// ── Modal states for Family page links ──
+const[eventsOpen,setEventsOpen]=useState(false);
+const[routinesOpen,setRoutinesOpen]=useState(false);
+const[culturalOpen,setCulturalOpen]=useState(false);
+const[routines,setRoutines]=useState([
+  {id:"r1",name:"Water Motor",time:"6:15 AM",freq:"Daily",member:"Lakshmi",notes:"CMWSSB supply window"},
+  {id:"r2",name:"Evening Coffee",time:"5:00 PM",freq:"Daily",member:"Lakshmi",notes:"Filter coffee for family"},
+  {id:"r3",name:"Power Cut Window",time:"2:00 PM",freq:"Daily",member:"All",notes:"TNEB predicted outage"},
+  {id:"r4",name:"Morning Pooja",time:"5:45 AM",freq:"Daily",member:"Paati",notes:"Daily aarti and prayer"},
+  {id:"r5",name:"Study Session",time:"8:00 PM",freq:"Weekdays",member:"Arjun",notes:"Exam quiet mode active"},
+  {id:"r6",name:"Office Departure",time:"8:50 AM",freq:"Weekdays",member:"Venkat",notes:"Check traffic status"},
+  {id:"r7",name:"Tuition Class",time:"5:00 PM",freq:"Weekdays",member:"Arjun",notes:"Math and Science"},
+]);
+const[routineEdit,setRoutineEdit]=useState<{id?:string;name:string;time:string;freq:string;member:string;notes:string}|null>(null);
+function saveRoutine(){if(!routineEdit)return;if(routineEdit.id){setRoutines(p=>p.map(r=>r.id===routineEdit.id?{...r,...routineEdit}:r));}else{setRoutines(p=>[...p,{...routineEdit,id:`r${Date.now()}`}]);}setRoutineEdit(null);}
+function deleteRoutine(id:string){if(confirm("Delete this routine?")){setRoutines(p=>p.filter(r=>r.id!==id));}}
+const allEvents=[
+  {i:"🎂",t:"Paati Birthday",d:"2025-01-20",status:"upcoming"},
+  {i:"🪔",t:"Pongal (Thai Pongal)",d:"2025-01-14",status:"upcoming"},
+  {i:"📚",t:"Board Exam — Arjun",d:"2025-01-26",status:"upcoming"},
+  {i:"💧",t:"Water Motor",d:"Daily 6:15 AM",status:"recurring"},
+  {i:"⚡",t:"Power Cut Window",d:"Daily 2:00 PM",status:"recurring"},
+  {i:"☕",t:"Evening Coffee",d:"Daily 5:00 PM",status:"recurring"},
+  {i:"📖",t:"Tuition Class — Arjun",d:"Weekdays 5:00 PM",status:"recurring"},
+  {i:"🔔",t:"Lakshmi Wake Up",d:"Daily 5:45 AM",status:"recurring"},
+  {i:"🔔",t:"Arjun Study Reminder",d:"Weekdays 8:00 PM",status:"recurring"},
+  {i:"🙏",t:"Morning Pooja — Paati",d:"Daily 5:30 AM",status:"recurring"},
+  {i:"🛕",t:"Temple Visit — Paati",d:"Tue & Fri",status:"recurring"},
+  {i:"🎉",t:"Tamil New Year",d:"2025-04-14",status:"upcoming"},
+  {i:"🪔",t:"Deepavali",d:"2025-10-20",status:"upcoming"},
+  {i:"🎂",t:"Arjun Birthday",d:"2025-06-12",status:"upcoming"},
+  {i:"🎂",t:"Venkat Birthday",d:"2025-03-08",status:"upcoming"},
+];
+const culturalEvents=[
+  {name:"Pongal (Thai Pongal)",date:"Jan 14",prep:"Prepare pongal pot, sugarcane, kolam designs",rec:"Start grocery shopping 3 days early. Plan family gathering."},
+  {name:"Tamil New Year (Puthandu)",date:"Apr 14",prep:"New clothes, special meals, temple visit",rec:"Schedule family breakfast. Update household calendar."},
+  {name:"Deepavali",date:"Oct 20",prep:"Oil bath, crackers, sweets, new clothes",rec:"Start cleaning 1 week prior. Schedule quiet hours for Paati."},
+  {name:"Karthigai Deepam",date:"Nov 25",prep:"Lamps, oil, wicks, kolam",rec:"Schedule power backup. Set lamp reminders at dusk."},
+  {name:"Navaratri",date:"Oct 2–10",prep:"Golu setup, sundal varieties, visits",rec:"Reduce evening noise. Plan guest visits across 9 days."},
+  {name:"Ayudha Pooja",date:"Oct 10",prep:"Clean tools, vehicles, workspace",rec:"Schedule device maintenance. Backup important files."},
+  {name:"Vinayagar Chaturthi",date:"Aug 27",prep:"Modak preparation, pooja setup",rec:"Early morning pooja schedule. Kitchen priority for Lakshmi."},
+  {name:"Aadi Perukku",date:"Jul 30",prep:"River prayers, special meals",rec:"Adjust water motor schedule. Plan traditional cooking."},
+  {name:"Varalakshmi Vratham",date:"Aug 8",prep:"Pooja preparations, decorations",rec:"Block Lakshmi's morning. Ensure quiet household."},
+  {name:"Daily Pooja",date:"Every day",prep:"Flowers, lamp oil, incense",rec:"Maintain 5:30 AM quiet. Auto-dim lights near pooja room."},
+  {name:"Paati Birthday",date:"Jan 20",prep:"Family gathering, cake, gifts",rec:"Notify all family. Schedule quiet afternoon rest."},
+  {name:"Arjun Birthday",date:"Jun 12",prep:"Friends, cake, outing",rec:"Allow late night. No quiet mode enforcement."},
+];
 // Mood/Energy profile
 const moods=["Calm","Busy","Festive","Stressed","Sleeping"];const mood=moods[Math.floor(Date.now()/60000)%5];
 const ePro=["Eco-Friendly","Balanced","High Consumption","Night Active"][1];
@@ -463,7 +510,7 @@ return(<div className="min-h-screen flex flex-col">
         <button onClick={()=>sCalEdit({idx:i,t:e.t,d:e.d})} className="text-xs px-2 py-1 rounded bg-white/5 border border-[var(--border)] hover:bg-white/10 transition-all">✏️</button>
       </div>)}
     </div>
-    <p className="text-xs text-cyan-400 font-medium mt-4 cursor-pointer hover:underline">View All Events →</p>
+    <p onClick={()=>setEventsOpen(true)} className="text-xs text-cyan-400 font-medium mt-4 cursor-pointer hover:underline hover:drop-shadow-[0_0_4px_rgba(34,211,238,0.4)] transition-all">View All Events →</p>
   </div>
 
   {/* Card 2 — Recurring Routines */}
@@ -476,7 +523,7 @@ return(<div className="min-h-screen flex flex-col">
         <span className="text-[11px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-800/30 font-medium">{r.f}</span>
       </div>)}
     </div>
-    <p className="text-xs text-cyan-400 font-medium mt-4 cursor-pointer hover:underline">Manage Routines →</p>
+    <p onClick={()=>setRoutinesOpen(true)} className="text-xs text-cyan-400 font-medium mt-4 cursor-pointer hover:underline hover:drop-shadow-[0_0_4px_rgba(34,211,238,0.4)] transition-all">Manage Routines →</p>
   </div>
 
   {/* Card 3 — Cultural Intelligence */}
@@ -491,7 +538,7 @@ return(<div className="min-h-screen flex flex-col">
         <p className="text-sm text-emerald-400">✓ Family gathering reminder</p>
         <p className="text-sm text-emerald-400">✓ Traditional cooking preparation</p>
       </div>
-      <p className="text-xs text-cyan-400 font-medium mt-5 cursor-pointer hover:underline">View Cultural Calendar →</p>
+      <p onClick={()=>setCulturalOpen(true)} className="text-xs text-cyan-400 font-medium mt-5 cursor-pointer hover:underline hover:drop-shadow-[0_0_4px_rgba(34,211,238,0.4)] transition-all">View Cultural Calendar →</p>
     </div>
   </div>
 </div>
@@ -501,6 +548,57 @@ return(<div className="min-h-screen flex flex-col">
 
 {/* Calendar Edit Modal */}
 {calEdit&&<div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={()=>sCalEdit(null)}><div className="bg-[var(--card)] rounded-2xl p-5 w-full max-w-xs border border-[var(--border)] space-y-3" onClick={ev=>ev.stopPropagation()}><h3 className="text-sm font-bold">Edit Event</h3><div><label className="text-[9px] text-muted">Title</label><input value={calEdit.t} onChange={ev=>sCalEdit({...calEdit,t:ev.target.value})} className="w-full px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-xs mt-0.5"/></div><div><label className="text-[9px] text-muted">Date / Frequency</label><input value={calEdit.d} onChange={ev=>sCalEdit({...calEdit,d:ev.target.value})} className="w-full px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-xs mt-0.5" placeholder="2025-01-20 or Daily 6:15"/></div><p className="text-[9px] text-cyan-400">{getDaysLeft(calEdit.d)}</p><div className="flex gap-2"><button onClick={saveCalEdit} className="btn-p flex-1 text-[10px]">Save</button><button onClick={()=>sCalEdit(null)} className="btn-s flex-1 text-[10px]">Cancel</button></div></div></div>}
+
+{/* ── VIEW ALL EVENTS MODAL ── */}
+{eventsOpen&&<div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={()=>setEventsOpen(false)}>
+<div className="bg-[var(--card)] rounded-2xl p-6 w-full max-w-lg border border-[var(--border)] max-h-[85vh] overflow-y-auto" onClick={e=>e.stopPropagation()}>
+  <div className="flex justify-between items-center mb-4"><h3 className="text-lg font-bold">All Household Events</h3><button onClick={()=>setEventsOpen(false)} className="btn-s text-xs py-1 px-2">Close</button></div>
+  <div className="space-y-2">
+    {allEvents.map((ev,i)=><div key={i} className="flex items-center gap-3 py-2.5 border-b border-[var(--border)] last:border-0">
+      <span className="text-xl">{ev.i}</span>
+      <div className="flex-1"><p className="text-sm font-medium">{ev.t}</p><p className="text-xs text-[var(--muted)]">{ev.d}</p></div>
+      <span className={cn("text-[11px] px-2 py-0.5 rounded-full font-medium border",ev.status==="recurring"?"bg-blue-500/10 text-blue-400 border-blue-800/30":ev.status==="upcoming"?"bg-emerald-500/10 text-emerald-400 border-emerald-800/30":"bg-[var(--muted)]/10 text-[var(--muted)] border-[var(--border)]")}>{ev.status}</span>
+    </div>)}
+  </div>
+</div></div>}
+
+{/* ── MANAGE ROUTINES MODAL ── */}
+{routinesOpen&&<div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={()=>{setRoutinesOpen(false);setRoutineEdit(null);}}>
+<div className="bg-[var(--card)] rounded-2xl p-6 w-full max-w-lg border border-[var(--border)] max-h-[85vh] overflow-y-auto" onClick={e=>e.stopPropagation()}>
+  <div className="flex justify-between items-center mb-4"><h3 className="text-lg font-bold">Manage Routines</h3><div className="flex gap-2"><button onClick={()=>setRoutineEdit({name:"",time:"",freq:"Daily",member:"",notes:""})} className="btn-p text-xs">+ Add Routine</button><button onClick={()=>{setRoutinesOpen(false);setRoutineEdit(null);}} className="btn-s text-xs py-1 px-2">Close</button></div></div>
+  {routineEdit&&<div className="card mb-4 space-y-2">
+    <p className="text-xs font-bold text-cyan-400 uppercase">{routineEdit.id?"Edit Routine":"New Routine"}</p>
+    <input value={routineEdit.name} onChange={e=>setRoutineEdit({...routineEdit,name:e.target.value})} placeholder="Routine name" className="w-full px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-sm"/>
+    <div className="grid grid-cols-2 gap-2">
+      <input value={routineEdit.time} onChange={e=>setRoutineEdit({...routineEdit,time:e.target.value})} placeholder="Time (e.g. 6:15 AM)" className="px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-sm"/>
+      <select value={routineEdit.freq} onChange={e=>setRoutineEdit({...routineEdit,freq:e.target.value})} className="px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-sm">{["Daily","Weekdays","Weekends","Weekly","Monthly"].map(f=><option key={f}>{f}</option>)}</select>
+    </div>
+    <input value={routineEdit.member} onChange={e=>setRoutineEdit({...routineEdit,member:e.target.value})} placeholder="Family member" className="w-full px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-sm"/>
+    <input value={routineEdit.notes} onChange={e=>setRoutineEdit({...routineEdit,notes:e.target.value})} placeholder="Notes (optional)" className="w-full px-3 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-sm"/>
+    <div className="flex gap-2"><button onClick={saveRoutine} className="btn-p flex-1 text-xs">Save</button><button onClick={()=>setRoutineEdit(null)} className="btn-s flex-1 text-xs">Cancel</button></div>
+  </div>}
+  <div className="space-y-2">
+    {routines.map(r=><div key={r.id} className="flex items-center gap-3 py-2.5 border-b border-[var(--border)] last:border-0">
+      <div className="flex-1"><p className="text-sm font-medium">{r.name}</p><p className="text-xs text-[var(--muted)]">{r.time} • {r.freq} • {r.member}</p>{r.notes&&<p className="text-xs text-[var(--muted)] opacity-70">{r.notes}</p>}</div>
+      <button onClick={()=>setRoutineEdit({...r})} className="text-xs px-2 py-1 rounded bg-white/5 border border-[var(--border)] hover:bg-white/10">✏️</button>
+      <button onClick={()=>deleteRoutine(r.id)} className="text-xs px-2 py-1 rounded bg-red-500/10 border border-red-800/30 text-red-400 hover:bg-red-500/20">🗑</button>
+    </div>)}
+  </div>
+</div></div>}
+
+{/* ── CULTURAL CALENDAR MODAL ── */}
+{culturalOpen&&<div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={()=>setCulturalOpen(false)}>
+<div className="bg-[var(--card)] rounded-2xl p-6 w-full max-w-lg border border-[var(--border)] max-h-[85vh] overflow-y-auto" onClick={e=>e.stopPropagation()}>
+  <div className="flex justify-between items-center mb-4"><h3 className="text-lg font-bold">🪔 Tamil Cultural Calendar</h3><button onClick={()=>setCulturalOpen(false)} className="btn-s text-xs py-1 px-2">Close</button></div>
+  <p className="text-xs text-[var(--muted)] mb-4">Festivals, rituals, and cultural events tracked by GharMind AI.</p>
+  <div className="space-y-3">
+    {culturalEvents.map((ev,i)=><div key={i} className="card py-3 px-4">
+      <div className="flex items-start justify-between"><p className="text-sm font-bold">{ev.name}</p><span className="text-[11px] px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-400 border border-purple-800/30 font-medium">{ev.date}</span></div>
+      <p className="text-xs text-[var(--muted)] mt-1.5">📋 {ev.prep}</p>
+      <p className="text-xs text-emerald-400 mt-1">🧠 {ev.rec}</p>
+    </div>)}
+  </div>
+</div></div>}
 </div>}
 
 {/* PREDICTIONS */}
