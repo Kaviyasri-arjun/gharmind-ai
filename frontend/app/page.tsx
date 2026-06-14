@@ -1002,131 +1002,116 @@ return(<>
 {/* Calendar and Gallery moved into Family and Memory pages */}
 
 {/* HOW IT WORKS */}
-{pg==="howitworks"&&<div className="max-w-4xl mx-auto px-4 py-6 space-y-8">
+{pg==="howitworks"&&<div className="max-w-6xl mx-auto px-5 py-8 space-y-10">
 
-{/* 1. Problem Statement */}
+{/* ── 1. THE PROBLEM ── */}
 <section>
-  <h2 className="text-lg font-bold mb-3">The Problem</h2>
-  <div className="grid md:grid-cols-3 gap-3">
-    <div className="card border-l-2 border-l-amber-500/40"><p className="text-xs font-semibold mb-1">Indian Households</p><p className="text-[10px] text-muted">Recurring routines, cultural rituals, school schedules, and infrastructure challenges define daily life.</p></div>
-    <div className="card border-l-2 border-l-red-500/40"><p className="text-xs font-semibold mb-1">Current Smart Homes</p><p className="text-[10px] text-muted">Wait for commands. React after problems occur. No understanding of household context.</p></div>
-    <div className="card-glow border-l-2 border-l-cyan-500/40"><p className="text-xs font-semibold mb-1">GharMind AI</p><p className="text-[10px] text-muted">Learns routines. Predicts needs. Acts proactively. Understands Indian cultural context.</p></div>
+  <h2 className="text-2xl md:text-[30px] font-bold mb-6">The Problem</h2>
+  <div className="grid md:grid-cols-3 gap-5">
+    <div className="card border-l-4 border-l-amber-500/50 py-6"><p className="text-base font-bold mb-2">Indian Households</p><p className="text-sm text-[var(--muted)] leading-[1.6]">Recurring routines, cultural rituals, school schedules, and infrastructure challenges define daily life.</p><div className="flex gap-2 mt-4">{["Complex","Dynamic","Unique"].map(b=><span key={b} className="text-[11px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-800/30">{b}</span>)}</div></div>
+    <div className="card border-l-4 border-l-red-500/50 py-6"><p className="text-base font-bold mb-2">Current Smart Homes</p><p className="text-sm text-[var(--muted)] leading-[1.6]">Wait for commands. React after problems occur. No understanding of household context.</p><div className="flex gap-2 mt-4">{["Reactive","Rigid","Context-Blind"].map(b=><span key={b} className="text-[11px] px-2 py-0.5 rounded-full bg-red-500/10 text-red-400 border border-red-800/30">{b}</span>)}</div></div>
+    <div className="card-glow border-l-4 border-l-cyan-500/50 py-6"><p className="text-base font-bold mb-2">GharMind AI</p><p className="text-sm text-[var(--muted)] leading-[1.6]">Learns routines. Predicts needs. Acts proactively. Understands Indian cultural context.</p><div className="flex gap-2 mt-4">{["Proactive","Intelligent","Context-Aware"].map(b=><span key={b} className="text-[11px] px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-800/30">{b}</span>)}</div></div>
   </div>
 </section>
 
-{/* 2. Solution Architecture */}
+{/* ── 2. SYSTEM ARCHITECTURE ── */}
 <section>
-  <h2 className="text-lg font-bold mb-3">System Architecture</h2>
-  <div className="space-y-1">{[
-    {icon:"🖥️",label:"Frontend (Next.js 15)",sub:"Real-time dashboard, Digital Twin visualization, AI chat interface"},
-    {icon:"⚡",label:"FastAPI Backend",sub:"Async Python API, WebSocket streaming, Agent orchestration"},
-    {icon:"🧠",label:"AWS Bedrock (Claude Sonnet)",sub:"Natural language reasoning, prediction enrichment, What-If simulation"},
-    {icon:"📋",label:"Routine Learning Engine",sub:"Pattern detection across 180+ days of household behavior data"},
-    {icon:"🔮",label:"Prediction Engine",sub:"7-step pipeline: Scan → Match → Factor → Score → Enrich → Detect → Rank"},
-    {icon:"🪔",label:"Cultural Intelligence Layer",sub:"Festival awareness, pooja schedules, exam modes, regional adaptations"},
-    {icon:"🗄️",label:"PostgreSQL + pgvector",sub:"Semantic household memory with vector similarity search"},
-    {icon:"🏠",label:"Household Digital Twin",sub:"1-minute tick simulation of rooms, appliances, members, and resources"},
-  ].map((s,i)=>(
-    <div key={i} className="flex items-center gap-3 py-2.5 border-b border-[var(--border)] last:border-0 af" style={{animationDelay:`${i*0.06}s`}}>
-      <span className="w-9 h-9 rounded-lg bg-cyan-500/10 border border-cyan-800/30 flex items-center justify-center text-lg flex-shrink-0">{s.icon}</span>
-      <div className="flex-1"><p className="text-xs font-semibold">{s.label}</p><p className="text-[10px] text-muted">{s.sub}</p></div>
-      {i<7&&<span className="text-cyan-500/40 text-[10px]">↓</span>}
+  <h2 className="text-2xl md:text-[30px] font-bold mb-6">System Architecture</h2>
+  <div className="grid lg:grid-cols-[1fr_auto_1fr] gap-6">
+    {/* Left — Components */}
+    <div className="space-y-2">
+      <p className="text-xs font-bold text-cyan-400 uppercase tracking-wide mb-3">Architecture Components</p>
+      {[{icon:"🖥️",label:"Frontend (Next.js 15)",sub:"Real-time dashboard, Digital Twin visualization"},{icon:"⚡",label:"FastAPI Backend",sub:"Async Python API, Agent orchestration"},{icon:"🧠",label:"AWS Bedrock (Claude Sonnet)",sub:"Natural language reasoning, prediction enrichment"},{icon:"📋",label:"Routine Learning Engine",sub:"Pattern detection across 180+ days of data"},{icon:"🔮",label:"Prediction Engine",sub:"7-step pipeline with confidence scoring"},{icon:"🪔",label:"Cultural Intelligence Layer",sub:"Festivals, pooja, exams, regional context"},{icon:"🗄️",label:"PostgreSQL + pgvector",sub:"Semantic memory with vector similarity"},{icon:"🏠",label:"Household Digital Twin",sub:"1-min tick simulation of entire household"}].map((s,i)=>(
+        <div key={i} className="flex items-center gap-3 py-3 px-4 rounded-xl border border-[var(--border)] bg-[var(--card)] hover:border-cyan-800/50 transition-all">
+          <span className="text-xl flex-shrink-0">{s.icon}</span>
+          <div><p className="text-sm font-semibold">{s.label}</p><p className="text-xs text-[var(--muted)]">{s.sub}</p></div>
+        </div>
+      ))}
     </div>
-  ))}</div>
-</section>
-
-{/* 3. AI Reasoning Visualization */}
-<section>
-  <h2 className="text-lg font-bold mb-3">Explainable AI Reasoning</h2>
-  <div className="card-glow">
-    <div className="flex items-center gap-3 mb-3"><span className="text-emerald-400 font-bold text-lg">96%</span><p className="text-sm font-semibold">Prediction: Run Water Motor</p></div>
-    <p className="text-[9px] font-bold text-cyan-400 uppercase mb-2">Reasoning Chain</p>
-    <div className="space-y-1.5">{[
-      {step:"Data Input",detail:"Tank sensor reads 42%. Municipal supply window: 6:00–6:45 AM."},
-      {step:"Pattern Match",detail:"Motor ran at 6:15 AM on 31 of last 35 weekdays (89% consistency)."},
-      {step:"Context Factor",detail:"School day confirmed. Morning rush requires water by 7:00 AM."},
-      {step:"Confidence Score",detail:"Bayesian update: prior 89% × evidence 0.94 × stability 0.97 = 96%."},
-      {step:"Action Generated",detail:"Recommend: Start motor now. Explain: Avoids shortage before noon."},
-    ].map((s,i)=><div key={i} className="flex gap-2 items-start"><span className="w-5 h-5 rounded-full bg-cyan-500/10 border border-cyan-800/30 flex items-center justify-center text-[8px] text-cyan-400 font-bold flex-shrink-0">{i+1}</span><div><p className="text-[10px] font-semibold">{s.step}</p><p className="text-[10px] text-muted">{s.detail}</p></div></div>)}</div>
+    {/* Divider */}
+    <div className="hidden lg:flex flex-col items-center justify-center"><div className="w-px flex-1 bg-[var(--border)]"/></div>
+    {/* Right — Flow */}
+    <div>
+      <p className="text-xs font-bold text-purple-400 uppercase tracking-wide mb-3">Architecture Flow</p>
+      <div className="relative pl-6 border-l-2 border-cyan-800/40 space-y-4">
+        {[{l:"Family Activity & Sensor Data",c:"text-[var(--fg)]"},{l:"Routine Learning Engine",c:"text-cyan-400"},{l:"Household Digital Twin",c:"text-emerald-400"},{l:"Prediction Engine",c:"text-purple-400"},{l:"AWS Bedrock (Claude Sonnet)",c:"text-blue-400"},{l:"Intelligent Recommendations",c:"text-amber-400"},{l:"Proactive Actions & Automation",c:"text-emerald-400"},{l:"Better Living & Peace of Mind",c:"text-cyan-400"}].map((s,i)=>(
+          <div key={i} className="relative af" style={{animationDelay:`${i*0.06}s`}}>
+            <span className="absolute -left-[21px] top-2 w-3 h-3 rounded-full bg-cyan-500/40 border-2 border-cyan-400"/>
+            <p className={cn("text-sm font-semibold py-2",s.c)}>{s.l}</p>
+          </div>
+        ))}
+      </div>
+    </div>
   </div>
 </section>
 
-{/* 4. Digital Twin */}
+{/* ── 3. EXPLAINABLE AI REASONING ── */}
 <section>
-  <h2 className="text-lg font-bold mb-3">Household Digital Twin</h2>
-  <p className="text-xs text-muted mb-3">A real-time software simulation of the entire household — no IoT hardware required.</p>
-  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">{[
-    {icon:"👩",name:"Lakshmi",role:"Homemaker",insight:"Manages kitchen, pooja, water motor. Morning routine detected with 97% consistency."},
-    {icon:"👨",name:"Venkat",role:"Professional",insight:"Office commute 8:50 AM. WFH pattern Mon-Thu detected. Meeting readiness tracked."},
-    {icon:"🧑‍🎓",name:"Arjun",role:"Student",insight:"Study peak 8–10 PM. Exam prep mode active. Tuition schedule learned."},
-    {icon:"👵",name:"Paati",role:"Elderly",insight:"5:30 AM aarti. Temple Tue/Fri. Afternoon rest 1–2:30 PM. Early sleep pattern."},
-  ].map((m,i)=><div key={i} className="card text-center"><span className="text-2xl">{m.icon}</span><p className="text-xs font-semibold mt-1">{m.name}</p><p className="text-[9px] text-cyan-400">{m.role}</p><p className="text-[9px] text-muted mt-1">{m.insight}</p></div>)}</div>
-</section>
-
-{/* 5. Prediction Engine */}
-<section>
-  <h2 className="text-lg font-bold mb-3">Prediction Engine Pipeline</h2>
-  <div className="grid md:grid-cols-2 gap-4">
-    <div className="card"><p className="text-[9px] font-bold text-cyan-400 uppercase mb-2">Input Sources</p><div className="space-y-1">{["Family Activity Logs","Calendar & Exam Events","Cultural Festival Calendar","Utility Schedules (TNEB, CMWSSB)","180-Day Historical Memory"].map((s,i)=><p key={i} className="text-[10px] text-muted">→ {s}</p>)}</div></div>
-    <div className="card"><p className="text-[9px] font-bold text-emerald-400 uppercase mb-2">Generated Actions</p><div className="space-y-1">{["💧 Water Motor Scheduling","⚡ Power Cut Preparation","📚 Exam Quiet Mode Activation","🪔 Festival Preparation","☕ Routine Optimization"].map((s,i)=><p key={i} className="text-[10px]">{s}</p>)}</div></div>
+  <h2 className="text-2xl md:text-[30px] font-bold mb-6">Explainable AI Reasoning</h2>
+  <div className="card-glow text-center py-6 mb-6">
+    <p className="text-4xl font-black text-cyan-400">96%</p>
+    <p className="text-sm text-[var(--muted)] mt-1">Prediction Accuracy — Water Motor at 6:15 AM</p>
+  </div>
+  <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-3">
+    {[{i:"🔍",t:"Scan",d:"Collect data"},{i:"🧩",t:"Match",d:"Find patterns"},{i:"⚙️",t:"Factor",d:"Add context"},{i:"📊",t:"Score",d:"Calculate odds"},{i:"📖",t:"Enrich",d:"External info"},{i:"🎯",t:"Detect",d:"Best action"},{i:"🏆",t:"Rank",d:"Prioritize"}].map((s,i)=>(
+      <div key={i} className="card text-center py-4 hover:border-cyan-800/50 transition-all">
+        <span className="text-2xl">{s.i}</span>
+        <p className="text-xs font-bold mt-2">{s.t}</p>
+        <p className="text-[11px] text-[var(--muted)] mt-0.5">{s.d}</p>
+      </div>
+    ))}
   </div>
 </section>
 
-{/* 6. Cultural Intelligence */}
+{/* ── 4. HOUSEHOLD DIGITAL TWIN ── */}
 <section>
-  <h2 className="text-lg font-bold mb-3">Cultural Intelligence</h2>
-  <p className="text-xs text-muted mb-3">GharMind is the first AI system to treat Indian household culture as a first-class input.</p>
-  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">{[
-    {icon:"🪔",t:"Festival Awareness",d:"Pongal, Diwali, Navaratri preparation"},
-    {icon:"🙏",t:"Daily Pooja",d:"Morning aarti timing and quiet enforcement"},
-    {icon:"📚",t:"Exam Intelligence",d:"Board exam quiet mode and schedule protection"},
-    {icon:"💧",t:"Municipal Water",d:"CMWSSB supply windows aligned to motor usage"},
-    {icon:"⚡",t:"Power Grid",d:"TNEB outage pattern prediction by zone"},
-    {icon:"👨‍👩‍👧‍👦",t:"Family Events",d:"Birthdays, guests, gatherings detected"},
-  ].map((f,i)=><div key={i} className="card"><span className="text-lg">{f.icon}</span><p className="text-[10px] font-semibold mt-1">{f.t}</p><p className="text-[9px] text-muted mt-0.5">{f.d}</p></div>)}</div>
-</section>
-
-{/* 7. AWS Bedrock */}
-<section>
-  <h2 className="text-lg font-bold mb-3">Powered by AWS Bedrock</h2>
-  <div className="card-glow">
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">{[
-      {icon:"💬",t:"Natural Language",d:"Claude Sonnet reasoning for household decisions"},
-      {icon:"🧠",t:"Context Awareness",d:"Full household state injected into every AI call"},
-      {icon:"🔮",t:"Prediction Enrichment",d:"Confidence scoring and action suggestions"},
-      {icon:"📊",t:"Titan Embeddings",d:"1536-dim vectors for semantic household memory"},
-    ].map((s,i)=><div key={i}><span className="text-xl">{s.icon}</span><p className="text-[10px] font-semibold mt-1">{s.t}</p><p className="text-[9px] text-muted mt-0.5">{s.d}</p></div>)}</div>
+  <h2 className="text-2xl md:text-[30px] font-bold mb-6">Household Digital Twin</h2>
+  <div className="grid md:grid-cols-[1fr_auto] gap-6">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {[{name:"Lakshmi",role:"Home",routines:8,prefs:12,img:fam[0]?.img},{name:"Venkat",role:"Work",routines:5,prefs:8,img:fam[1]?.img},{name:"Arjun",role:"Student",routines:6,prefs:10,img:fam[2]?.img},{name:"Paati",role:"Home",routines:7,prefs:9,img:fam[3]?.img}].map((m,i)=>(
+        <div key={i} className="card text-center py-5">
+          <img src={m.img||""} alt="" className="w-14 h-14 mx-auto rounded-full object-cover border-2 border-cyan-800/40"/>
+          <p className="text-sm font-bold mt-2">{m.name}</p>
+          <span className="text-[11px] px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-800/30 inline-block mt-1">{m.role}</span>
+          <div className="mt-3 space-y-1 text-[11px] text-[var(--muted)]"><p>{m.routines} Routines</p><p>{m.prefs} Preferences</p></div>
+          <p className="text-[11px] text-emerald-400 mt-1">● Daily Active</p>
+        </div>
+      ))}
+    </div>
+    <div className="card py-6 px-5 min-w-[180px]">
+      <p className="text-xs font-bold text-cyan-400 uppercase tracking-wide mb-4">Twin Summary</p>
+      <div className="space-y-4">
+        {[{v:"4",l:"Members Modeled"},{v:"120+",l:"Routines Learned"},{v:"89%",l:"Prediction Accuracy"},{v:"180+",l:"Days of Memory"}].map((s,i)=><div key={i}><p className="text-xl font-black text-cyan-400">{s.v}</p><p className="text-xs text-[var(--muted)]">{s.l}</p></div>)}
+      </div>
+    </div>
   </div>
 </section>
 
-{/* 8. Judge Highlights */}
+{/* ── 5. CULTURAL INTELLIGENCE ── */}
 <section>
-  <h2 className="text-lg font-bold mb-3">Why GharMind AI is Different</h2>
-  <div className="card-glow py-5">
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">{[
-      "Predictive, not reactive",
-      "Learns household routines automatically",
-      "Builds a full Household Digital Twin",
-      "Understands Indian cultural context",
-      "Uses explainable AI reasoning",
-      "Generates proactive recommendations",
-      "Zero hardware requirement",
-      "Powered entirely by AWS Bedrock",
-    ].map((h,i)=><p key={i} className="text-xs text-emerald-400 af" style={{animationDelay:`${i*0.05}s`}}>✓ {h}</p>)}</div>
+  <h2 className="text-2xl md:text-[30px] font-bold mb-6">Cultural Intelligence</h2>
+  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+    {[{i:"🪔",t:"Festival Awareness",d:"Pongal schedules, fasting days, celebrations"},{i:"🙏",t:"Pooja & Rituals",d:"Daily pooja times, auspicious hours"},{i:"📚",t:"Exam Modes",d:"Quiet hours, study schedules, focus time"},{i:"🌍",t:"Regional Adaptations",d:"Language, food habits, weather patterns"},{i:"👨‍👩‍👧‍👦",t:"Family Values",d:"Respect, togetherness, traditions preserved"}].map((f,i)=>(
+      <div key={i} className="card py-5 text-center hover:border-purple-800/50 transition-all">
+        <span className="text-2xl">{f.i}</span>
+        <p className="text-sm font-bold mt-2">{f.t}</p>
+        <p className="text-xs text-[var(--muted)] mt-1 leading-[1.5]">{f.d}</p>
+      </div>
+    ))}
   </div>
 </section>
 
-{/* 9. No Expensive Hardware */}
+{/* ── 6. POWERED BY AWS BEDROCK ── */}
 <section>
-  <div className="card-glow text-center py-6 px-5">
-    <p className="text-base font-bold">No Expensive Hardware Required</p>
-    <p className="text-xs text-[var(--muted)] mt-2 max-w-lg mx-auto leading-relaxed">GharMind learns from household routines, behavior patterns, contextual intelligence, and AI reasoning — without requiring specialized sensors, IoT devices, or smart appliances.</p>
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4 max-w-2xl mx-auto">{[
-      {icon:"🚫",label:"No IoT Sensors"},
-      {icon:"📡",label:"No Smart Plugs"},
-      {icon:"🔌",label:"No Smart Appliances"},
-      {icon:"🧠",label:"Pure AI Intelligence"},
-    ].map((item,i)=><div key={i} className="text-center"><span className="text-xl">{item.icon}</span><p className="text-[9px] text-[var(--muted)] mt-1">{item.label}</p></div>)}</div>
+  <h2 className="text-2xl md:text-[30px] font-bold mb-6">Powered by AWS Bedrock</h2>
+  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+    {[{i:"🧠",t:"Claude Sonnet",d:"Advanced reasoning & understanding"},{i:"⚡",t:"FastAPI",d:"High-performance async APIs"},{i:"🗄️",t:"PostgreSQL + pgvector",d:"Vector search & semantic memory"},{i:"☁️",t:"S3 Storage",d:"Secure memory & media storage"},{i:"📡",t:"Real-Time Streaming",d:"WebSocket powered live updates"}].map((s,i)=>(
+      <div key={i} className="card py-5 text-center hover:border-cyan-800/50 transition-all">
+        <span className="text-2xl">{s.i}</span>
+        <p className="text-sm font-bold mt-2">{s.t}</p>
+        <p className="text-xs text-[var(--muted)] mt-1 leading-[1.5]">{s.d}</p>
+      </div>
+    ))}
   </div>
 </section>
 
