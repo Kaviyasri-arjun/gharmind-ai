@@ -168,7 +168,7 @@ return(<div className="min-h-screen flex flex-col">
 {/* ── WHY GHARMIND EXISTS ── */}
 <section className="max-w-3xl mx-auto px-6 py-16">
 <div className="card-glow text-center py-10 px-8 af">
-  <h2 className="text-lg md:text-xl font-bold mb-4">Why GharMind Exists</h2>
+  <h2 className="text-xl md:text-2xl font-bold mb-4 uppercase tracking-wide">Our Mission</h2>
   <p className="text-sm md:text-base text-[var(--fg)]/80 leading-relaxed max-w-2xl mx-auto">Indian homes run on routines, relationships, culture, and context. Current smart homes wait for commands. GharMind transforms household behavior into intelligence that predicts needs before anyone asks.</p>
   <p className="text-xs text-cyan-400/80 mt-5 max-w-xl mx-auto leading-relaxed font-medium">Building the world's first AI Household Operating System that understands families, not just devices.</p>
 </div>
