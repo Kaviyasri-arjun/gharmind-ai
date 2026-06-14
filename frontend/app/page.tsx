@@ -136,14 +136,29 @@ const culturalEvents=[
   {name:"Paati Birthday",date:"Jan 20",prep:"Family gathering, cake, gifts",rec:"Notify all family. Schedule quiet afternoon rest."},
   {name:"Arjun Birthday",date:"Jun 12",prep:"Friends, cake, outing",rec:"Allow late night. No quiet mode enforcement."},
 ];
-// Mood/Energy profile
-const moods=["Calm","Busy","Festive","Stressed","Sleeping"];const mood=moods[Math.floor(Date.now()/60000)%5];
 const ePro=["Eco-Friendly","Balanced","High Consumption","Night Active"][1];
 
 useEffect(()=>{Promise.all([getMembers(),getTwinState(),getPredictions(),getRoutines()]).then(([m,t,p,r])=>{sMs(m?.members||[]);sTw(t);sPr(p?.predictions||[]);sRt(r?.routines||[]);sFam((m?.members||[]).map((x:any,i:number)=>({...x,img:[AV.m,AV.f,AV.s,AV.p][i]||""})));sLd(false);});},[]);
 
 const urg=tw?.urgency_score??0,tank=tw?.resources?.water?.tank_level_pct??50,pwr=tw?.resources?.power?.cut_probability??0;
 const hp=Math.min(100,Math.round((tank>60?25:15)+(pwr<.3?25:10)+(urg<30?25:15)+25));
+
+// Mood/Energy profile
+const mood=(()=>{
+  const now=new Date();const h=now.getHours();
+  const todayStr=now.toISOString().slice(0,10);
+  const festivalToday=cal.some(e=>e.d===todayStr&&(e.t.toLowerCase().includes("pongal")||e.t.toLowerCase().includes("diwali")||e.t.toLowerCase().includes("navaratri")));
+  if(festivalToday)return"Festive";
+  if(pwr>.7)return"Alert";
+  if(h>=20&&h<22)return"Focused";
+  if(h>=6&&h<9)return"Busy";
+  if(h>=5&&h<7)return"Active";
+  if(h>=7&&h<9)return"Busy";
+  if(h>=9&&h<16)return"Focused";
+  if(h>=16&&h<19)return"Relaxed";
+  if(h>=19&&h<22)return"Engaged";
+  return"Sleeping";
+})();
 
 function nav(p:Pg){sP(p);sMn(false);sCo(false);setSubTab("");window.scrollTo({top:0,left:0,behavior:"instant"});}
 // Demo
