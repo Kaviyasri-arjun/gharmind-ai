@@ -179,27 +179,27 @@ if(ld)return<div className="min-h-screen flex items-center justify-center"><div 
 
 return(<div className="min-h-screen flex flex-col">
 {/* ═══ TOP BAR ═══ */}
-<header className="fixed top-0 inset-x-0 z-50 bg-[#080b12]/90 backdrop-blur-xl border-b border-[var(--border)] h-14">
+<header className="fixed top-0 inset-x-0 z-50 bg-[#080b12]/90 backdrop-blur-xl border-b border-[var(--border)] h-16">
 <div className="h-full w-full px-4 md:px-6 flex items-center">
-  <button onClick={()=>setHsOpen(!hsOpen)} className="mr-2 hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.5)] transition-all flex-shrink-0" title="Household Status"><svg width="30" height="30" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="ng" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#22d3ee"/><stop offset="100%" stopColor="#3b82f6"/></linearGradient><linearGradient id="ng2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#0ea5e9"/><stop offset="100%" stopColor="#2563eb"/></linearGradient></defs><rect width="512" height="512" rx="112" fill="#0b0e14"/><path d="M256 100 L420 230 L400 230 L400 400 C400 415 388 426 374 426 L138 426 C124 426 112 415 112 400 L112 230 L92 230 Z" fill="url(#ng)" opacity="0.15"/><path d="M152 250 L152 390 C152 398 158 404 166 404 L346 404 C354 404 360 398 360 390 L360 250" fill="url(#ng)" opacity="0.25"/><path d="M256 120 L400 240" stroke="url(#ng)" strokeWidth="28" strokeLinecap="round"/><path d="M256 120 L112 240" stroke="url(#ng)" strokeWidth="28" strokeLinecap="round"/><path d="M152 240 L152 390 C152 400 160 408 170 408 L342 408 C352 408 360 400 360 390 L360 240" stroke="url(#ng)" strokeWidth="22" strokeLinecap="round" strokeLinejoin="round" fill="none"/><rect x="222" y="308" width="68" height="100" rx="12" fill="url(#ng2)" opacity="0.6"/><rect x="168" y="278" width="42" height="42" rx="8" stroke="url(#ng)" strokeWidth="10" fill="none" opacity="0.7"/><rect x="302" y="278" width="42" height="42" rx="8" stroke="url(#ng)" strokeWidth="10" fill="none" opacity="0.7"/><circle cx="256" cy="120" r="10" fill="#22d3ee"/><circle cx="256" cy="120" r="16" fill="#22d3ee" opacity="0.3"/></svg></button>
-  <span className="text-lg font-bold text-grad cursor-pointer mr-4" onClick={()=>nav("home")}>GHARMIND AI</span>
+  <button onClick={()=>setHsOpen(!hsOpen)} className="mr-2.5 hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.5)] transition-all flex-shrink-0" title="Household Status"><svg width="34" height="34" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="ng" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#22d3ee"/><stop offset="100%" stopColor="#3b82f6"/></linearGradient><linearGradient id="ng2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#0ea5e9"/><stop offset="100%" stopColor="#2563eb"/></linearGradient></defs><rect width="512" height="512" rx="112" fill="#0b0e14"/><path d="M256 100 L420 230 L400 230 L400 400 C400 415 388 426 374 426 L138 426 C124 426 112 415 112 400 L112 230 L92 230 Z" fill="url(#ng)" opacity="0.15"/><path d="M152 250 L152 390 C152 398 158 404 166 404 L346 404 C354 404 360 398 360 390 L360 250" fill="url(#ng)" opacity="0.25"/><path d="M256 120 L400 240" stroke="url(#ng)" strokeWidth="28" strokeLinecap="round"/><path d="M256 120 L112 240" stroke="url(#ng)" strokeWidth="28" strokeLinecap="round"/><path d="M152 240 L152 390 C152 400 160 408 170 408 L342 408 C352 408 360 400 360 390 L360 240" stroke="url(#ng)" strokeWidth="22" strokeLinecap="round" strokeLinejoin="round" fill="none"/><rect x="222" y="308" width="68" height="100" rx="12" fill="url(#ng2)" opacity="0.6"/><rect x="168" y="278" width="42" height="42" rx="8" stroke="url(#ng)" strokeWidth="10" fill="none" opacity="0.7"/><rect x="302" y="278" width="42" height="42" rx="8" stroke="url(#ng)" strokeWidth="10" fill="none" opacity="0.7"/><circle cx="256" cy="120" r="10" fill="#22d3ee"/><circle cx="256" cy="120" r="16" fill="#22d3ee" opacity="0.3"/></svg></button>
+  <span className="text-xl font-bold text-grad cursor-pointer mr-5" onClick={()=>nav("home")}>GHARMIND AI</span>
   {/* Live Clock */}
-  <span className="hidden sm:inline text-[13px] text-[var(--muted)]/70 font-mono mr-4 whitespace-nowrap">{clock}</span>
+  <span className="hidden sm:inline text-[14px] text-[var(--muted)]/70 font-mono mr-5 whitespace-nowrap">{clock}</span>
   {/* Nav */}
-  <nav className="hidden lg:flex items-center gap-1.5 flex-1 justify-end">
+  <nav className="hidden lg:flex items-center gap-2 flex-1 justify-end">
     {PG.map(p=><button key={p} onClick={()=>nav(p)} className={cn("btn-g",pg===p&&"text-cyan-400 bg-cyan-500/10")}>{PL[p]}</button>)}
   </nav>
   {/* Demo */}
-  <div className="hidden md:flex items-center gap-1.5 ml-4">{dm?<><button onClick={dPause} className="btn-s text-[10px] py-1.5 px-2.5">⏸ Pause</button><button onClick={dRestart} className="btn-s text-[10px] py-1.5 px-2.5">🔄</button></>:<button onClick={dStart} className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-[10px] font-bold text-white bg-gradient-to-r from-cyan-500 to-blue-500 shadow-md shadow-cyan-500/20 hover:scale-105 transition-all animate-[pulse_4s_ease-in-out_infinite]">▶ Demo Tour</button>}</div>
+  <div className="hidden md:flex items-center gap-2 ml-5">{dm?<><button onClick={dPause} className="btn-s text-[11px] py-2 px-3">⏸ Pause</button><button onClick={dRestart} className="btn-s text-[11px] py-2 px-3">🔄</button></>:<button onClick={dStart} className="inline-flex items-center gap-1.5 px-5 py-2 rounded-lg text-[11px] font-bold text-white bg-gradient-to-r from-cyan-500 to-blue-500 shadow-md shadow-cyan-500/20 hover:scale-105 transition-all animate-[pulse_4s_ease-in-out_infinite]">▶ Demo Tour</button>}</div>
   {/* Hamburger */}
-  <button onClick={()=>sMn(!mn)} className="lg:hidden ml-auto p-1.5 rounded hover:bg-white/5"><svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+  <button onClick={()=>sMn(!mn)} className="lg:hidden ml-auto p-2 rounded hover:bg-white/5"><svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
 </div>
 </header>
 {mn&&<div className="fixed inset-0 z-40 bg-black/50 lg:hidden" onClick={()=>sMn(false)}/>}
-{mn&&<div className="fixed top-14 right-0 z-50 w-56 bg-[var(--card)] border-l border-[var(--border)] h-[calc(100vh-56px)] p-3 space-y-1 overflow-y-auto lg:hidden">{PG.map(p=><button key={p} onClick={()=>nav(p)} className="w-full text-left px-3 py-2.5 rounded-lg text-xs hover:bg-white/5">{PL[p]}</button>)}<div className="pt-2 border-t border-[var(--border)] mt-2">{dm?<button onClick={dPause} className="btn-s w-full text-[10px]">⏸ Pause</button>:<button onClick={dStart} className="btn-p w-full text-[10px]">▶ Demo</button>}</div></div>}
+{mn&&<div className="fixed top-16 right-0 z-50 w-56 bg-[var(--card)] border-l border-[var(--border)] h-[calc(100vh-64px)] p-3 space-y-1 overflow-y-auto lg:hidden">{PG.map(p=><button key={p} onClick={()=>nav(p)} className="w-full text-left px-3 py-2.5 rounded-lg text-sm hover:bg-white/5">{PL[p]}</button>)}<div className="pt-2 border-t border-[var(--border)] mt-2">{dm?<button onClick={dPause} className="btn-s w-full text-[11px]">⏸ Pause</button>:<button onClick={dStart} className="btn-p w-full text-[11px]">▶ Demo</button>}</div></div>}
 
 {/* ═══ MAIN ═══ */}
-<main className="flex-1 pt-14 af" key={pg}>
+<main className="flex-1 pt-16 af" key={pg}>
 
 {/* HOME */}
 {pg==="home"&&<div>
@@ -1178,7 +1178,7 @@ return(<>
 {/* ═══ HOUSEHOLD STATUS PANEL (from navbar) ═══ */}
 {hsOpen&&<>
 <div className="fixed inset-0 z-40" onClick={()=>setHsOpen(false)}/>
-<div className="fixed top-16 left-4 z-50 w-[240px] bg-[var(--card)]/95 backdrop-blur-xl border border-cyan-800/30 rounded-xl shadow-2xl shadow-cyan-900/20 p-4 af">
+<div className="fixed top-[72px] left-4 z-50 w-[240px] bg-[var(--card)]/95 backdrop-blur-xl border border-cyan-800/30 rounded-xl shadow-2xl shadow-cyan-900/20 p-4 af">
   <p className="text-[9px] font-bold text-cyan-400 uppercase tracking-wide mb-3">Current Household State</p>
   <div className="space-y-2.5">
     <div className="flex items-center justify-between"><span className="text-xs text-muted">🟢 Mood</span><span className="text-xs font-semibold text-emerald-400">{mood}</span></div>

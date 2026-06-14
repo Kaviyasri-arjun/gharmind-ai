@@ -39,7 +39,7 @@
   .btn { @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all; }
   .btn-p { @apply btn text-white bg-gradient-to-r from-blue-600 to-cyan-600 shadow-md shadow-blue-900/30 hover:shadow-lg; }
   .btn-s { @apply btn border border-[var(--border)] text-[var(--muted)] hover:text-white hover:bg-white/5; }
-  .btn-g { @apply px-3.5 py-2 rounded-lg text-sm font-medium text-[var(--muted)] hover:text-white hover:bg-white/5 transition-all; }
+  .btn-g { @apply px-3.5 py-2.5 rounded-lg text-[15px] font-medium text-[var(--muted)] hover:text-white hover:bg-white/5 transition-all; }
   .badge { @apply inline-flex items-center px-3 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider; }
   .badge-r { @apply badge bg-red-500/10 text-red-400; }
   .badge-a { @apply badge bg-amber-500/10 text-amber-400; }
