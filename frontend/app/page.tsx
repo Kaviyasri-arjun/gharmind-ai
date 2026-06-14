@@ -120,11 +120,11 @@ return(<div className="min-h-screen flex flex-col">
 <header className="fixed top-0 inset-x-0 z-50 bg-[#080b12]/90 backdrop-blur-xl border-b border-[var(--border)] h-14">
 <div className="h-full max-w-[1400px] mx-auto px-4 flex items-center">
   <button onClick={()=>setHsOpen(!hsOpen)} className="mr-2 hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.5)] transition-all flex-shrink-0" title="Household Status"><svg width="30" height="30" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="ng" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#22d3ee"/><stop offset="100%" stopColor="#3b82f6"/></linearGradient><linearGradient id="ng2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#0ea5e9"/><stop offset="100%" stopColor="#2563eb"/></linearGradient></defs><rect width="512" height="512" rx="112" fill="#0b0e14"/><path d="M256 100 L420 230 L400 230 L400 400 C400 415 388 426 374 426 L138 426 C124 426 112 415 112 400 L112 230 L92 230 Z" fill="url(#ng)" opacity="0.15"/><path d="M152 250 L152 390 C152 398 158 404 166 404 L346 404 C354 404 360 398 360 390 L360 250" fill="url(#ng)" opacity="0.25"/><path d="M256 120 L400 240" stroke="url(#ng)" strokeWidth="28" strokeLinecap="round"/><path d="M256 120 L112 240" stroke="url(#ng)" strokeWidth="28" strokeLinecap="round"/><path d="M152 240 L152 390 C152 400 160 408 170 408 L342 408 C352 408 360 400 360 390 L360 240" stroke="url(#ng)" strokeWidth="22" strokeLinecap="round" strokeLinejoin="round" fill="none"/><rect x="222" y="308" width="68" height="100" rx="12" fill="url(#ng2)" opacity="0.6"/><rect x="168" y="278" width="42" height="42" rx="8" stroke="url(#ng)" strokeWidth="10" fill="none" opacity="0.7"/><rect x="302" y="278" width="42" height="42" rx="8" stroke="url(#ng)" strokeWidth="10" fill="none" opacity="0.7"/><circle cx="256" cy="120" r="10" fill="#22d3ee"/><circle cx="256" cy="120" r="16" fill="#22d3ee" opacity="0.3"/></svg></button>
-  <span className="text-base font-extrabold text-grad cursor-pointer mr-4" onClick={()=>nav("home")}>GHARMIND AI</span>
+  <span className="text-lg font-bold text-grad cursor-pointer mr-4" onClick={()=>nav("home")}>GHARMIND AI</span>
   {/* Live Clock */}
-  <span className="hidden sm:inline text-[11px] text-[var(--muted)] font-mono mr-4 whitespace-nowrap">{clock}</span>
+  <span className="hidden sm:inline text-[13px] text-[var(--muted)]/70 font-mono mr-4 whitespace-nowrap">{clock}</span>
   {/* Nav */}
-  <nav className="hidden lg:flex items-center gap-1 flex-1 justify-end">
+  <nav className="hidden lg:flex items-center gap-1.5 flex-1 justify-end">
     {PG.map(p=><button key={p} onClick={()=>nav(p)} className={cn("btn-g",pg===p&&"text-cyan-400 bg-cyan-500/10")}>{PL[p]}</button>)}
   </nav>
   {/* Demo */}
@@ -151,91 +151,91 @@ return(<div className="min-h-screen flex flex-col">
     <span className="badge badge-b">✓ Powered by AWS Bedrock</span>
     <span className="badge badge-g">✓ Amazon HackOn 6.0</span>
   </div>
-  <p className="text-cyan-400 text-[10px] font-bold tracking-[.3em] uppercase mb-2">India's First Household Digital Twin</p>
-  <h1 className="text-4xl md:text-6xl font-black text-white leading-[1.05]">GHARMIND<br/><span className="text-grad">AI</span></h1>
-  <p className="text-sm md:text-base text-white/60 mt-3 max-w-lg leading-relaxed">Learns family routines, predicts needs, understands cultural context, and automates household decisions before anyone asks.</p>
-  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6 max-w-lg">
+  <p className="text-cyan-400 text-xs font-bold tracking-[.3em] uppercase mb-3">India's First Household Digital Twin</p>
+  <h1 className="text-5xl md:text-7xl font-black text-white leading-[1.05]">GHARMIND<br/><span className="text-grad">AI</span></h1>
+  <p className="text-base md:text-lg text-white/60 mt-4 max-w-lg leading-[1.6]">Learns family routines, predicts needs, understands cultural context, and automates household decisions before anyone asks.</p>
+  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 max-w-lg">
     {[{v:"12",l:"Routines Learned"},{v:"89%",l:"Prediction Accuracy"},{v:"7",l:"Actions Automated"},{v:"4",l:"Members Modeled"}].map((m,i)=>(
-      <div key={i} className="text-center"><p className="text-xl md:text-2xl font-black text-cyan-400">{m.v}</p><p className="text-[9px] text-white/40">{m.l}</p></div>
+      <div key={i} className="text-center"><p className="text-2xl md:text-3xl font-black text-cyan-400">{m.v}</p><p className="text-[11px] text-white/40 mt-0.5">{m.l}</p></div>
     ))}
   </div>
-  <div className="flex flex-wrap gap-3 mt-8">
-    <button onClick={()=>nav("dashboard")} className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white text-sm font-bold bg-gradient-to-r from-blue-600 to-cyan-500 shadow-lg shadow-cyan-500/25 hover:scale-[1.03] transition-all">View Dashboard</button>
-    <button onClick={dStart} className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold border border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/10 transition-all animate-[pulse_4s_ease-in-out_infinite]">▶ Watch AI Demo</button>
+  <div className="flex flex-wrap gap-3 mt-10">
+    <button onClick={()=>nav("dashboard")} className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-white text-sm font-bold bg-gradient-to-r from-blue-600 to-cyan-500 shadow-lg shadow-cyan-500/25 hover:scale-[1.03] transition-all">View Dashboard</button>
+    <button onClick={dStart} className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-sm font-semibold border border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/10 transition-all animate-[pulse_4s_ease-in-out_infinite]">▶ Watch AI Demo</button>
   </div>
 </div>
 </section>
 
 {/* ── WHY GHARMIND EXISTS ── */}
-<section className="max-w-3xl mx-auto px-6 py-16">
-<div className="card-glow text-center py-10 px-8 af">
+<section className="max-w-3xl mx-auto px-6 py-20">
+<div className="card-glow text-center py-12 px-8 af">
   <h2 className="text-xl md:text-2xl font-bold mb-4 uppercase tracking-wide">Our Mission</h2>
-  <p className="text-sm md:text-base text-[var(--fg)]/80 leading-relaxed max-w-2xl mx-auto">Indian homes run on routines, relationships, culture, and context. Current smart homes wait for commands. GharMind transforms household behavior into intelligence that predicts needs before anyone asks.</p>
-  <p className="text-xs text-cyan-400/80 mt-5 max-w-xl mx-auto leading-relaxed font-medium">Building the world's first AI Household Operating System that understands families, not just devices.</p>
+  <p className="text-base md:text-lg text-[var(--fg)]/80 leading-[1.6] max-w-2xl mx-auto">Indian homes run on routines, relationships, culture, and context. Current smart homes wait for commands. GharMind transforms household behavior into intelligence that predicts needs before anyone asks.</p>
+  <p className="text-sm text-cyan-400/80 mt-6 max-w-xl mx-auto leading-[1.6] font-medium">Building the world's first AI Household Operating System that understands families, not just devices.</p>
 </div>
 </section>
 
 {/* ── WHY DIFFERENT ── */}
-<section className="max-w-5xl mx-auto px-6 py-16">
-<h2 className="text-lg md:text-xl font-bold text-center mb-2">Why GharMind is Different</h2>
-<p className="text-xs text-[var(--muted)] text-center mb-8">Not another smart home. A household intelligence system built for Indian families.</p>
-<div className="grid md:grid-cols-2 gap-4">
-  <div className="card-glow border-l-2 border-l-emerald-500/40"><p className="text-[10px] font-bold text-emerald-400 uppercase mb-3">GharMind AI</p>{["Learns family behavior automatically","Household focused — whole family view","Predictive — acts before you ask","Indian cultural intelligence (festivals, pooja)","Adapts to your unique household","Improves from every interaction"].map((t,i)=><p key={i} className="text-xs text-emerald-300/80 py-1.5 border-b border-[var(--border)] last:border-0">✓ {t}</p>)}</div>
-  <div className="card border-l-2 border-l-red-500/40"><p className="text-[10px] font-bold text-red-400 uppercase mb-3">Traditional Smart Home</p>{["Waits for voice commands","Device focused only","Reactive — acts after the fact","No cultural awareness","Treats every home the same","No learning capability"].map((t,i)=><p key={i} className="text-xs text-[var(--muted)] py-1.5 border-b border-[var(--border)] last:border-0">✗ {t}</p>)}</div>
+<section className="max-w-5xl mx-auto px-6 py-20">
+<h2 className="text-xl md:text-[28px] font-bold text-center mb-2">Why GharMind is Different</h2>
+<p className="text-sm text-[var(--muted)] text-center mb-10">Not another smart home. A household intelligence system built for Indian families.</p>
+<div className="grid md:grid-cols-2 gap-5">
+  <div className="card-glow border-l-2 border-l-emerald-500/40"><p className="text-xs font-bold text-emerald-400 uppercase mb-4 tracking-wide">GharMind AI</p>{["Learns family behavior automatically","Household focused — whole family view","Predictive — acts before you ask","Indian cultural intelligence (festivals, pooja)","Adapts to your unique household","Improves from every interaction"].map((t,i)=><p key={i} className="text-sm text-emerald-300/80 py-2 border-b border-[var(--border)] last:border-0">✓ {t}</p>)}</div>
+  <div className="card border-l-2 border-l-red-500/40"><p className="text-xs font-bold text-red-400 uppercase mb-4 tracking-wide">Traditional Smart Home</p>{["Waits for voice commands","Device focused only","Reactive — acts after the fact","No cultural awareness","Treats every home the same","No learning capability"].map((t,i)=><p key={i} className="text-sm text-[var(--muted)] py-2 border-b border-[var(--border)] last:border-0">✗ {t}</p>)}</div>
 </div>
 </section>
 
 {/* ── TODAY GHARMIND PREDICTED ── */}
-<section className="max-w-5xl mx-auto px-6 py-12">
-<h2 className="text-lg font-bold text-center mb-2">Today, GharMind Predicted</h2>
-<p className="text-xs text-[var(--muted)] text-center mb-6">Live predictions generated from household intelligence.</p>
-<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+<section className="max-w-5xl mx-auto px-6 py-16">
+<h2 className="text-xl md:text-[28px] font-bold text-center mb-2">Today, GharMind Predicted</h2>
+<p className="text-sm text-[var(--muted)] text-center mb-8">Live predictions generated from household intelligence.</p>
+<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
   {[{p:"Arjun leaving for school in 15 minutes",c:92,cat:"family"},{p:"Water motor should run at 6:15 AM",c:96,cat:"appliance"},{p:"Evening pooja approaching at 6:00 PM",c:88,cat:"cultural"},{p:"Power outage likely at 2:00 PM",c:76,cat:"power"},{p:"Quiet Study Mode activating at 8 PM",c:91,cat:"study"},{p:"Filter coffee preparation at 5:00 PM",c:93,cat:"routine"}].map((pred,i)=>(
     <div key={i} className="card-glow af" style={{animationDelay:`${i*0.1}s`}}>
-      <div className="flex justify-between items-start gap-2 mb-1"><p className="text-xs font-medium flex-1">{pred.p}</p><span className="text-emerald-400 font-bold text-xs">{pred.c}%</span></div>
-      <div className="w-full h-1 rounded-full bg-[var(--border)]"><div className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-emerald-500" style={{width:`${pred.c}%`}}/></div>
+      <div className="flex justify-between items-start gap-2 mb-2"><p className="text-sm font-medium flex-1 leading-snug">{pred.p}</p><span className="text-emerald-400 font-bold text-sm">{pred.c}%</span></div>
+      <div className="w-full h-1.5 rounded-full bg-[var(--border)]"><div className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-emerald-500" style={{width:`${pred.c}%`}}/></div>
     </div>
   ))}
 </div>
 </section>
 
 {/* ── SUNDARAM FAMILY STORY ── */}
-<section className="max-w-4xl mx-auto px-6 py-12">
-<h2 className="text-lg font-bold text-center mb-2">Meet The Sundaram Family</h2>
-<p className="text-xs text-[var(--muted)] text-center mb-6">A day in the life of a GharMind-powered household in Coimbatore.</p>
-<div className="relative pl-6 border-l border-cyan-800/40 space-y-4">
+<section className="max-w-4xl mx-auto px-6 py-16">
+<h2 className="text-xl md:text-[28px] font-bold text-center mb-2">Meet The Sundaram Family</h2>
+<p className="text-sm text-[var(--muted)] text-center mb-8">A day in the life of a GharMind-powered household in Coimbatore.</p>
+<div className="relative pl-7 border-l-2 border-cyan-800/40 space-y-5">
   {[{time:"6:30 AM",event:"GharMind notices Arjun waking up 10 minutes late.",icon:"⏰"},{time:"6:35 AM",event:"Predicts school departure delay risk. Confidence: 87%.",icon:"🔮"},{time:"6:36 AM",event:"Notifies Lakshmi to prepare breakfast faster.",icon:"📲"},{time:"6:45 AM",event:"Adjusts household timeline. Motor delayed 5 minutes.",icon:"⚙️"},{time:"2:00 PM",event:"Power outage detected. Devices already charged at 1:30 PM.",icon:"⚡"},{time:"8:00 PM",event:"Activates Quiet Study Mode. TV turned off. Family notified.",icon:"📚"}].map((s,i)=>(
     <div key={i} className="relative af" style={{animationDelay:`${i*0.08}s`}}>
-      <span className="absolute -left-[22px] top-1 w-3 h-3 rounded-full bg-cyan-500/40 border border-cyan-400"/>
-      <div className="card py-2.5 px-3"><div className="flex items-center gap-2"><span className="text-base">{s.icon}</span><span className="text-[10px] font-mono text-cyan-400">{s.time}</span></div><p className="text-xs text-[var(--fg)]/80 mt-1">{s.event}</p></div>
+      <span className="absolute -left-[25px] top-2 w-3.5 h-3.5 rounded-full bg-cyan-500/40 border-2 border-cyan-400"/>
+      <div className="card py-3.5 px-4"><div className="flex items-center gap-3"><span className="text-lg">{s.icon}</span><span className="text-xs font-mono text-cyan-400">{s.time}</span></div><p className="text-sm text-[var(--fg)]/80 mt-1.5 leading-[1.6]">{s.event}</p></div>
     </div>
   ))}
 </div>
 </section>
 
 {/* ── HOW GHARMIND THINKS ── */}
-<section className="max-w-3xl mx-auto px-6 py-12">
-<h2 className="text-lg font-bold text-center mb-6">How GharMind Thinks</h2>
+<section className="max-w-3xl mx-auto px-6 py-16">
+<h2 className="text-xl md:text-[28px] font-bold text-center mb-8">How GharMind Thinks</h2>
 <div className="space-y-0">
   {[{icon:"👨‍👩‍👧‍👦",label:"Family Activity Data",sub:"Schedules, appliances, routines"},{icon:"🧠",label:"Routine Learning Engine",sub:"Detects patterns across days and weeks"},{icon:"🏠",label:"Household Digital Twin",sub:"Real-time simulation of home state"},{icon:"🔮",label:"Prediction Engine",sub:"Forecasts next actions with confidence"},{icon:"💡",label:"Explainable AI Layer",sub:"Shows why every decision was made"},{icon:"⚡",label:"Recommendations & Actions",sub:"Proactive household automation"}].map((s,i)=>(
-    <div key={i} className="flex items-center gap-3 py-3 border-b border-[var(--border)] last:border-0">
-      <span className="text-2xl w-10 text-center">{s.icon}</span>
-      <div className="flex-1"><p className="text-xs font-semibold">{s.label}</p><p className="text-[10px] text-[var(--muted)]">{s.sub}</p></div>
+    <div key={i} className="flex items-center gap-4 py-4 border-b border-[var(--border)] last:border-0">
+      <span className="text-2xl w-11 text-center">{s.icon}</span>
+      <div className="flex-1"><p className="text-sm font-semibold">{s.label}</p><p className="text-xs text-[var(--muted)] mt-0.5">{s.sub}</p></div>
     </div>
   ))}
 </div>
 </section>
 
 {/* ── CTA ── */}
-<section className="max-w-3xl mx-auto px-6 py-14 pb-20">
-<div className="text-center mb-8">
-  <h2 className="text-lg font-bold mb-2">Experience GharMind AI</h2>
-  <p className="text-xs text-[var(--muted)]">Explore the intelligence that powers a smarter household.</p>
+<section className="max-w-3xl mx-auto px-6 py-20 pb-24">
+<div className="text-center mb-10">
+  <h2 className="text-xl md:text-[28px] font-bold mb-3">Experience GharMind AI</h2>
+  <p className="text-sm text-[var(--muted)]">Explore the intelligence that powers a smarter household.</p>
 </div>
-<div className="flex flex-wrap justify-center gap-3">
-  <button onClick={()=>nav("dashboard")} className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white text-sm font-bold bg-gradient-to-r from-blue-600 to-cyan-500 shadow-lg shadow-cyan-500/25 hover:scale-[1.03] transition-all">Explore Dashboard</button>
-  <button onClick={()=>nav("predictions")} className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold border border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/10 transition-all">View Predictions</button>
-  <button onClick={()=>nav("howitworks")} className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/10 transition-all">See How It Works</button>
+<div className="flex flex-wrap justify-center gap-4">
+  <button onClick={()=>nav("dashboard")} className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-white text-sm font-bold bg-gradient-to-r from-blue-600 to-cyan-500 shadow-lg shadow-cyan-500/25 hover:scale-[1.03] transition-all">Explore Dashboard</button>
+  <button onClick={()=>nav("predictions")} className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-sm font-semibold border border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/10 transition-all">View Predictions</button>
+  <button onClick={()=>nav("howitworks")} className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-sm font-semibold border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/10 transition-all">See How It Works</button>
 </div>
 </section>
 
@@ -814,26 +814,26 @@ return(<div className="min-h-screen flex flex-col">
 </main>
 
 {/* ═══ FOOTER ═══ */}
-<footer className="mt-12 py-12 px-6" style={{background:"linear-gradient(180deg,#06111f 0%,#081827 100%)",borderTop:"1px solid rgba(0,200,255,0.15)"}}>
-<div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+<footer className="mt-16 py-14 px-6" style={{background:"linear-gradient(180deg,#06111f 0%,#081827 100%)",borderTop:"1px solid rgba(0,200,255,0.15)"}}>
+<div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
   <div>
-    <p className="text-base font-bold text-grad">GHARMIND AI</p>
-    <p className="text-sm text-white/80 mt-2 leading-relaxed">India's First AI Household Operating System</p>
+    <p className="text-lg font-bold text-grad">GHARMIND AI</p>
+    <p className="text-[15px] text-white/80 mt-3 leading-[1.6]">India's First AI Household Operating System</p>
   </div>
   <div>
-    <p className="text-xs font-bold uppercase tracking-wide mb-2" style={{color:"#18D8FF",letterSpacing:"0.5px"}}>Built For</p>
-    <p className="text-sm text-white/85">Amazon HackOn 6.0</p>
+    <p className="text-xs font-bold uppercase tracking-wide mb-3" style={{color:"#18D8FF",letterSpacing:"0.5px"}}>Built For</p>
+    <p className="text-[15px] text-white/85">Amazon HackOn 6.0</p>
   </div>
   <div>
-    <p className="text-xs font-bold uppercase tracking-wide mb-2" style={{color:"#18D8FF",letterSpacing:"0.5px"}}>Powered By</p>
-    <div className="space-y-1 text-sm text-white/85"><p>AWS Bedrock</p><p>FastAPI</p><p>Next.js</p><p>PostgreSQL</p><p>Digital Twin Architecture</p></div>
+    <p className="text-xs font-bold uppercase tracking-wide mb-3" style={{color:"#18D8FF",letterSpacing:"0.5px"}}>Powered By</p>
+    <div className="space-y-1.5 text-[15px] text-white/85"><p>AWS Bedrock</p><p>FastAPI</p><p>Next.js</p><p>PostgreSQL</p><p>Digital Twin Architecture</p></div>
   </div>
   <div>
-    <p className="text-xs font-bold uppercase tracking-wide mb-2" style={{color:"#18D8FF",letterSpacing:"0.5px"}}>Project Links</p>
-    <div className="space-y-1.5 text-sm"><p className="text-cyan-400 hover:text-cyan-300 cursor-pointer transition-colors hover:drop-shadow-[0_0_6px_rgba(34,211,238,0.4)]">GitHub Repository</p><p className="text-cyan-400 hover:text-cyan-300 cursor-pointer transition-colors hover:drop-shadow-[0_0_6px_rgba(34,211,238,0.4)]">Documentation</p><p className="text-cyan-400 hover:text-cyan-300 cursor-pointer transition-colors hover:drop-shadow-[0_0_6px_rgba(34,211,238,0.4)]">Demo Video</p></div>
+    <p className="text-xs font-bold uppercase tracking-wide mb-3" style={{color:"#18D8FF",letterSpacing:"0.5px"}}>Project Links</p>
+    <div className="space-y-2 text-[15px]"><p className="text-cyan-400 hover:text-cyan-300 cursor-pointer transition-colors hover:drop-shadow-[0_0_6px_rgba(34,211,238,0.4)]">GitHub Repository</p><p className="text-cyan-400 hover:text-cyan-300 cursor-pointer transition-colors hover:drop-shadow-[0_0_6px_rgba(34,211,238,0.4)]">Documentation</p><p className="text-cyan-400 hover:text-cyan-300 cursor-pointer transition-colors hover:drop-shadow-[0_0_6px_rgba(34,211,238,0.4)]">Demo Video</p></div>
   </div>
 </div>
-<p className="text-center text-xs text-white/40 mt-8 pt-5" style={{borderTop:"1px solid rgba(0,200,255,0.08)"}}>© 2026 GharMind AI</p>
+<p className="text-center text-sm text-white/40 mt-10 pt-6" style={{borderTop:"1px solid rgba(0,200,255,0.08)"}}>© 2026 GharMind AI</p>
 </footer>
 
 {/* ═══ ALARM NOTIFICATION ═══ */}
