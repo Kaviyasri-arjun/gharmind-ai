@@ -153,7 +153,6 @@ return(<div className="min-h-screen flex flex-col">
   <p className="text-cyan-400 text-[10px] font-bold tracking-[.3em] uppercase mb-2">India's First Household Digital Twin</p>
   <h1 className="text-4xl md:text-6xl font-black text-white leading-[1.05]">GHARMIND<br/><span className="text-grad">AI</span></h1>
   <p className="text-sm md:text-base text-white/60 mt-3 max-w-lg leading-relaxed">Learns family routines, predicts needs, understands cultural context, and automates household decisions before anyone asks.</p>
-  {/* Animated counters */}
   <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6 max-w-lg">
     {[{v:"12",l:"Routines Learned"},{v:"89%",l:"Prediction Accuracy"},{v:"7",l:"Actions Automated"},{v:"4",l:"Members Modeled"}].map((m,i)=>(
       <div key={i} className="text-center"><p className="text-xl md:text-2xl font-black text-cyan-400">{m.v}</p><p className="text-[9px] text-white/40">{m.l}</p></div>
@@ -173,19 +172,6 @@ return(<div className="min-h-screen flex flex-col">
 <div className="grid md:grid-cols-2 gap-4">
   <div className="card border-l-2 border-l-red-500/40"><p className="text-[10px] font-bold text-red-400 uppercase mb-3">Traditional Smart Home</p>{["Waits for voice commands","Device focused only","Reactive — acts after the fact","No cultural awareness","Treats every home the same","No learning capability"].map((t,i)=><p key={i} className="text-xs text-[var(--muted)] py-1.5 border-b border-[var(--border)] last:border-0">✗ {t}</p>)}</div>
   <div className="card-glow border-l-2 border-l-emerald-500/40"><p className="text-[10px] font-bold text-emerald-400 uppercase mb-3">GharMind AI</p>{["Learns family behavior automatically","Household focused — whole family view","Predictive — acts before you ask","Indian cultural intelligence (festivals, pooja)","Adapts to your unique household","Improves from every interaction"].map((t,i)=><p key={i} className="text-xs text-emerald-300/80 py-1.5 border-b border-[var(--border)] last:border-0">✓ {t}</p>)}</div>
-</div>
-</section>
-
-{/* ── AI BRAIN FLOW ── */}
-<section className="max-w-3xl mx-auto px-6 py-12">
-<h2 className="text-lg font-bold text-center mb-6">How GharMind AI Thinks</h2>
-<div className="space-y-0">
-  {[{icon:"👨‍👩‍👧‍👦",label:"Family Activity Data",sub:"Schedules, appliances, routines"},{icon:"🧠",label:"Routine Learning Engine",sub:"Detects patterns across days and weeks"},{icon:"🏠",label:"Household Digital Twin",sub:"Real-time simulation of home state"},{icon:"🔮",label:"Prediction Engine",sub:"Forecasts next actions with confidence"},{icon:"💡",label:"Explainable AI Layer",sub:"Shows why every decision was made"},{icon:"⚡",label:"Recommendations & Actions",sub:"Proactive household automation"}].map((s,i)=>(
-    <div key={i} className="flex items-center gap-3 py-3 border-b border-[var(--border)] last:border-0">
-      <span className="text-2xl w-10 text-center">{s.icon}</span>
-      <div className="flex-1"><p className="text-xs font-semibold">{s.label}</p><p className="text-[10px] text-[var(--muted)]">{s.sub}</p></div>
-    </div>
-  ))}
 </div>
 </section>
 
@@ -217,125 +203,33 @@ return(<div className="min-h-screen flex flex-col">
 </div>
 </section>
 
-{/* ── AI FEATURES ── */}
-<section className="max-w-5xl mx-auto px-6 py-12">
-<h2 className="text-lg font-bold text-center mb-6">Intelligence Modules</h2>
-<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
-  {[{i:"📋",t:"Routine Learning"},{i:"🏠",t:"Digital Twin"},{i:"⚡",t:"Power Intel"},{i:"🪔",t:"Cultural AI"},{i:"💡",t:"Explainable AI"},{i:"🧪",t:"What-If Sim"},{i:"🔋",t:"Energy Opt."},{i:"🧠",t:"Memory Graph"},{i:"👥",t:"Family Collab"},{i:"🛡️",t:"Safety Monitor"}].map((f,i)=>(
-    <div key={i} className="card text-center py-3 hover:border-cyan-800/50 transition-all group"><span className="text-xl group-hover:scale-110 inline-block transition-transform">{f.i}</span><p className="text-[10px] font-medium mt-1.5">{f.t}</p></div>
-  ))}
-</div>
-</section>
-
-{/* ── BUILT FOR INDIAN HOMES ── */}
-<section className="max-w-5xl mx-auto px-6 py-12 pb-20">
-<h2 className="text-lg font-bold text-center mb-6">Built For Indian Homes</h2>
-<div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-  {[{i:"🪔",t:"Morning Pooja Awareness",d:"Knows prayer times and adjusts household noise"},{i:"💧",t:"Water Motor Scheduling",d:"Aligned with municipal supply windows"},{i:"⚡",t:"Power Cut Intelligence",d:"Predicts TNEB/MSEDCL outages by zone"},{i:"📚",t:"Exam Quiet Mode",d:"Automatically enforces study hours"},{i:"🎉",t:"Festival Adaptation",d:"Pongal, Diwali, Navaratri preparation"},{i:"👨‍👩‍👧‍👦",t:"Family Routine Learning",d:"Understands each member's patterns"}].map((f,i)=>(
-    <div key={i} className="card af" style={{animationDelay:`${i*0.05}s`}}>
-      <span className="text-xl">{f.i}</span><p className="text-xs font-semibold mt-2">{f.t}</p><p className="text-[10px] text-[var(--muted)] mt-1">{f.d}</p>
-    </div>
-  ))}
-</div>
-</section>
-
-{/* ── MISSION ── */}
-<section className="max-w-4xl mx-auto px-6 py-14">
-<div className="card-glow text-center py-8 px-6 af">
-  <h2 className="text-lg font-bold mb-3">Our Mission</h2>
-  <p className="text-sm text-[var(--muted)] leading-relaxed max-w-2xl mx-auto">To build the world's first AI Household Operating System that understands families, not just devices.</p>
-  <p className="text-xs text-[var(--muted)] mt-3 max-w-xl mx-auto leading-relaxed">Indian homes run on routines, relationships, culture, and context. GharMind transforms household behavior into intelligence that predicts needs before anyone asks.</p>
-</div>
-</section>
-
-{/* ── WHY WE BUILT GHARMIND ── */}
-<section className="max-w-4xl mx-auto px-6 py-12">
-<h2 className="text-lg font-bold text-center mb-2">Why We Built GharMind</h2>
-<p className="text-xs text-[var(--muted)] text-center mb-6">Every Indian home has invisible intelligence. We made it visible.</p>
-<div className="relative pl-6">
-  {/* Vertical line - spans only the items */}
-  <div className="absolute left-0 top-[18px] bottom-[18px] w-px bg-cyan-800/40"/>
-  <div className="space-y-3">
-  {[{icon:"🪔",event:"Morning pooja at dawn"},{icon:"🚌",event:"School schedules and bus timings"},{icon:"💧",event:"Water motor aligned to municipal supply"},{icon:"⚡",event:"Unpredictable power cuts"},{icon:"☕",event:"Evening chai rituals"},{icon:"🤖",event:"Smart homes that only wait for commands"}].map((s,i)=>(
-    <div key={i} className="relative flex items-center gap-3 af" style={{animationDelay:`${i*0.06}s`}}>
-      <span className="absolute -left-[29px] w-2.5 h-2.5 rounded-full bg-cyan-500/40 border border-cyan-400"/>
-      <span className="text-lg">{s.icon}</span><p className="text-xs">{s.event}</p>
-    </div>
-  ))}
-  </div>
-</div>
-<p className="text-xs text-cyan-400 mt-4 text-center font-medium">GharMind learns household behavior and acts proactively — no commands needed.</p>
-</section>
-
-{/* ── GHARMIND VS TRADITIONAL ── */}
-<section className="max-w-5xl mx-auto px-6 py-12">
-<h2 className="text-lg font-bold text-center mb-6">Why GharMind is Different</h2>
-<div className="grid md:grid-cols-2 gap-4">
-  <div className="card border-l-2 border-l-red-500/40"><p className="text-[10px] font-bold text-red-400 uppercase mb-3">Traditional Smart Homes</p>{["Need explicit voice commands","Device-centric control only","Reactive — acts after the problem","Generic automation rules","No cultural or family context","Same for every household"].map((t,i)=><p key={i} className="text-xs text-[var(--muted)] py-1.5 border-b border-[var(--border)] last:border-0">✗ {t}</p>)}</div>
-  <div className="card-glow border-l-2 border-l-emerald-500/40"><p className="text-[10px] font-bold text-emerald-400 uppercase mb-3">GharMind AI</p>{["Learns routines automatically","Family-centric intelligence","Predictive — acts before you ask","Indian-context aware (festivals, pooja)","Cultural intelligence built-in","Digital Twin powered simulation"].map((t,i)=><p key={i} className="text-xs text-emerald-300/80 py-1.5 border-b border-[var(--border)] last:border-0">✓ {t}</p>)}</div>
-</div>
-</section>
-
-{/* ── AI ARCHITECTURE ── */}
+{/* ── HOW GHARMIND THINKS ── */}
 <section className="max-w-3xl mx-auto px-6 py-12">
-<h2 className="text-lg font-bold text-center mb-6">The Intelligence Behind GharMind</h2>
-<div className="space-y-1">
-  {[{icon:"👨‍👩‍👧‍👦",label:"Family Activities",sub:"Schedules, appliances, daily patterns"},{icon:"🧠",label:"Routine Learning Engine",sub:"Detects weekday/weekend patterns"},{icon:"🏠",label:"Household Digital Twin",sub:"Real-time home state simulation"},{icon:"🔮",label:"Prediction Engine",sub:"Forecasts next actions with confidence"},{icon:"💡",label:"Explainable AI Layer",sub:"Transparent reasoning for every decision"},{icon:"⚡",label:"Recommendations & Actions",sub:"Proactive automation without commands"}].map((s,i)=>(
-    <div key={i} className="flex items-center gap-3 py-3 border-b border-[var(--border)] last:border-0 af" style={{animationDelay:`${i*0.08}s`}}>
-      <span className="w-9 h-9 rounded-lg bg-cyan-500/10 border border-cyan-800/30 flex items-center justify-center text-lg">{s.icon}</span>
+<h2 className="text-lg font-bold text-center mb-6">How GharMind Thinks</h2>
+<div className="space-y-0">
+  {[{icon:"👨‍👩‍👧‍👦",label:"Family Activity Data",sub:"Schedules, appliances, routines"},{icon:"🧠",label:"Routine Learning Engine",sub:"Detects patterns across days and weeks"},{icon:"🏠",label:"Household Digital Twin",sub:"Real-time simulation of home state"},{icon:"🔮",label:"Prediction Engine",sub:"Forecasts next actions with confidence"},{icon:"💡",label:"Explainable AI Layer",sub:"Shows why every decision was made"},{icon:"⚡",label:"Recommendations & Actions",sub:"Proactive household automation"}].map((s,i)=>(
+    <div key={i} className="flex items-center gap-3 py-3 border-b border-[var(--border)] last:border-0">
+      <span className="text-2xl w-10 text-center">{s.icon}</span>
       <div className="flex-1"><p className="text-xs font-semibold">{s.label}</p><p className="text-[10px] text-[var(--muted)]">{s.sub}</p></div>
+      {i<5&&<span className="text-cyan-500/40 text-sm">↓</span>}
     </div>
   ))}
 </div>
 </section>
 
-{/* ── LIVE AI METRICS ── */}
-<section className="max-w-4xl mx-auto px-6 py-12">
-<h2 className="text-lg font-bold text-center mb-6">Live Intelligence Metrics</h2>
-<div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-  {[{v:"12+",l:"Routine Patterns Learned"},{v:"89%",l:"Prediction Accuracy"},{v:"7",l:"Actions Automated Today"},{v:"5",l:"Family Members Modeled"}].map((m,i)=>(
-    <div key={i} className="card text-center py-5 af" style={{animationDelay:`${i*0.1}s`}}>
-      <p className="text-2xl md:text-3xl font-black text-cyan-400">{m.v}</p>
-      <p className="text-[10px] text-[var(--muted)] mt-1">{m.l}</p>
-    </div>
-  ))}
+{/* ── CTA ── */}
+<section className="max-w-3xl mx-auto px-6 py-14 pb-20">
+<div className="text-center mb-8">
+  <h2 className="text-lg font-bold mb-2">Experience GharMind AI</h2>
+  <p className="text-xs text-[var(--muted)]">Explore the intelligence that powers a smarter household.</p>
+</div>
+<div className="flex flex-wrap justify-center gap-3">
+  <button onClick={()=>nav("dashboard")} className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white text-sm font-bold bg-gradient-to-r from-blue-600 to-cyan-500 shadow-lg shadow-cyan-500/25 hover:scale-[1.03] transition-all">Explore Dashboard</button>
+  <button onClick={()=>nav("predictions")} className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold border border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/10 transition-all">View Predictions</button>
+  <button onClick={()=>nav("howitworks")} className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/10 transition-all">See How It Works</button>
 </div>
 </section>
 
-{/* ── TODAY PREDICTED ── */}
-<section className="max-w-5xl mx-auto px-6 py-12">
-<h2 className="text-lg font-bold text-center mb-2">Today, GharMind Predicted</h2>
-<p className="text-xs text-[var(--muted)] text-center mb-6">Live predictions from household intelligence.</p>
-<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-  {[{p:"Arjun leaving for school in 15 minutes",c:92},{p:"Water motor should run at 6:15 AM",c:96},{p:"Evening pooja approaching",c:88},{p:"Quiet Study Mode activating at 8 PM",c:91},{p:"Possible power interruption tonight",c:76},{p:"Filter coffee preparation at 5 PM",c:93}].map((pred,i)=>(
-    <div key={i} className="card-glow af" style={{animationDelay:`${i*0.08}s`}}>
-      <div className="flex justify-between items-start gap-2 mb-1.5"><p className="text-xs flex-1">✓ {pred.p}</p><span className="text-emerald-400 font-bold text-xs">{pred.c}%</span></div>
-      <div className="w-full h-1 rounded-full bg-[var(--border)]"><div className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-emerald-500 transition-all" style={{width:`${pred.c}%`}}/></div>
-    </div>
-  ))}
-</div>
-</section>
-
-{/* ── FUTURE VISION ── */}
-<section className="max-w-4xl mx-auto px-6 py-12">
-<h2 className="text-lg font-bold text-center mb-6">The Future of Household Intelligence</h2>
-<div className="grid md:grid-cols-3 gap-4">
-  {[{stage:"Today",desc:"Predict household needs and automate routine decisions.",color:"text-cyan-400",border:"border-cyan-800/30"},{stage:"Tomorrow",desc:"Coordinate family schedules and resolve household conflicts.",color:"text-purple-400",border:"border-purple-800/30"},{stage:"Future",desc:"Fully autonomous household management with zero commands.",color:"text-emerald-400",border:"border-emerald-800/30"}].map((s,i)=>(
-    <div key={i} className={`card border-t-2 ${s.border} text-center py-6 af`} style={{animationDelay:`${i*0.1}s`}}>
-      <p className={`text-sm font-bold ${s.color}`}>{s.stage}</p>
-      <p className="text-[10px] text-[var(--muted)] mt-2 leading-relaxed">{s.desc}</p>
-    </div>
-  ))}
-</div>
-</section>
-
-{/* ── NO HARDWARE ── */}
-<section className="max-w-3xl mx-auto px-6 py-10">
-<div className="card-glow text-center py-6 px-5">
-  <p className="text-base font-bold">No Expensive Hardware Required</p>
-  <p className="text-xs text-[var(--muted)] mt-2 max-w-lg mx-auto leading-relaxed">GharMind learns from household routines, behavior patterns, contextual intelligence, and AI reasoning — without requiring specialized sensors, IoT devices, or smart appliances.</p>
-</div>
-</section>
 
 </div>}
 
@@ -889,6 +783,20 @@ return(<div className="min-h-screen flex flex-col">
       "Zero hardware requirement",
       "Powered entirely by AWS Bedrock",
     ].map((h,i)=><p key={i} className="text-xs text-emerald-400 af" style={{animationDelay:`${i*0.05}s`}}>✓ {h}</p>)}</div>
+  </div>
+</section>
+
+{/* 9. No Expensive Hardware */}
+<section>
+  <div className="card-glow text-center py-6 px-5">
+    <p className="text-base font-bold">No Expensive Hardware Required</p>
+    <p className="text-xs text-[var(--muted)] mt-2 max-w-lg mx-auto leading-relaxed">GharMind learns from household routines, behavior patterns, contextual intelligence, and AI reasoning — without requiring specialized sensors, IoT devices, or smart appliances.</p>
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4 max-w-2xl mx-auto">{[
+      {icon:"🚫",label:"No IoT Sensors"},
+      {icon:"📡",label:"No Smart Plugs"},
+      {icon:"🔌",label:"No Smart Appliances"},
+      {icon:"🧠",label:"Pure AI Intelligence"},
+    ].map((item,i)=><div key={i} className="text-center"><span className="text-xl">{item.icon}</span><p className="text-[9px] text-[var(--muted)] mt-1">{item.label}</p></div>)}</div>
   </div>
 </section>
 
