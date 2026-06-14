@@ -660,15 +660,80 @@ return(<div className="min-h-screen flex flex-col">
 {/* Energy merged into dashboard below */}
 
 {/* MEMORY */}
-{pg==="memory"&&<div className="max-w-5xl mx-auto px-4 py-6 space-y-4">
-<h2 className="text-base font-bold mb-3">Memory & Gallery</h2>
+{pg==="memory"&&<div className="max-w-5xl mx-auto px-5 py-8 space-y-6">
+<div className="mb-2">
+  <h2 className="text-2xl md:text-[32px] font-bold">Memory</h2>
+  <p className="text-sm text-[var(--muted)] mt-1">AI that learns. Memories that matter.</p>
+</div>
 
-{/* Memory Timeline */}
-<h3 className="text-sm font-bold">🧠 7-Day Memory Timeline</h3>
-<div className="space-y-2">{MEMORY_TIMELINE.map((d,i)=><div key={i} className="card flex gap-3"><div className="w-14 flex-shrink-0"><p className="text-[9px] font-medium">{d.day}</p><div className="flex items-center gap-1 mt-0.5"><div className="h-1 flex-1 rounded-full bg-[var(--border)] overflow-hidden"><div className="h-full rounded-full bg-cyan-500/60" style={{width:`${d.consistency}%`}}/></div><span className="text-[7px] text-muted">{d.consistency}%</span></div></div><div><p className="text-[8px] text-cyan-400">{d.highlight}</p><p className="text-[8px] text-muted">{d.events.join(" • ")}</p></div></div>)}</div>
+{/* ── MEMORY INSIGHTS HEADER ── */}
+<div className="card-glow py-6 px-6">
+  <div className="flex items-center gap-2 mb-4"><span className="text-xl">🧠</span><p className="text-lg font-bold">What GharMind Learned This Week</p></div>
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+    {["Arjun studies best between 8–10 PM","Lakshmi starts breakfast after pooja","Family power usage peaks around 7 PM","Water motor usually runs at 6:15 AM"].map((insight,i)=>(
+      <p key={i} className="text-sm text-emerald-400 py-1">✓ {insight}</p>
+    ))}
+  </div>
+</div>
 
-{/* AI Learning Summary */}
-<div className="card"><p className="text-[9px] font-bold text-purple-400 uppercase mb-2">AI Learning Summary</p><p className="text-[9px] text-muted leading-relaxed">Morning pooja completed on schedule. Water motor ran 25 min at 6:15 AM. Arjun studied from 8-10 PM (exam prep mode). Power stable throughout. Household mood: focused. Tomorrow prediction: Board exam at 10 AM — quiet morning expected.</p></div>
+{/* ── MEMORY METRICS ── */}
+<div className="grid grid-cols-3 gap-4">
+  <div className="card text-center py-5"><p className="text-2xl md:text-3xl font-black text-cyan-400">92%</p><p className="text-xs text-[var(--muted)] mt-1">Memory Confidence</p></div>
+  <div className="card text-center py-5"><p className="text-2xl md:text-3xl font-black text-emerald-400">12</p><p className="text-xs text-[var(--muted)] mt-1">Patterns Learned</p></div>
+  <div className="card text-center py-5"><p className="text-2xl md:text-3xl font-black text-purple-400">89%</p><p className="text-xs text-[var(--muted)] mt-1">Successful Predictions</p></div>
+</div>
+
+{/* ── MEMORY TIMELINE ── */}
+<div>
+  <h3 className="text-lg font-bold mb-4">Memory Timeline</h3>
+  <div className="relative pl-7 border-l-2 border-cyan-800/40 space-y-5">
+    {/* Today */}
+    <div className="relative af">
+      <span className="absolute -left-[25px] top-2 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-emerald-400"/>
+      <div className="card-glow py-4 px-5">
+        <div className="flex items-center justify-between mb-3"><p className="text-base font-bold text-emerald-400">🟢 Today</p><span className="badge badge-g">High Activity</span></div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {[{i:"💧",e:"Water Motor"},{i:"🪔",e:"Pooja"},{i:"⚡",e:"Power Cut Expected"},{i:"☕",e:"Evening Coffee"}].map((ev,j)=><div key={j} className="flex items-center gap-2"><span className="text-lg">{ev.i}</span><span className="text-sm">{ev.e}</span></div>)}
+        </div>
+        <div className="flex items-center gap-2 mt-3"><span className="text-xs text-[var(--muted)]">Accuracy:</span><div className="flex-1 h-1.5 rounded-full bg-[var(--border)] max-w-[120px]"><div className="h-full rounded-full bg-emerald-500" style={{width:"94%"}}/></div><span className="text-xs font-bold text-emerald-400">94%</span></div>
+      </div>
+    </div>
+    {/* Yesterday */}
+    <div className="relative af" style={{animationDelay:"0.08s"}}>
+      <span className="absolute -left-[25px] top-2 w-3.5 h-3.5 rounded-full bg-blue-500/60 border-2 border-blue-400"/>
+      <div className="card py-4 px-5">
+        <div className="flex items-center justify-between mb-3"><p className="text-base font-bold text-blue-400">🔵 Yesterday</p><span className="badge badge-b">Normal Weekday</span></div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {[{i:"💧",e:"Water Motor"},{i:"🪔",e:"Pooja"},{i:"📚",e:"Tuition"},{i:"📖",e:"Study Session"}].map((ev,j)=><div key={j} className="flex items-center gap-2"><span className="text-lg">{ev.i}</span><span className="text-sm">{ev.e}</span></div>)}
+        </div>
+        <div className="flex items-center gap-2 mt-3"><span className="text-xs text-[var(--muted)]">Accuracy:</span><div className="flex-1 h-1.5 rounded-full bg-[var(--border)] max-w-[120px]"><div className="h-full rounded-full bg-blue-500" style={{width:"91%"}}/></div><span className="text-xs font-bold text-blue-400">91%</span></div>
+      </div>
+    </div>
+    {/* 3 Days Ago */}
+    <div className="relative af" style={{animationDelay:"0.16s"}}>
+      <span className="absolute -left-[25px] top-2 w-3.5 h-3.5 rounded-full bg-purple-500/50 border-2 border-purple-400/60"/>
+      <div className="card py-4 px-5 opacity-90">
+        <div className="flex items-center justify-between mb-3"><p className="text-base font-bold text-purple-400">🟣 3 Days Ago</p><span className="badge badge-b">Normal Weekday</span></div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          {[{i:"💧",e:"Water Motor"},{i:"☕",e:"Coffee"},{i:"📖",e:"Study Session"}].map((ev,j)=><div key={j} className="flex items-center gap-2"><span className="text-lg">{ev.i}</span><span className="text-sm">{ev.e}</span></div>)}
+        </div>
+        <div className="flex items-center gap-2 mt-3"><span className="text-xs text-[var(--muted)]">Accuracy:</span><div className="flex-1 h-1.5 rounded-full bg-[var(--border)] max-w-[120px]"><div className="h-full rounded-full bg-purple-500" style={{width:"88%"}}/></div><span className="text-xs font-bold text-purple-400">88%</span></div>
+      </div>
+    </div>
+    {/* 1 Week Ago */}
+    <div className="relative af" style={{animationDelay:"0.24s"}}>
+      <span className="absolute -left-[25px] top-2 w-3.5 h-3.5 rounded-full bg-amber-500/40 border-2 border-amber-400/50"/>
+      <div className="card py-4 px-5 opacity-80">
+        <div className="flex items-center justify-between mb-3"><p className="text-base font-bold text-amber-400">🟠 1 Week Ago</p><span className="badge badge-a">Special Day</span></div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {[{i:"👥",e:"Guest Visit"},{i:"☕",e:"Coffee"},{i:"🍽",e:"Family Dinner"},{i:"💧",e:"Water Motor"}].map((ev,j)=><div key={j} className="flex items-center gap-2"><span className="text-lg">{ev.i}</span><span className="text-sm">{ev.e}</span></div>)}
+        </div>
+        <div className="flex items-center gap-2 mt-3"><span className="text-xs text-[var(--muted)]">Accuracy:</span><div className="flex-1 h-1.5 rounded-full bg-[var(--border)] max-w-[120px]"><div className="h-full rounded-full bg-amber-500" style={{width:"85%"}}/></div><span className="text-xs font-bold text-amber-400">85%</span></div>
+      </div>
+    </div>
+  </div>
+  <p className="text-xs text-cyan-400 font-medium mt-4 ml-7 cursor-pointer hover:underline">View Complete Timeline →</p>
+</div>
 
 {/* Gallery merged here */}
 <h3 className="text-sm font-bold mt-6">🧠 Family Memory Gallery</h3>
