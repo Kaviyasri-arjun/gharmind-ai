@@ -347,22 +347,23 @@ return(<div className="min-h-screen flex flex-col">
 </div>
 
 {/* ── FAMILY MEMBER CARDS ── */}
-<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
+<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
   {fam.map((m:any,i:number)=>{
     const roleIcon=m.name==="Lakshmi"?"👩":m.name==="Venkat"?"💼":m.name==="Arjun"?"📖":"👵";
     const roleLabel=m.name==="Lakshmi"?"Homemaker":m.name==="Venkat"?"Working Professional":m.name==="Arjun"?"Student":"Elder";
     const roleColor=m.name==="Lakshmi"?"text-emerald-400":m.name==="Venkat"?"text-blue-400":m.name==="Arjun"?"text-purple-400":"text-amber-400";
     const gen=m.name==="Paati"?"Grandparent":m.name==="Arjun"?"Child":"Parent";
-    return(<div key={m.id||i} onClick={()=>sFamDet(m)} className="card text-center relative group cursor-pointer hover:border-cyan-800/50 hover:-translate-y-1 transition-all duration-200">
-      <div className="relative mx-auto w-20 h-20">
-        <img src={m.img||""} alt="" className="w-20 h-20 rounded-full object-cover border-2 border-cyan-800/40 shadow-lg shadow-cyan-900/20"/>
-        <span className="absolute bottom-0 right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-[var(--card)]"/>
+    const glowColor=m.name==="Lakshmi"?"shadow-emerald-500/20":m.name==="Venkat"?"shadow-blue-500/20":m.name==="Arjun"?"shadow-purple-500/20":"shadow-amber-500/20";
+    return(<div key={m.id||i} onClick={()=>sFamDet(m)} className={cn("card text-center relative group cursor-pointer hover:border-cyan-800/60 hover:-translate-y-2 transition-all duration-300 py-8 px-4",glowColor)}>
+      <div className="relative mx-auto w-24 h-24">
+        <img src={m.img||""} alt="" className="w-24 h-24 rounded-full object-cover border-[3px] border-cyan-800/50 shadow-xl shadow-cyan-900/30"/>
+        <span className="absolute bottom-1 right-1 w-4 h-4 rounded-full bg-emerald-500 border-[3px] border-[var(--card)]"/>
       </div>
-      <p className="text-lg font-bold mt-3">{m.name}</p>
-      <p className={cn("text-xs font-medium mt-1",roleColor)}>{roleIcon} {roleLabel}</p>
-      <p className="text-xs text-[var(--muted)] mt-0.5">{gen}{m.age?` • Age ${m.age}`:""}</p>
-      {m.birthday&&<p className="text-xs text-cyan-400 mt-1">🎂 {m.birthday}</p>}
-      <button onClick={(e)=>{e.stopPropagation();delF(m.id);}} className="absolute top-3 right-3 w-6 h-6 rounded-full bg-red-500/20 text-red-400 text-xs opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">✕</button>
+      <p className="text-xl font-bold mt-4">{m.name}</p>
+      <p className={cn("text-sm font-medium mt-1.5",roleColor)}>{roleIcon} {roleLabel}</p>
+      <p className="text-sm text-[var(--muted)] mt-1">{gen}{m.age?` • Age ${m.age}`:""}</p>
+      {m.birthday&&<p className="text-sm text-cyan-400 mt-1.5">🎂 {m.birthday}</p>}
+      <button onClick={(e)=>{e.stopPropagation();delF(m.id);}} className="absolute top-3 right-3 w-7 h-7 rounded-full bg-red-500/20 text-red-400 text-sm opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">✕</button>
     </div>);
   })}
 </div>
@@ -421,74 +422,76 @@ return(<div className="min-h-screen flex flex-col">
   </div>
 </div>}
 
-{/* ── HOUSEHOLD STRUCTURE ── */}
-<div className="grid md:grid-cols-2 gap-5">
-  <div className="card">
-    <p className="text-xs font-bold text-cyan-400 uppercase tracking-wide mb-4">Household Overview</p>
-    <div className="grid grid-cols-3 gap-4 text-center">
-      <div><p className="text-2xl font-black text-cyan-400">4</p><p className="text-xs text-[var(--muted)]">Members</p></div>
-      <div><p className="text-2xl font-black text-purple-400">2</p><p className="text-xs text-[var(--muted)]">Generations</p></div>
-      <div><p className="text-2xl font-black text-emerald-400">1</p><p className="text-xs text-[var(--muted)]">Household</p></div>
+{/* ── HOUSEHOLD STRUCTURE — single wide card ── */}
+<div className="card-glow py-8 px-8">
+  <p className="text-xs font-bold text-cyan-400 uppercase tracking-wide mb-6">Household Digital Twin Overview</p>
+  <div className="grid md:grid-cols-[1fr_auto_1fr] gap-8 items-center">
+    {/* Left — Metrics */}
+    <div className="grid grid-cols-3 gap-6 text-center">
+      <div><p className="text-3xl font-black text-cyan-400">4</p><p className="text-sm text-[var(--muted)] mt-1">Members</p></div>
+      <div><p className="text-3xl font-black text-purple-400">2</p><p className="text-sm text-[var(--muted)] mt-1">Generations</p></div>
+      <div><p className="text-3xl font-black text-emerald-400">1</p><p className="text-sm text-[var(--muted)] mt-1">Household</p></div>
     </div>
-  </div>
-  <div className="card">
-    <p className="text-xs font-bold text-cyan-400 uppercase tracking-wide mb-4">Family Structure</p>
-    <div className="flex items-center justify-center gap-6">
-      <div className="text-center"><div className="w-10 h-10 rounded-full border-2 border-emerald-500/50 mx-auto overflow-hidden"><img src={fam[0]?.img||""} alt="" className="w-full h-full object-cover"/></div><p className="text-[10px] mt-1">Lakshmi</p></div>
-      <span className="text-[var(--muted)] text-xs">───</span>
-      <div className="text-center"><div className="w-10 h-10 rounded-full border-2 border-blue-500/50 mx-auto overflow-hidden"><img src={fam[1]?.img||""} alt="" className="w-full h-full object-cover"/></div><p className="text-[10px] mt-1">Venkat</p></div>
-    </div>
-    <div className="flex items-center justify-center gap-8 mt-3">
-      <div className="text-center"><div className="w-9 h-9 rounded-full border-2 border-purple-500/50 mx-auto overflow-hidden"><img src={fam[2]?.img||""} alt="" className="w-full h-full object-cover"/></div><p className="text-[10px] mt-1">Arjun</p></div>
-      <div className="text-center"><div className="w-9 h-9 rounded-full border-2 border-amber-500/50 mx-auto overflow-hidden"><img src={fam[3]?.img||""} alt="" className="w-full h-full object-cover"/></div><p className="text-[10px] mt-1">Paati</p></div>
+    {/* Divider */}
+    <div className="hidden md:block w-px h-24 bg-[var(--border)]"/>
+    {/* Right — Family Tree */}
+    <div className="flex flex-col items-center">
+      <div className="flex items-center gap-4">
+        <div className="text-center"><div className="w-12 h-12 rounded-full border-2 border-emerald-500/60 mx-auto overflow-hidden shadow-lg shadow-emerald-500/10"><img src={fam[0]?.img||""} alt="" className="w-full h-full object-cover"/></div><p className="text-xs font-medium mt-1.5">Lakshmi</p></div>
+        <span className="text-cyan-500/50 font-mono text-sm">───</span>
+        <div className="text-center"><div className="w-12 h-12 rounded-full border-2 border-blue-500/60 mx-auto overflow-hidden shadow-lg shadow-blue-500/10"><img src={fam[1]?.img||""} alt="" className="w-full h-full object-cover"/></div><p className="text-xs font-medium mt-1.5">Venkat</p></div>
+      </div>
+      <div className="w-px h-4 bg-cyan-800/40"/>
+      <div className="flex items-center gap-8">
+        <div className="text-center"><div className="w-10 h-10 rounded-full border-2 border-purple-500/60 mx-auto overflow-hidden shadow-lg shadow-purple-500/10"><img src={fam[2]?.img||""} alt="" className="w-full h-full object-cover"/></div><p className="text-xs font-medium mt-1.5">Arjun</p></div>
+        <div className="text-center"><div className="w-10 h-10 rounded-full border-2 border-amber-500/60 mx-auto overflow-hidden shadow-lg shadow-amber-500/10"><img src={fam[3]?.img||""} alt="" className="w-full h-full object-cover"/></div><p className="text-xs font-medium mt-1.5">Paati</p></div>
+      </div>
     </div>
   </div>
 </div>
 
-{/* ── UPCOMING EVENTS & ROUTINES ── */}
-<div className="grid md:grid-cols-2 gap-5">
-  {/* Upcoming Events */}
-  <div className="card">
+{/* ── THREE-CARD BOTTOM ROW ── */}
+<div className="grid md:grid-cols-3 gap-5">
+  {/* Card 1 — Upcoming Events */}
+  <div className="card py-6">
     <p className="text-xs font-bold text-cyan-400 uppercase tracking-wide mb-4">Upcoming Family Events</p>
     <div className="space-y-3">
-      {cal.map((e,i)=><div key={i} className="flex items-center gap-3 py-2 border-b border-[var(--border)] last:border-0">
+      {cal.map((e,i)=><div key={i} className="flex items-center gap-3 py-2.5 border-b border-[var(--border)] last:border-0">
         <span className="text-xl">{e.i}</span>
-        <div className="flex-1"><p className="text-sm font-medium">{e.t}</p><p className="text-xs text-[var(--muted)]">{e.d}</p></div>
-        <span className="text-xs text-cyan-400 font-medium">{getDaysLeft(e.d)}</span>
+        <div className="flex-1"><p className="text-sm font-semibold">{e.t}</p><p className="text-xs text-[var(--muted)]">{e.d}</p></div>
+        <span className="text-[11px] px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-800/30 font-medium">{getDaysLeft(e.d)}</span>
         <button onClick={()=>sCalEdit({idx:i,t:e.t,d:e.d})} className="text-xs px-2 py-1 rounded bg-white/5 border border-[var(--border)] hover:bg-white/10 transition-all">✏️</button>
       </div>)}
     </div>
     <p className="text-xs text-cyan-400 font-medium mt-4 cursor-pointer hover:underline">View All Events →</p>
   </div>
 
-  {/* Recurring Routines */}
-  <div className="card">
-    <p className="text-xs font-bold text-cyan-400 uppercase tracking-wide mb-4">Recurring Household Routines</p>
+  {/* Card 2 — Recurring Routines */}
+  <div className="card py-6">
+    <p className="text-xs font-bold text-cyan-400 uppercase tracking-wide mb-4">Recurring Routines</p>
     <div className="space-y-3">
-      {[{i:"💧",t:"Water Motor",f:"Daily • 6:15 AM"},{i:"☕",t:"Evening Coffee",f:"Daily • 5:00 PM"},{i:"⚡",t:"Power Cut Window",f:"Daily • 2:00 PM"},{i:"🪔",t:"Morning Pooja",f:"Daily • 5:45 AM"},{i:"📚",t:"Study Session",f:"Weekdays • 8:00 PM"}].map((r,i)=><div key={i} className="flex items-center gap-3 py-2 border-b border-[var(--border)] last:border-0">
-        <span className="text-lg">{r.i}</span>
-        <div className="flex-1"><p className="text-sm font-medium">{r.t}</p></div>
-        <span className="badge badge-b">{r.f}</span>
+      {[{i:"💧",t:"Water Motor",f:"Daily • 6:15 AM"},{i:"☕",t:"Evening Coffee",f:"Daily • 5:00 PM"},{i:"⚡",t:"Power Cut Window",f:"Daily • 2:00 PM"},{i:"🪔",t:"Morning Pooja",f:"Daily • 5:45 AM"},{i:"📚",t:"Study Session",f:"Weekdays • 8 PM"}].map((r,i)=><div key={i} className="flex items-center gap-3 py-2.5 border-b border-[var(--border)] last:border-0">
+        <span className="text-xl">{r.i}</span>
+        <div className="flex-1"><p className="text-sm font-semibold">{r.t}</p></div>
+        <span className="text-[11px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-800/30 font-medium">{r.f}</span>
       </div>)}
     </div>
     <p className="text-xs text-cyan-400 font-medium mt-4 cursor-pointer hover:underline">Manage Routines →</p>
   </div>
-</div>
 
-{/* ── CULTURAL INTELLIGENCE ── */}
-<div className="card-glow">
-  <p className="text-xs font-bold text-purple-400 uppercase tracking-wide mb-3">Cultural Intelligence</p>
-  <div className="flex items-start gap-4">
-    <span className="text-4xl">🪔</span>
-    <div className="flex-1">
-      <p className="text-lg font-bold">{CULTURAL_CONTEXT.festivalName}</p>
-      <p className="text-sm text-[var(--muted)] mt-0.5">In {CULTURAL_CONTEXT.daysAway} days • 2025-01-14</p>
-      <div className="mt-3 space-y-1.5">
+  {/* Card 3 — Cultural Intelligence */}
+  <div className="card-glow py-6 relative overflow-hidden">
+    <div className="absolute top-4 right-4 text-6xl opacity-20">🪔</div>
+    <p className="text-xs font-bold text-purple-400 uppercase tracking-wide mb-4">Cultural Intelligence</p>
+    <div className="relative z-10">
+      <p className="text-xl font-bold">{CULTURAL_CONTEXT.festivalName}</p>
+      <p className="text-sm text-[var(--muted)] mt-1">In {CULTURAL_CONTEXT.daysAway} days • 2025-01-14</p>
+      <div className="mt-4 space-y-2">
         <p className="text-sm text-emerald-400">✓ Grocery reminder scheduled</p>
         <p className="text-sm text-emerald-400">✓ Family gathering reminder</p>
         <p className="text-sm text-emerald-400">✓ Traditional cooking preparation</p>
       </div>
-      <p className="text-xs text-cyan-400 font-medium mt-4 cursor-pointer hover:underline">View Cultural Calendar →</p>
+      <p className="text-xs text-cyan-400 font-medium mt-5 cursor-pointer hover:underline">View Cultural Calendar →</p>
     </div>
   </div>
 </div>
