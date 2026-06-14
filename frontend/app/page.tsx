@@ -221,7 +221,6 @@ return(<div className="min-h-screen flex flex-col">
     <div key={i} className="flex items-center gap-3 py-3 border-b border-[var(--border)] last:border-0">
       <span className="text-2xl w-10 text-center">{s.icon}</span>
       <div className="flex-1"><p className="text-xs font-semibold">{s.label}</p><p className="text-[10px] text-[var(--muted)]">{s.sub}</p></div>
-      {i<5&&<span className="text-cyan-500/40 text-sm">↓</span>}
     </div>
   ))}
 </div>
